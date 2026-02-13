@@ -430,7 +430,7 @@ async function checkLogin() {
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  const correct = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; 
+  const correct = "97ea1ecbb57e39348da66330c45adf0de0962a9453fb025f1d25670fcaf36653"; 
   if(hashHex === correct) {
     document.getElementById('login-screen').style.display='none'; 
     document.getElementById('admin-panel').style.display='block'; 
@@ -463,3 +463,4 @@ function delItem(t,i) { if(confirm('Del?')) { t==='situation'?appData.situations
 </script>
 </body>
 </html>
+
