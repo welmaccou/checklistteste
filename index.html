@@ -95,8 +95,7 @@
     <div id="checklist-screen">
       <div class="toolbar">
         <button class="btn-tool btn-back" onclick="closeChecklist()">Voltar / Novo</button>
-        <button class="btn-tool btn-save" onclick="saveChecklist()">💾 Salvar</button>
-        <button class="btn-tool btn-print" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-tool btn-print" onclick="printAndSave()">🖨️ Imprimir (e Salvar)</button>
       </div>
       <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
       <div id="checklist-content" class="checklist-content"></div>
@@ -127,7 +126,7 @@
           <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">Config</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
         </div>
 
         <div id="tab-saved">
@@ -179,7 +178,9 @@
   </div>
 
 <script>
-
+/* ==========================================================================
+   CONFIGURAÇÃO OBFUSCADA (Copie do Admin e Cole Aqui)
+   ========================================================================== */
 const GH_SECRETS = {
   u: "JCw/OD4wJiwg",
   r: "MCE2NjQ/LDAhJiAsPyA=",
@@ -218,7 +219,7 @@ function loadLocalData() {
 }
 loadLocalData();
 
-/* === SISTEMA DE OBFUSCAÇÃO (Não é Hash, é Reversível) === */
+/* === SISTEMA DE OBFUSCAÇÃO === */
 const _key = "SISU_SECURE_KEY";
 function _obfuscate(str) {
   if(!str) return "";
@@ -226,7 +227,7 @@ function _obfuscate(str) {
   for (let i = 0; i < str.length; i++) {
     res += String.fromCharCode(str.charCodeAt(i) ^ _key.charCodeAt(i % _key.length));
   }
-  return btoa(res); // Encode Base64
+  return btoa(res); 
 }
 function _deobfuscate(str) {
   if(!str) return "";
@@ -243,7 +244,6 @@ function _deobfuscate(str) {
 /* === INTEGRAÇÃO GITHUB === */
 function openGithubConfig() {
   document.getElementById('github-config').style.display = 'block';
-  // Se já tiver no código, avisa
   if(GH_SECRETS.u && GH_SECRETS.t) {
       document.getElementById('obfuscated-output').style.display = 'block';
       document.getElementById('output-code').value = "Configuração já carregada do código fonte.";
@@ -254,17 +254,13 @@ function generateObfuscatedCode() {
     const u = document.getElementById('gh-user').value.trim();
     const r = document.getElementById('gh-repo').value.trim();
     const t = document.getElementById('gh-token').value.trim();
-    
     if(!u || !r || !t) return alert("Preencha todos os campos.");
-    
     const code = `const GH_SECRETS = {\n  u: "${_obfuscate(u)}",\n  r: "${_obfuscate(r)}",\n  t: "${_obfuscate(t)}"\n};`;
-    
     document.getElementById('obfuscated-output').style.display = 'block';
     document.getElementById('output-code').value = code;
 }
 
 async function syncWithGithub() {
-  // Tenta usar do código primeiro, senão procura no localStorage (fallback)
   const user = _deobfuscate(GH_SECRETS.u);
   const repo = _deobfuscate(GH_SECRETS.r);
   const token = _deobfuscate(GH_SECRETS.t);
@@ -280,7 +276,6 @@ async function syncWithGithub() {
 
   try {
     const response = await fetch(url, { headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } });
-
     let sha = null;
     let remoteData = null;
 
@@ -396,7 +391,13 @@ function generateChecklist() {
 function closeChecklist() { document.getElementById('checklist-screen').style.display='none'; document.getElementById('creation-screen').style.display='block'; currentChecklistId=null; }
 
 /* === SAVING === */
-function saveChecklist() {
+// Salva e Imprime ao mesmo tempo
+function printAndSave() {
+  saveChecklist(true); // true = silencioso
+  setTimeout(() => window.print(), 200);
+}
+
+function saveChecklist(silent = false) {
   const div = document.getElementById('checklist-content');
   const name = div.dataset.candidate || 'Sem Nome';
   div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked','checked') : c.removeAttribute('checked'));
@@ -404,14 +405,20 @@ function saveChecklist() {
   
   if(currentChecklistId) {
     const idx = savedLists.findIndex(l=>l.id===currentChecklistId);
-    if(idx!==-1) { savedLists[idx].html=html; savedLists[idx].updated=new Date().toLocaleString(); alert('Atualizado!'); }
+    if(idx!==-1) { 
+      savedLists[idx].html=html; 
+      savedLists[idx].updated=new Date().toLocaleString(); 
+      if(!silent) alert('Atualizado!'); 
+    }
   } else {
     const newId = Date.now();
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
-    currentChecklistId = newId; alert('Salvo!');
+    currentChecklistId = newId; 
+    if(!silent) alert('Salvo!');
   }
   localStorage.setItem('SISU_SAVED_LISTS', JSON.stringify(savedLists));
 }
+
 function loadChecklist(id) {
   const l = savedLists.find(x=>x.id===id); if(!l) return;
   const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
@@ -430,7 +437,7 @@ async function checkLogin() {
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  const correct = "97ea1ecbb57e39348da66330c45adf0de0962a9453fb025f1d25670fcaf36653"; 
+  const correct = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; 
   if(hashHex === correct) {
     document.getElementById('login-screen').style.display='none'; 
     document.getElementById('admin-panel').style.display='block'; 
@@ -463,4 +470,3 @@ function delItem(t,i) { if(confirm('Del?')) { t==='situation'?appData.situations
 </script>
 </body>
 </html>
-
