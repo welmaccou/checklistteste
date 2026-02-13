@@ -131,6 +131,24 @@
             "docs": []
           }
         ]
+      },
+      {
+        "id": "q1771018009066",
+        "text": "Teste",
+        "options": [
+          {
+            "label": "a",
+            "docs": []
+          },
+          {
+            "label": "b",
+            "docs": []
+          },
+          {
+            "label": "c",
+            "docs": []
+          }
+        ]
       }
     ]
   },
