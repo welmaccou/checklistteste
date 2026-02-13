@@ -1,1 +1,146 @@
-
+{
+  "appData": {
+    "situations": [
+      {
+        "id": "assalariado",
+        "label": "Assalariado",
+        "docs": [
+          "Contracheques (Out, Nov, Dez 2025)",
+          "CTPS completa",
+          "IRPF 2025 (se declarou)"
+        ]
+      },
+      {
+        "id": "autonomo",
+        "label": "Autônomo/Informal",
+        "docs": [
+          "Declaração de Autônomo",
+          "CTPS",
+          "Extratos bancários"
+        ]
+      },
+      {
+        "id": "aposentado",
+        "label": "Aposentado/Pensionista",
+        "docs": [
+          "Extrato do benefício",
+          "IRPF 2025"
+        ]
+      },
+      {
+        "id": "mei",
+        "label": "Microempreendedor (MEI)",
+        "docs": [
+          "DASN Simei",
+          "Declaração de MEI",
+          "Extratos"
+        ]
+      },
+      {
+        "id": "desempregado",
+        "label": "Desempregado",
+        "docs": [
+          "CTPS (Baixa)",
+          "Declaração de desemprego",
+          "Seguro-desemprego (se houver)"
+        ]
+      },
+      {
+        "id": "nunca",
+        "label": "Nunca Trabalhou",
+        "docs": [
+          "CTPS (em branco)",
+          "CNIS (se maior de 18)"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "id": "moradia",
+        "text": "Moradia",
+        "options": [
+          {
+            "label": "Alugada",
+            "docs": [
+              "Contrato de locação ou recibos."
+            ]
+          },
+          {
+            "label": "Cedida",
+            "docs": [
+              "Declaração de imóvel cedido."
+            ]
+          },
+          {
+            "label": "Financiada",
+            "docs": [
+              "Comprovante da prestação."
+            ]
+          },
+          {
+            "label": "Própria",
+            "docs": []
+          }
+        ]
+      },
+      {
+        "id": "orfao",
+        "text": "É solteiro(a) com pais falecidos?",
+        "options": [
+          {
+            "label": "Sim",
+            "docs": [
+              "Certidão de óbito pai/mãe."
+            ]
+          },
+          {
+            "label": "Não",
+            "docs": []
+          }
+        ]
+      },
+      {
+        "id": "aluguel",
+        "text": "Renda de aluguel?",
+        "options": [
+          {
+            "label": "Sim",
+            "docs": [
+              "Contratos e recibos de aluguel."
+            ]
+          },
+          {
+            "label": "Não",
+            "docs": []
+          }
+        ]
+      },
+      {
+        "id": "rural",
+        "text": "Proprietário rural?",
+        "options": [
+          {
+            "label": "Sim",
+            "docs": [
+              "Escritura/INCRA",
+              "DITR 2025"
+            ]
+          },
+          {
+            "label": "Não",
+            "docs": []
+          }
+        ]
+      }
+    ]
+  },
+  "savedLists": [
+    {
+      "id": 1771017971593,
+      "name": "Wellington",
+      "html": "<div class=\"person-block\"><h3>Candidato(a): Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Declaração de Autônomo</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">CTPS</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Extratos bancários</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li></ul></div><div class=\"extra-docs\"><h3>Complementar</h3><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Comprovante da prestação.</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Contratos e recibos de aluguel.</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">Escritura/INCRA</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\"><span class=\"doc-text\">DITR 2025</span></label><button class=\"btn-remove\" onclick=\"this.parentElement.remove()\">Excluir</button></li></ul></div>",
+      "created": "13/02/2026, 18:26:11",
+      "updated": "13/02/2026, 18:26:11"
+    }
+  ]
+}
