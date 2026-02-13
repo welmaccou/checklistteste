@@ -182,9 +182,9 @@
    CONFIGURAÇÃO OBFUSCADA (Copie do Admin e Cole Aqui)
    ========================================================================== */
 const GH_SECRETS = {
-  u: "",
-  r: "",
-  t: ""
+  u: "JCw/OD4wJiwg",
+  r: "MCE2NjQ/LDAhJiAsPyA=",
+  t: "NCEjCjwmdi0zNzJtPBcBKyY5PGoSKQ9mBCo9fzcuBQAXBW4YIBIvOA=="
 };
 
 /* ==========================================================================
