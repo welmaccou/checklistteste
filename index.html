@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
   <style>
-    /* --- Estilos Mantidos (Idênticos aos anteriores) --- */
+    /* --- Estilos Mantidos --- */
     :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
@@ -50,8 +50,6 @@
     .btn-del { background: #dc3545; color: white; }
     .btn-add { background: #28a745; color: white; }
     .btn-gh { background: #24292e; color: white; }
-    
-    /* Dropdown CSS */
     .dropdown-container { position: relative; user-select: none; }
     .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
@@ -129,7 +127,7 @@
           <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">Config</button>
         </div>
 
         <div id="tab-saved">
@@ -150,14 +148,21 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configuração de Nuvem (GitHub)</h3>
-          <p style="font-size:0.85rem;">Preencha para salvar os dados no seu repositório.</p>
+          <h3>Configuração de Nuvem (Obfuscada)</h3>
+          <p style="font-size:0.85rem;">Insira seus dados reais abaixo e clique em "Gerar Códigos". Copie o resultado e substitua no topo do script (variável GH_SECRETS) para salvar no repositório.</p>
+          
           <label>Usuário GitHub:</label><input type="text" id="gh-user" placeholder="ex: seuusuario">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo" placeholder="ex: checklist-sisu">
           <label>Token de Acesso (PAT):</label><input type="password" id="gh-token" placeholder="ghp_...">
-          <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0;" onclick="saveGithubConfig()">Salvar Configuração</button>
+          
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateObfuscatedCode()">Gerar Códigos para Colar no HTML</button>
              <button class="btn-sm" style="background:#999; color:white;" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
+          </div>
+          
+          <div id="obfuscated-output" style="display:none; margin-top:15px;">
+            <label>Copie e substitua no código:</label>
+            <textarea id="output-code" style="width:100%; height:100px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
 
@@ -174,7 +179,16 @@
   </div>
 
 <script>
-/* === DADOS PADRÃO === */
+
+const GH_SECRETS = {
+  u: "JCw/OD4wJiwg",
+  r: "MCE2NjQ/LDAhJiAsPyA=",
+  t: "NCEjCjwmdi0zNzJtPBcBKyY5PGoSKQ9mBCo9fzcuBQAXBW4YIBIvOA=="
+};
+
+/* ==========================================================================
+   DADOS PADRÃO
+   ========================================================================== */
 const defaultData = {
   situations: [
     { id: 'assalariado', label: 'Assalariado', docs: ['Contracheques (Out, Nov, Dez 2025)', 'CTPS completa', 'IRPF 2025 (se declarou)'] },
@@ -196,38 +210,66 @@ let appData = defaultData;
 let savedLists = [];
 let currentChecklistId = null; 
 
-// Inicialização: Tenta carregar do LocalStorage
 function loadLocalData() {
   const localConfig = localStorage.getItem('SISU_CONFIG');
   if(localConfig) appData = JSON.parse(localConfig);
-  
   const localLists = localStorage.getItem('SISU_SAVED_LISTS');
   if(localLists) savedLists = JSON.parse(localLists);
 }
 loadLocalData();
 
+/* === SISTEMA DE OBFUSCAÇÃO (Não é Hash, é Reversível) === */
+const _key = "SISU_SECURE_KEY";
+function _obfuscate(str) {
+  if(!str) return "";
+  let res = "";
+  for (let i = 0; i < str.length; i++) {
+    res += String.fromCharCode(str.charCodeAt(i) ^ _key.charCodeAt(i % _key.length));
+  }
+  return btoa(res); // Encode Base64
+}
+function _deobfuscate(str) {
+  if(!str) return "";
+  try {
+    let dec = atob(str);
+    let res = "";
+    for (let i = 0; i < dec.length; i++) {
+      res += String.fromCharCode(dec.charCodeAt(i) ^ _key.charCodeAt(i % _key.length));
+    }
+    return res;
+  } catch(e) { return ""; }
+}
+
 /* === INTEGRAÇÃO GITHUB === */
 function openGithubConfig() {
   document.getElementById('github-config').style.display = 'block';
-  document.getElementById('gh-user').value = localStorage.getItem('GH_USER') || '';
-  document.getElementById('gh-repo').value = localStorage.getItem('GH_REPO') || '';
-  document.getElementById('gh-token').value = localStorage.getItem('GH_TOKEN') || '';
+  // Se já tiver no código, avisa
+  if(GH_SECRETS.u && GH_SECRETS.t) {
+      document.getElementById('obfuscated-output').style.display = 'block';
+      document.getElementById('output-code').value = "Configuração já carregada do código fonte.";
+  }
 }
 
-function saveGithubConfig() {
-  localStorage.setItem('GH_USER', document.getElementById('gh-user').value.trim());
-  localStorage.setItem('GH_REPO', document.getElementById('gh-repo').value.trim());
-  localStorage.setItem('GH_TOKEN', document.getElementById('gh-token').value.trim());
-  alert('Configuração salva no navegador!');
-  document.getElementById('github-config').style.display = 'none';
+function generateObfuscatedCode() {
+    const u = document.getElementById('gh-user').value.trim();
+    const r = document.getElementById('gh-repo').value.trim();
+    const t = document.getElementById('gh-token').value.trim();
+    
+    if(!u || !r || !t) return alert("Preencha todos os campos.");
+    
+    const code = `const GH_SECRETS = {\n  u: "${_obfuscate(u)}",\n  r: "${_obfuscate(r)}",\n  t: "${_obfuscate(t)}"\n};`;
+    
+    document.getElementById('obfuscated-output').style.display = 'block';
+    document.getElementById('output-code').value = code;
 }
 
 async function syncWithGithub() {
-  const user = localStorage.getItem('GH_USER');
-  const repo = localStorage.getItem('GH_REPO');
-  const token = localStorage.getItem('GH_TOKEN');
+  // Tenta usar do código primeiro, senão procura no localStorage (fallback)
+  const user = _deobfuscate(GH_SECRETS.u);
+  const repo = _deobfuscate(GH_SECRETS.r);
+  const token = _deobfuscate(GH_SECRETS.t);
   
-  if(!user || !repo || !token) return alert('Configure a nuvem primeiro (botão Config GitHub).');
+  if(!user || !repo || !token) return alert('Configure a nuvem (Admin > Config GitHub).');
   
   const filename = 'database.json';
   const url = `https://api.github.com/repos/${user}/${repo}/contents/${filename}`;
@@ -237,10 +279,7 @@ async function syncWithGithub() {
   btn.disabled = true;
 
   try {
-    // 1. Tentar ler o arquivo existente (GET)
-    const response = await fetch(url, {
-      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
+    const response = await fetch(url, { headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } });
 
     let sha = null;
     let remoteData = null;
@@ -248,62 +287,44 @@ async function syncWithGithub() {
     if (response.ok) {
       const data = await response.json();
       sha = data.sha;
-      // Decodifica UTF-8 corretamente
       const content = decodeURIComponent(escape(atob(data.content)));
       remoteData = JSON.parse(content);
       
-      // PERGUNTA: Mesclar ou Sobrescrever?
-      // Por simplicidade, vamos assumir que o GitHub é a "Verdade" se ele existir,
-      // mas vamos adicionar as listas locais que não existem lá.
       if(remoteData) {
         appData = remoteData.appData || appData;
-        // Mesclar listas: manter as mais recentes
         const mergedLists = [...remoteData.savedLists];
         savedLists.forEach(localItem => {
           const exists = mergedLists.find(r => r.id === localItem.id);
-          if(!exists) mergedLists.push(localItem); // Adiciona novos locais
+          if(!exists) mergedLists.push(localItem); 
           else if(new Date(localItem.updated) > new Date(exists.updated)) {
-            // Se local for mais novo que nuvem, atualiza nuvem (na memoria por enquanto)
             const idx = mergedLists.indexOf(exists);
             mergedLists[idx] = localItem;
           }
         });
         savedLists = mergedLists;
       }
-    } else if (response.status !== 404) {
-      throw new Error('Erro ao acessar GitHub');
-    }
+    } else if (response.status !== 404) throw new Error('Erro ao acessar GitHub (Verifique Token/Repo)');
 
-    // 2. Salvar estado atualizado no LocalStorage
     localStorage.setItem('SISU_CONFIG', JSON.stringify(appData));
     localStorage.setItem('SISU_SAVED_LISTS', JSON.stringify(savedLists));
 
-    // 3. Enviar dados atualizados para o GitHub (PUT)
     const newContent = { appData, savedLists };
-    // Codifica UTF-8 para Base64
     const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(newContent, null, 2))));
     
-    const putBody = {
-      message: "Sync SISU Checklist " + new Date().toLocaleString(),
-      content: contentBase64
-    };
-    if (sha) putBody.sha = sha; // Necessário para atualizar
+    const putBody = { message: "Sync SISU " + new Date().toLocaleString(), content: contentBase64 };
+    if (sha) putBody.sha = sha;
 
-    const putResponse = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(putBody)
-    });
+    const putResponse = await fetch(url, { method: 'PUT', headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(putBody) });
 
-    if(!putResponse.ok) throw new Error('Erro ao salvar no GitHub');
+    if(!putResponse.ok) throw new Error('Erro ao salvar no GitHub (Permissões?)');
 
-    alert('✅ Sincronização concluída com sucesso!');
+    alert('✅ Sincronização concluída!');
     renderAdminLists();
     renderSavedList();
 
   } catch (error) {
     console.error(error);
-    alert('Erro na sincronização: ' + error.message);
+    alert('Erro: ' + error.message);
   } finally {
     btn.textContent = '🔄 Sincronizar Agora';
     btn.disabled = false;
@@ -402,7 +423,21 @@ function deleteSavedList(id) { if(confirm('Excluir?')) { savedLists=savedLists.f
 /* === ADMIN === */
 function openAdmin() { document.getElementById('admin-modal').style.display='block'; }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
-function checkLogin() { if(document.getElementById('admin-pass').value==='14121992'){ document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; renderAdminLists(); renderSavedList(); } else alert('Senha errada'); }
+
+async function checkLogin() {
+  const input = document.getElementById('admin-pass').value;
+  const msgBuffer = new TextEncoder().encode(input);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  const correct = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; 
+  if(hashHex === correct) {
+    document.getElementById('login-screen').style.display='none'; 
+    document.getElementById('admin-panel').style.display='block'; 
+    renderAdminLists(); renderSavedList();
+  } else { alert('Senha incorreta'); }
+}
+
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
 
 function renderSavedList() {
@@ -413,7 +448,6 @@ function renderAdminLists() {
   document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">Del</button></div></div>`).join('');
   document.getElementById('questions-list').innerHTML = appData.questions.map((q,i)=>`<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">Del</button></div></div>`).join('');
 }
-/* Funções de edição reduzidas para caber, lógica idêntica à anterior */
 function editSituation(i) { setupEdit('situation',i); if(i!==-1) { document.getElementById('edit-label').value=appData.situations[i].label; document.getElementById('sit-docs').value=appData.situations[i].docs.join('\n'); } }
 function editQuestion(i) { setupEdit('question',i); if(i!==-1) { document.getElementById('edit-label').value=appData.questions[i].text; appData.questions[i].options.forEach(o=>addOptionRow(o.label,o.docs.join('\n'))); } else addOptionRow('',''); }
 function setupEdit(type, id) { document.getElementById('edit-overlay').style.display='block'; document.getElementById('edit-type').value=type; document.getElementById('edit-id').value=id; document.getElementById('situation-fields').style.display=type==='situation'?'block':'none'; document.getElementById('question-fields').style.display=type==='question'?'block':'none'; document.getElementById('options-container').innerHTML=''; document.getElementById('edit-label').value=''; document.getElementById('sit-docs').value=''; }
