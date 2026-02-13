@@ -95,7 +95,7 @@
     <div id="checklist-screen">
       <div class="toolbar">
         <button class="btn-tool btn-back" onclick="closeChecklist()">Voltar / Novo</button>
-        <button class="btn-tool btn-print" onclick="printAndSave()">🖨️ Imprimir (e Salvar)</button>
+        <button class="btn-tool btn-print" onclick="printAndSave()">🖨️ Imprimir (e Salvar)</button> 
       </div>
       <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
       <div id="checklist-content" class="checklist-content"></div>
