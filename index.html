@@ -458,6 +458,18 @@
         height: 40px;
         animation: spin 1s linear infinite;
     }
+    .instructions {
+        margin-top: 20px;
+        background: rgba(240, 248, 255, 0.95);
+        padding: 20px;
+        border-left: 6px solid #007BFF;
+        backdrop-filter: blur(4px);
+      }
+      .instructionsh2 {
+        margin: 0;
+        color: #007BFF;
+        font-size: 18px;
+      }
     @keyframes spin {
         0% {
             transform: rotate(0deg);
@@ -516,11 +528,15 @@
     <div class="spinner"></div>
     <p id="loading-text" style="margin-top:15px; font-weight:bold; color:#0056b3;">Carregando dados...</p>
   </div>
-
   <div class="container">
-    <div id="creation-screen">
-      <h1>Gerador de Checklist</h1>
-      <div class="subtitle">Matrícula SISU UFG - Análise Socioeconômica</div>
+      <h1>Checklist de Documentos</h1>
+      <div class="subtitle">Cadastro Único de Bolsas UFG</div>
+    <div class="instructions">
+      <h2 class="instructionsh2"><strong>Atenção</strong></h2>
+      <p>Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong></p>
+    </div>
+    <p><strong>Definição de Grupo Familiar:</strong> é considerado grupo familiar todas as pessoas que moram com você, que dividem ou não a mesma renda, eventualmente ampliada por outras pessoas que contribuam para o rendimento ou tenham suas despesas atendidas por aquela unidade familiar, todas moradoras em um mesmo domicílio.</p>
+    <p><strong>Importante:</strong> o/a estudante que se define como único membro do grupo familiar e não possua rendimento próprio suficiente para a sua subsistência deverá informar o grupo familiar de origem, ainda que residente em local diverso do seu domicílio.</p>
       <div id="step-1">
         <label for="family-size">Quantidade de pessoas no grupo familiar (além do candidato):</label>
         <div style="display: flex; gap: 10px;">
@@ -530,7 +546,6 @@
       </div>
       <div id="form-container"></div>
     </div>
-
     <div id="checklist-screen">
       <div class="toolbar">
         <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
@@ -1041,5 +1056,6 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
