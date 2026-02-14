@@ -994,7 +994,7 @@ function generateChecklist() {
                <h3>${i===0?'Estudante':'Familiar'}: ${n}</h3>
                <strong>Documentos Gerais:</strong>
                <ul>${basicHtml}</ul>`;    
-    if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
+    if(ch.length) { html+='<strong>Comprovantes de Rendimentos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
     html += addBox + '</div>';
   }
@@ -1155,6 +1155,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
