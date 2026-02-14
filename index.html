@@ -879,7 +879,7 @@ function renderForm() {
   const c = document.getElementById('form-container'); const s = parseInt(document.getElementById('family-size').value);
   if(isNaN(s)||s<0) return alert('Inválido');
   c.innerHTML = ''; c.appendChild(createMemberCard('Estudante',0,true));
-  for(let i=1; i<=s; i++) c.appendChild(createMemberCard(`Membro ${i}`,i,false));
+  for(let i=1; i<=s; i++) c.appendChild(createMemberCard(`${i}º Membro do grupo familiar`,i,false));
   const b = document.createElement('button'); b.className = 'btn-primary'; b.textContent = 'Gerar Checklist'; b.onclick = generateChecklist; c.appendChild(b);
 }
 function createMemberCard(title, i, isCand) {
@@ -1035,6 +1035,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
