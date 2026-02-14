@@ -84,6 +84,7 @@
         transition: border-color 0.3s;
         box-sizing: border-box;
         background: #fcfcfc;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
     }
     input:focus,
     select:focus {
@@ -529,8 +530,8 @@
     <p id="loading-text" style="margin-top:15px; font-weight:bold; color:#0056b3;">Carregando dados...</p>
   </div>
   <div class="container">
-      <h1>Checklist de Documentos</h1>
-      <div class="subtitle">Cadastro Único de Bolsas UFG</div>
+      <h1>Gerador de Checklist</h1>
+      <div class="subtitle">Documentos para o Cadastro Único de Bolsas da UFG</div>
     <div class="instructions">
       <h2 class="instructionsh2"><strong>Atenção</strong></h2>
       <p>Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong></p>
@@ -538,7 +539,7 @@
     <p><strong>Definição de Grupo Familiar:</strong> é considerado grupo familiar todas as pessoas que moram com você, que dividem ou não a mesma renda, eventualmente ampliada por outras pessoas que contribuam para o rendimento ou tenham suas despesas atendidas por aquela unidade familiar, todas moradoras em um mesmo domicílio.</p>
     <p><strong>Importante:</strong> o/a estudante que se define como único membro do grupo familiar e não possua rendimento próprio suficiente para a sua subsistência deverá informar o grupo familiar de origem, ainda que residente em local diverso do seu domicílio.</p>
       <div id="step-1">
-        <label for="family-size">Quantidade de pessoas no grupo familiar (além do candidato):</label>
+        <label for="family-size">Quantidade de pessoas no grupo familiar (além do estudante):</label>
         <div style="display: flex; gap: 10px;">
           <input type="number" id="family-size" min="0" value="0">
           <button class="btn-primary" style="width: auto; margin-top:0;" onclick="renderForm()">Iniciar</button>
@@ -551,7 +552,7 @@
         <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
         <button class="btn-tool btn-save" onclick="manualSave()">💾 Salvar</button>
         <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
-        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir</button>
+        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir/PDF</button>
       </div>
       <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
       <div id="checklist-content" class="checklist-content"></div>
@@ -581,15 +582,15 @@
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Listas Geradas</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">Configurações</button>
         </div>
 
         <div id="tab-saved">
           <div style="margin-bottom: 10px;">
-            <input type="text" id="search-candidate" placeholder="🔍 Buscar candidato..." onkeyup="filterCandidates()" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            <input type="text" id="search-candidate" placeholder="🔍 Buscar estudante..." onkeyup="filterCandidates()" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
           </div>
           <div class="item-list" id="saved-list"></div>
         </div>
@@ -811,7 +812,7 @@ async function syncData() {
       appData = res.data.appData || defaultData;
       savedLists = res.data.savedLists || [];
       currentSHA = res.sha;
-      document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
+      document.getElementById('status-bar').textContent = "✅ Tudo certo.";
     } else {
       document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
@@ -885,15 +886,15 @@ document.addEventListener('click', () => document.querySelectorAll('.dropdown-me
 function renderForm() {
   const c = document.getElementById('form-container'); const s = parseInt(document.getElementById('family-size').value);
   if(isNaN(s)||s<0) return alert('Inválido');
-  c.innerHTML = ''; c.appendChild(createMemberCard('Candidato',0,true));
-  for(let i=1; i<=s; i++) c.appendChild(createMemberCard(`Membro ${i}`,i,false));
+  c.innerHTML = ''; c.appendChild(createMemberCard('Estudante',0,true));
+  for(let i=1; i<=s; i++) c.appendChild(createMemberCard(`${i}º Membro do grupo familiar`,i,false));
   const b = document.createElement('button'); b.className = 'btn-primary'; b.textContent = 'Gerar Checklist'; b.onclick = generateChecklist; c.appendChild(b);
 }
 function createMemberCard(title, i, isCand) {
   const card = document.createElement('div'); card.style.cssText = 'background:#f8f9fa; border:1px solid #e9ecef; border-radius:12px; padding:20px; margin-top:20px;';
   let h = `<div class="section-header" style="margin-top:0;">${title}</div><div style="margin-bottom:15px;"><label>Nome:</label><input type="text" id="name-${i}"></div><div style="margin-bottom:15px;"><label>Situação:</label><div id="sit-wrapper-${i}"></div></div>`;
   if(isCand) {
-    h+=`<div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:10px;"><h4 style="color:#666;">Complementar</h4>`;
+    h+=`<div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:10px;"><h4 style="color:#666;">Informações complementares</h4>`;
     appData.questions.forEach((q,qi) => {
       let o = `<option value="">-- Escolha --</option>`; q.options.forEach((opt,oi)=> o+=`<option value="${qi}-${oi}">${opt.label}</option>`);
       h+=`<div style="margin-bottom:15px;"><label>${q.text}</label><select id="extra-${qi}">${o}</select></div>`;
@@ -925,10 +926,10 @@ function generateChecklist() {
   let html = '', cName = '';
   for(let i=0; i<=size; i++) {
     const n = document.getElementById(`name-${i}`).value.trim();
-    if(!n && i===0) return alert('Nome do candidato é obrigatório'); if(!n) continue; if(i===0) cName = n;
+    if(!n && i===0) return alert('Nome do estudante é obrigatório'); if(!n) continue; if(i===0) cName = n;
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
     
-    html += `<div class="person-block"><h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
+    html += `<div class="person-block"><h3>${i===0?'Estudante':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
     
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
@@ -983,7 +984,7 @@ async function loadChecklist(id) {
 function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
 async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await saveDataToCloud(); if(ok) renderSavedList(); }
 
-/* === NOVO: FILTRAR CANDIDATOS === */
+/* === NOVO: FILTRAR ESTUDANTES === */
 function filterCandidates() {
   const input = document.getElementById('search-candidate');
   const filter = input.value.toLowerCase();
@@ -1056,6 +1057,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
