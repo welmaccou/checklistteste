@@ -458,18 +458,6 @@
         height: 40px;
         animation: spin 1s linear infinite;
     }
-    .instructions {
-        margin-top: 20px;
-        background: rgba(240, 248, 255, 0.95);
-        padding: 20px;
-        border-left: 6px solid #007BFF;
-        backdrop-filter: blur(4px);
-      }
-      .instructionsh2 {
-        margin: 0;
-        color: #007BFF;
-        font-size: 18px;
-      }
     @keyframes spin {
         0% {
             transform: rotate(0deg);
@@ -528,9 +516,10 @@
     <div class="spinner"></div>
     <p id="loading-text" style="margin-top:15px; font-weight:bold; color:#0056b3;">Carregando dados...</p>
   </div>
-  <div class="container">
-      <h1>Checklist de Documentos</h1>
-      <div class="subtitle">Cadastro Único de Bolsas UFG</div>
+
+    <div class="container">
+      <h1>Checklist de Documentos - Cadastro Único UFG</h1>
+      <div class="subtitle">Matrícula SISU UFG - Análise Socioeconômica</div>
     <div class="instructions">
       <h2 class="instructionsh2"><strong>Atenção</strong></h2>
       <p>Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong></p>
@@ -546,6 +535,10 @@
       </div>
       <div id="form-container"></div>
     </div>
+
+
+
+
     <div id="checklist-screen">
       <div class="toolbar">
         <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
