@@ -13,7 +13,13 @@
     .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
     .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
+    label { 
+        display: block; 
+        font-weight: 600; 
+        color: #444; 
+        font-size: 0.9rem; 
+    }
+    
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
     .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
@@ -34,7 +40,15 @@
     .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
-    .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
+  
+    .doc-label { 
+      display: flex; 
+      align-items: flex-start; 
+      cursor: pointer; 
+      width: 100%;
+      align-items: center;
+    }
+    
     .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
     .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
@@ -61,14 +75,19 @@
     .btn-del { background: #dc3545; color: white; }
     .btn-add { background: #28a745; color: white; }
     
+    /* DROPDOWN MELHORADO COM OK */
     .dropdown-container { position: relative; user-select: none; }
-    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
+    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 21px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
-    .dropdown-menu { position: absolute; top: 105%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; max-height: 300px; overflow-y: auto; display: none; padding: 5px 0; }
+    .dropdown-menu { position: absolute; top: 105%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; max-height: 300px; overflow-y: auto; display: none; padding-top: 5px; }
     .dropdown-menu.show { display: block; }
     .dropdown-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; transition: background 0.2s; }
     .dropdown-item:hover { background-color: #f0f7ff; }
     .dropdown-item input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
+    
+    .dropdown-ok { padding: 8px; border-top: 1px solid #eee; position: sticky; bottom: 0; background: white; text-align: center; }
+    .dropdown-ok button { background: var(--success); color: white; border: none; padding: 6px 0; width: 90%; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+    .dropdown-ok button:hover { background: #218838; }
 
     /* Loading Overlay */
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
@@ -339,11 +358,19 @@ function createMultiSelect(id, items) {
   const t = document.createElement('div'); t.className = 'dropdown-trigger'; t.innerHTML = '<span class="trigger-text">Selecione...</span>';
   t.onclick = (e) => { e.stopPropagation(); toggleDropdown(id); };
   const m = document.createElement('div'); m.className = 'dropdown-menu'; m.id = `menu-${id}`;
+  
   items.forEach(i => {
     const r = document.createElement('label'); r.className = 'dropdown-item';
     r.innerHTML = `<input type="checkbox" value="${i.id}" onchange="updateTrigger('${id}')">${i.label}`;
     r.onclick = (e) => e.stopPropagation(); m.appendChild(r);
   });
+
+  // Botão OK no final
+  const okDiv = document.createElement('div'); okDiv.className = 'dropdown-ok';
+  okDiv.innerHTML = '<button type="button">OK - Concluir</button>';
+  okDiv.onclick = (e) => { e.stopPropagation(); toggleDropdown(id); };
+  m.appendChild(okDiv);
+
   c.appendChild(t); c.appendChild(m); return c;
 }
 function toggleDropdown(id) { document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== `menu-${id}`) m.classList.remove('show'); }); document.getElementById(`menu-${id}`).classList.toggle('show'); }
@@ -436,21 +463,19 @@ function generateChecklist() {
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
     
-    // Adiciona caixa de input para essa pessoa
     html += addBox;
     html+='</div>';
   }
   
   let extra=''; appData.questions.forEach((q,qi)=>{ const v=document.getElementById(`extra-${qi}`).value; if(v){ const[x,y]=v.split('-'); const op=appData.questions[x].options[y]; if(op.docs.length) extra+=op.docs.map(d=>item(d)).join(''); }});
   
-  // Adiciona caixa de input para Extras
   html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul>${addBox}</div>`;
   
   const content = document.getElementById('checklist-content'); content.innerHTML = html; content.dataset.candidate = cName;
   
   currentChecklistId = null; 
   updateUrl(null); 
-  isDirty = true; // Gerou novo checklist = não salvo
+  isDirty = true; 
 
   document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block'; window.scrollTo(0,0);
 }
@@ -477,6 +502,12 @@ async function saveLogic(silent = false) {
   const div = document.getElementById('checklist-content');
   const name = div.dataset.candidate || 'Sem Nome';
   div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked','checked') : c.removeAttribute('checked'));
+  
+  // Remove temporariamente os inputs de adicionar para salvar limpo no HTML (Opcional - aqui estou mantendo para permitir adicionar depois de salvar)
+  // const tempDiv = div.cloneNode(true);
+  // tempDiv.querySelectorAll('.add-doc-row').forEach(e => e.remove());
+  // const html = tempDiv.innerHTML;
+  
   const html = div.innerHTML;
 
   if(currentChecklistId) {
@@ -491,7 +522,7 @@ async function saveLogic(silent = false) {
 
   const success = await pushToGithub();
   if(success) {
-    isDirty = false; // Salvo com sucesso
+    isDirty = false; 
     if(!silent) alert("Salvo com sucesso! Link atualizado.");
   }
   return success;
@@ -526,7 +557,7 @@ async function loadChecklist(id) {
   c.innerHTML=l.html; 
   c.dataset.candidate=l.name;
   currentChecklistId=l.id; 
-  isDirty = false; // Acabou de carregar
+  isDirty = false; 
   
   updateUrl(l.id); 
   
