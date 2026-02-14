@@ -604,15 +604,15 @@
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
-        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Acesse a área de administração</p>
+        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Acesso à área de administração</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Estudantes (GitHub)</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Listas Geradas</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">Configurações</button>
         </div>
 
         <div id="tab-saved">
@@ -1045,6 +1045,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
