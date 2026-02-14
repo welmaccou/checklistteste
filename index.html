@@ -203,8 +203,16 @@
 /* ==========================================================================
    DADOS SEGUROS (Cole o bloco gerado aqui)
    ========================================================================== */
-const SECURE_DATA = null;
-
+const SECURE_DATA = {
+  "u": "JCw/OD4zNi0m",
+  "r": "MCE2NjQ8PDEnPTYmKzU=",
+  "token": {
+    "salt": "WZlCVAihgoHB1c6h0pAVcg==",
+    "iv": "fp/mr8Azohi8NTDB",
+    "data": "Yuxqh4QgoMnDQX9jqNGWxVmcdOBPLO2AbXNIpCVXs3H6d/jsJiU4pLyoVStlyiWCV6qPzwmb7NA="
+  }
+};
+  
 /* ==========================================================================
    CRIPTOGRAFIA (AES-GCM) & OFUSCAÇÃO
    ========================================================================== */
@@ -552,3 +560,4 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
