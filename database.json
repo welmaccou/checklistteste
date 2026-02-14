@@ -70,6 +70,11 @@
         "id": "arroz",
         "label": "Arroz",
         "docs": []
+      },
+      {
+        "id": "maracanã",
+        "label": "Maracanã",
+        "docs": []
       }
     ],
     "questions": [
