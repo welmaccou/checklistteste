@@ -13,7 +13,14 @@
     .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
     .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
+
+    label { 
+        display: block; 
+        font-weight: 600; 
+        color: #444; 
+        font-size: 0.9rem;
+    }    
+    
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
     .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
@@ -33,7 +40,15 @@
     .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
-    .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
+   
+    .doc-label { 
+          display: flex; 
+          align-items: flex-start; 
+          cursor: pointer; 
+          width: 100%;
+          align-items: center;
+    }
+    
     .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
     .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
@@ -62,7 +77,7 @@
     .btn-add { background: #28a745; color: white; }
     
     .dropdown-container { position: relative; user-select: none; }
-    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
+    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 21px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
     .dropdown-menu { position: absolute; top: 105%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; max-height: 300px; overflow-y: auto; display: none; padding-top: 5px; }
     .dropdown-menu.show { display: block; }
@@ -596,4 +611,5 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
