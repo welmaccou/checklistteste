@@ -13,14 +13,7 @@
     .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
     .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
-    
-    label { 
-        display: block; 
-        font-weight: 600; 
-        color: #444; 
-        font-size: 0.9rem;
-    } 
-    
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
     .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
@@ -34,30 +27,18 @@
     .btn-link { background: var(--warning); color: #333; }
     .btn-back { background: var(--primary); }
     
-    /* Checklist UI */
     #checklist-screen { display: none; }
     .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
     .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
     .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
-    
-    .doc-label { 
-          display: flex; 
-          align-items: flex-start; 
-          cursor: pointer; 
-          width: 100%;
-          align-items: center;
-    }  
-    
+    .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
     .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
     .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
-    
-    /* Estilo do Link no documento */
     .doc-text a { color: #0056b3; font-weight: bold; text-decoration: underline; }
     .doc-text a:hover { color: #003d80; }
-
     .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: none; z-index: 10; }
     li.doc-item:hover .btn-remove { display: block; }
     .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
@@ -81,7 +62,7 @@
     .btn-add { background: #28a745; color: white; }
     
     .dropdown-container { position: relative; user-select: none; }
-    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 21px; }
+    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
     .dropdown-menu { position: absolute; top: 105%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; max-height: 300px; overflow-y: auto; display: none; padding-top: 5px; }
     .dropdown-menu.show { display: block; }
@@ -160,15 +141,15 @@
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
-        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Seus dados do GitHub estão criptografados neste arquivo.</p>
+        <p style="font-size:0.8rem; color:#666; margin-top:10px;">O Token é descriptografado usando esta senha.</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">⚙️ Cofre GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">🔐 Cofre GitHub</button>
         </div>
 
         <div id="tab-saved">
@@ -186,18 +167,18 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configurar Cofre (Criptografado)</h3>
-          <p style="font-size:0.85rem;">Insira seus dados. Eles serão criptografados com a senha que você definir agora.</p>
-          <label>Nova Senha de Admin:</label><input type="text" id="new-admin-pass">
+          <h3>Configurar Cofre</h3>
+          <p style="font-size:0.85rem;">Insira seus dados. O Token será criptografado. Usuário/Repo ficarão legíveis para permitir carregamento automático (necessário repo público).</p>
+          <label>Senha de Admin:</label><input type="text" id="new-admin-pass">
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
           <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateEncryptedConfig()">Gerar Bloco de Configuração</button>
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateSecureConfig()">Gerar Código Seguro</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Substitua a variável ENCRYPTED_CONFIG no código:</label>
+            <label>Substitua a variável SECURE_DATA no código:</label>
             <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
@@ -208,7 +189,7 @@
           <label>Título:</label><input type="text" id="edit-label">
           <div id="situation-fields" style="display:none;">
             <label>Documentos:</label>
-            <p style="font-size:0.8em; color:#666; margin:0 0 5px 0;">Dica: Para adicionar link, use <b>[Texto do Rótulo](http://site.com)</b></p>
+            <p style="font-size:0.8em; color:#666; margin:0 0 5px 0;">Use: <b>[Texto do Link](http://site.com)</b></p>
             <textarea id="sit-docs" style="width:100%; min-height:150px;"></textarea>
           </div>
           <div id="question-fields" style="display:none;"><label>Opções:</label><div id="options-container"></div><button class="btn-sm btn-add" onclick="addOptionRow()">+ Opção</button></div>
@@ -220,16 +201,12 @@
 
 <script>
 /* ==========================================================================
-   CONFIGURAÇÃO CRIPTOGRAFADA (COFRE)
+   DADOS SEGUROS (Cole o bloco gerado aqui)
    ========================================================================== */
-const ENCRYPTED_CONFIG = {
-  "salt": "hb+O+PAVm7WEtEVKfAz0Nw==",
-  "iv": "I17hidPpwLs/2Lt2",
-  "data": "xnZWnncb9F0SoJ1n5zn/ytNvSGVRhwzgTEgS6C/qBKJxNAhPRbXRyOs8BPuPIsCU2w0sUL3xIbbZtCPkxkN+PBmxc/zlMIPeap6zYNdkcX914Xa0GFUw0MV7Le9wesO5Y+v7FeM6ECqqBDBFmNT7"
-};
+const SECURE_DATA = null;
 
 /* ==========================================================================
-   CRIPTOGRAFIA (AES-GCM)
+   CRIPTOGRAFIA (AES-GCM) & OFUSCAÇÃO
    ========================================================================== */
 async function getKey(password, salt) {
   const enc = new TextEncoder();
@@ -239,27 +216,33 @@ async function getKey(password, salt) {
     keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
   );
 }
-async function encryptData(data, password) {
+async function encryptToken(token, password) {
   const salt = window.crypto.getRandomValues(new Uint8Array(16));
   const iv = window.crypto.getRandomValues(new Uint8Array(12));
   const key = await getKey(password, btoa(String.fromCharCode(...salt)));
-  const encoded = new TextEncoder().encode(JSON.stringify(data));
+  const encoded = new TextEncoder().encode(token);
   const encrypted = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
   return { salt: btoa(String.fromCharCode(...salt)), iv: btoa(String.fromCharCode(...iv)), data: btoa(String.fromCharCode(...new Uint8Array(encrypted))) };
 }
-async function decryptData(encryptedObj, password) {
+async function decryptToken(encryptedObj, password) {
   try {
     const key = await getKey(password, encryptedObj.salt);
     const iv = Uint8Array.from(atob(encryptedObj.iv), c => c.charCodeAt(0));
     const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
     const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
-    return JSON.parse(new TextDecoder().decode(decrypted));
+    return new TextDecoder().decode(decrypted);
   } catch (e) { return null; }
 }
-let GH_CREDS = { user: null, repo: null, token: null };
+// Obfuscador simples para User/Repo (Leitura pública)
+const _k = "SISU_PUB";
+function _obf(s){if(!s)return "";let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)^_k.charCodeAt(i%_k.length));return btoa(r);}
+function _deobf(s){if(!s)return "";try{let d=atob(s),r="";for(let i=0;i<d.length;i++)r+=String.fromCharCode(d.charCodeAt(i)^_k.charCodeAt(i%_k.length));return r;}catch(e){return "";}}
+
+// Variável para armazenar Token descriptografado na RAM
+let DECRYPTED_TOKEN = null;
 
 /* ==========================================================================
-   DADOS E ESTADO
+   ESTADO DA APLICAÇÃO
    ========================================================================== */
 const defaultData = {
   situations: [
@@ -287,48 +270,104 @@ let isDirty = false;
 window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; } });
 
 /* ==========================================================================
-   GITHUB API
+   CARREGAMENTO E SINCRONIZAÇÃO
    ========================================================================== */
 window.onload = async function() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
-  if(ENCRYPTED_CONFIG && id) { openAdmin(); document.getElementById('login-screen').insertAdjacentHTML('beforeend', '<p style="color:red;font-weight:bold;margin-top:5px;">Digite a senha para carregar o checklist compartilhado.</p>'); } 
-  else if (!ENCRYPTED_CONFIG) { document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin."; }
+
+  if(SECURE_DATA) {
+    // 1. Tenta carregar dados PÚBLICOS (sem senha)
+    await fetchPublicData();
+    
+    // 2. Se tiver ID na URL, carrega o checklist
+    if(id) loadChecklist(parseInt(id));
+  } else {
+    document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin.";
+  }
 };
 
-async function fetchFromGithub() {
-  if(!GH_CREDS.token) return;
-  showLoading('Sincronizando com a Nuvem...');
-  const url = `https://api.github.com/repos/${GH_CREDS.user}/${GH_CREDS.repo}/contents/database.json`;
+async function fetchPublicData() {
+  showLoading('Carregando dados...');
+  const user = _deobf(SECURE_DATA.u);
+  const repo = _deobf(SECURE_DATA.r);
+  // Usa URL raw para leitura pública sem token
+  const url = `https://raw.githubusercontent.com/${user}/${repo}/main/database.json`;
+
   try {
-    const resp = await fetch(url, { headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Accept': 'application/vnd.github.v3+json' } });
+    const resp = await fetch(url); // Cache default
     if(resp.ok) {
       const json = await resp.json();
-      currentSHA = json.sha;
+      // Se for raw, o conteúdo vem direto, não base64
+      appData = json.appData || defaultData;
+      savedLists = json.savedLists || [];
+      document.getElementById('status-bar').textContent = "✅ Dados carregados.";
+    } else {
+      document.getElementById('status-bar').textContent = "ℹ️ Repositório não encontrado ou privado.";
+    }
+  } catch(e) {
+    console.error("Erro leitura pública:", e);
+  } finally {
+    hideLoading();
+  }
+}
+
+// Necessita Token (Escrita ou Leitura Privada)
+async function fetchPrivateData() {
+  if(!DECRYPTED_TOKEN) return;
+  const user = _deobf(SECURE_DATA.u);
+  const repo = _deobf(SECURE_DATA.r);
+  const url = `https://api.github.com/repos/${user}/${repo}/contents/database.json`;
+
+  try {
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${DECRYPTED_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(resp.ok) {
+      const json = await resp.json();
+      currentSHA = json.sha; // Importante para Update
       const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-      appData = content.appData || defaultData;
-      savedLists = content.savedLists || [];
-      document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-      if(id && !currentChecklistId) { closeAdmin(); loadChecklist(parseInt(id)); }
-    } else if(resp.status === 404) { document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar."; }
-  } catch(e) { alert("Erro GitHub: " + e.message); } finally { hideLoading(); }
+      appData = content.appData || appData;
+      savedLists = content.savedLists || savedLists;
+    }
+  } catch(e) { console.error(e); }
 }
 
 async function pushToGithub() {
-  if(!GH_CREDS.token) { alert("Você precisa logar na área admin para salvar na nuvem."); openAdmin(); return false; }
+  if(!DECRYPTED_TOKEN) { 
+    alert("Sessão expirada ou não iniciada. Entre na Área Admin para liberar o salvamento."); 
+    openAdmin(); 
+    return false; 
+  }
   showLoading('Salvando na Nuvem...');
-  const url = `https://api.github.com/repos/${GH_CREDS.user}/${GH_CREDS.repo}/contents/database.json`;
+  
+  // Garante que temos o SHA mais recente
+  await fetchPrivateData();
+
+  const user = _deobf(SECURE_DATA.u);
+  const repo = _deobf(SECURE_DATA.r);
+  const url = `https://api.github.com/repos/${user}/${repo}/contents/database.json`;
+  
   const payload = { appData, savedLists };
   const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
+  
   const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
   if(currentSHA) body.sha = currentSHA;
+
   try {
-    const resp = await fetch(url, { method: 'PUT', headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if(resp.ok) { const json = await resp.json(); currentSHA = json.content.sha; document.getElementById('status-bar').textContent = "✅ Salvo na nuvem às " + new Date().toLocaleTimeString(); return true; } 
-    else { throw new Error('Erro GitHub: ' + resp.status); }
-  } catch(e) { alert("Falha ao salvar: " + e.message); return false; } finally { hideLoading(); }
+    const resp = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${DECRYPTED_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    
+    if(resp.ok) {
+      const json = await resp.json();
+      currentSHA = json.content.sha;
+      document.getElementById('status-bar').textContent = "✅ Salvo com sucesso às " + new Date().toLocaleTimeString();
+      return true;
+    } else { throw new Error('Erro GitHub: ' + resp.status); }
+  } catch(e) {
+    alert("Falha ao salvar: " + e.message); return false;
+  } finally { hideLoading(); }
 }
 
 /* ==========================================================================
@@ -387,22 +426,17 @@ function addNewDoc(btn) {
   const input = btn.previousElementSibling; const text = input.value.trim(); if(!text) return;
   const ul = btn.closest('div').previousElementSibling; 
   const li = document.createElement('li'); li.className = 'doc-item';
-  // Usa o formatDocText para permitir links também nos manuais
   li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
   ul.appendChild(li); input.value = ''; markDirty();
 }
 
-// --- NOVO: Função para formatar Links Markdown ---
 function formatDocText(text) {
-  // 1. Limpa parênteses do início se houver
   let clean = text.replace(/^[\(\s\)]+/, '').trim();
-  // 2. Substitui [Texto](URL) por <a href...>
   return clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
 }
 
 function generateChecklist() {
   const size = parseInt(document.getElementById('family-size').value);
-  
   const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button></li>`;
   const addBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar documento..."><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
 
@@ -456,7 +490,6 @@ async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => w
 
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-  if(savedLists.length === 0) await fetchFromGithub();
   const l = savedLists.find(x=>x.id===id); 
   if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
   const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
@@ -467,28 +500,34 @@ function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve pri
 async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await pushToGithub(); if(ok) renderSavedList(); }
 
 /* === ADMIN & CRIPTOGRAFIA === */
-function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!ENCRYPTED_CONFIG) openGithubConfig(); }
+function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!SECURE_DATA) openGithubConfig(); }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
 
 async function checkLogin() {
   const pass = document.getElementById('admin-pass').value;
-  if(!ENCRYPTED_CONFIG) {
+  if(!SECURE_DATA) {
     if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta");
     return;
   }
-  const creds = await decryptData(ENCRYPTED_CONFIG, pass);
-  if(creds) {
-    GH_CREDS = creds; document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
-    fetchFromGithub().then(() => { renderAdminLists(); renderSavedList(); });
+  const token = await decryptToken(SECURE_DATA.token, pass);
+  if(token) {
+    DECRYPTED_TOKEN = token; 
+    document.getElementById('login-screen').style.display='none'; 
+    document.getElementById('admin-panel').style.display='block';
+    await fetchPrivateData(); // Pega dados privados ao logar
+    renderAdminLists(); renderSavedList();
   } else { alert("Senha incorreta."); }
 }
 
 function openGithubConfig() { document.getElementById('github-config').style.display='block'; }
-async function generateEncryptedConfig() {
+async function generateSecureConfig() {
   const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
-  const encrypted = await encryptData({ user, repo, token }, pass);
-  const code = `const ENCRYPTED_CONFIG = ${JSON.stringify(encrypted, null, 2)};`;
+  
+  const encToken = await encryptToken(token, pass);
+  const data = { u: _obf(user), r: _obf(repo), token: encToken };
+  
+  const code = `const SECURE_DATA = ${JSON.stringify(data, null, 2)};`;
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
