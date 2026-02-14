@@ -136,12 +136,11 @@
       </div>
 
       <div id="login-screen">
-        <label>Senha de Acesso (Cofre):</label>
+        <label>Senha de Acesso:</label>
         <div style="display:flex; gap:10px;">
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
-        <p style="font-size:0.8rem; color:#666; margin-top:10px;">O Token é descriptografado usando esta senha.</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
@@ -149,7 +148,7 @@
           <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">🔐 Cofre GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
         </div>
 
         <div id="tab-saved">
@@ -167,19 +166,23 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configurar Cofre</h3>
-          <p style="font-size:0.85rem;">Insira seus dados. O Token será criptografado. Usuário/Repo ficarão legíveis para permitir carregamento automático (necessário repo público).</p>
-          <label>Senha de Admin:</label><input type="text" id="new-admin-pass">
+          <h3>Configuração de Nuvem</h3>
+          <p style="font-size:0.85rem;">Gere o código abaixo. O Token ficará ofuscado para permitir que o site funcione para todos os usuários.</p>
+          
+          <label>Definir Senha de Admin (Hash):</label>
+          <input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
+          
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
+          
           <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateSecureConfig()">Gerar Código Seguro</button>
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Bloco de Configuração</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Substitua a variável SECURE_DATA no código:</label>
-            <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
+            <label>Substitua a variável GLOBAL_CONFIG no topo do código:</label>
+            <textarea id="output-code" style="width:100%; height:120px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
 
@@ -201,56 +204,25 @@
 
 <script>
 /* ==========================================================================
-   DADOS SEGUROS (Cole o bloco gerado aqui)
+   CONFIGURAÇÃO GLOBAL (Cole o bloco gerado aqui)
    ========================================================================== */
-const SECURE_DATA = {
-  "u": "JCw/OD4zNi0m",
-  "r": "MCE2NjQ8PDEnPTYmKzU=",
-  "token": {
-    "salt": "WZlCVAihgoHB1c6h0pAVcg==",
-    "iv": "fp/mr8Azohi8NTDB",
-    "data": "Yuxqh4QgoMnDQX9jqNGWxVmcdOBPLO2AbXNIpCVXs3H6d/jsJiU4pLyoVStlyiWCV6qPzwmb7NA="
-  }
-};
-  
+const GLOBAL_CONFIG = null;
+
 /* ==========================================================================
-   CRIPTOGRAFIA (AES-GCM) & OFUSCAÇÃO
+   UTILITÁRIOS (Obfuscação & Hash)
    ========================================================================== */
-async function getKey(password, salt) {
-  const enc = new TextEncoder();
-  const keyMaterial = await window.crypto.subtle.importKey("raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]);
-  return window.crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: Uint8Array.from(atob(salt), c => c.charCodeAt(0)), iterations: 100000, hash: "SHA-256" },
-    keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
-  );
-}
-async function encryptToken(token, password) {
-  const salt = window.crypto.getRandomValues(new Uint8Array(16));
-  const iv = window.crypto.getRandomValues(new Uint8Array(12));
-  const key = await getKey(password, btoa(String.fromCharCode(...salt)));
-  const encoded = new TextEncoder().encode(token);
-  const encrypted = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
-  return { salt: btoa(String.fromCharCode(...salt)), iv: btoa(String.fromCharCode(...iv)), data: btoa(String.fromCharCode(...new Uint8Array(encrypted))) };
-}
-async function decryptToken(encryptedObj, password) {
-  try {
-    const key = await getKey(password, encryptedObj.salt);
-    const iv = Uint8Array.from(atob(encryptedObj.iv), c => c.charCodeAt(0));
-    const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
-    const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
-    return new TextDecoder().decode(decrypted);
-  } catch (e) { return null; }
-}
-// Obfuscador simples para User/Repo (Leitura pública)
-const _k = "SISU_PUB";
+const _k = "SISU_PUB_KEY";
 function _obf(s){if(!s)return "";let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)^_k.charCodeAt(i%_k.length));return btoa(r);}
 function _deobf(s){if(!s)return "";try{let d=atob(s),r="";for(let i=0;i<d.length;i++)r+=String.fromCharCode(d.charCodeAt(i)^_k.charCodeAt(i%_k.length));return r;}catch(e){return "";}}
 
-// Variável para armazenar Token descriptografado na RAM
-let DECRYPTED_TOKEN = null;
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 /* ==========================================================================
-   ESTADO DA APLICAÇÃO
+   DADOS E ESTADO
    ========================================================================== */
 const defaultData = {
   situations: [
@@ -278,92 +250,71 @@ let isDirty = false;
 window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; } });
 
 /* ==========================================================================
-   CARREGAMENTO E SINCRONIZAÇÃO
+   GITHUB API (ACESSO PÚBLICO/OFUSCADO)
    ========================================================================== */
 window.onload = async function() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
 
-  if(SECURE_DATA) {
-    // 1. Tenta carregar dados PÚBLICOS (sem senha)
-    await fetchPublicData();
-    
-    // 2. Se tiver ID na URL, carrega o checklist
+  if(GLOBAL_CONFIG) {
+    await fetchFromGithub();
     if(id) loadChecklist(parseInt(id));
   } else {
     document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin.";
   }
 };
 
-async function fetchPublicData() {
-  showLoading('Carregando dados...');
-  const user = _deobf(SECURE_DATA.u);
-  const repo = _deobf(SECURE_DATA.r);
-  // Usa URL raw para leitura pública sem token
-  const url = `https://raw.githubusercontent.com/${user}/${repo}/main/database.json`;
+async function fetchFromGithub() {
+  showLoading('Sincronizando com a Nuvem...');
+  // Token agora é carregado para TODOS (Ofuscado, não criptografado com senha)
+  const u = _deobf(GLOBAL_CONFIG.u);
+  const r = _deobf(GLOBAL_CONFIG.r);
+  const t = _deobf(GLOBAL_CONFIG.t);
+  
+  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
 
   try {
-    const resp = await fetch(url); // Cache default
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3+json' } });
     if(resp.ok) {
       const json = await resp.json();
-      // Se for raw, o conteúdo vem direto, não base64
-      appData = json.appData || defaultData;
-      savedLists = json.savedLists || [];
-      document.getElementById('status-bar').textContent = "✅ Dados carregados.";
-    } else {
-      document.getElementById('status-bar').textContent = "ℹ️ Repositório não encontrado ou privado.";
+      currentSHA = json.sha;
+      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+      appData = content.appData || defaultData;
+      savedLists = content.savedLists || [];
+      document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
+    } else if(resp.status === 404) {
+      document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
   } catch(e) {
-    console.error("Erro leitura pública:", e);
+    alert("Erro de conexão GitHub: " + e.message);
   } finally {
     hideLoading();
   }
 }
 
-// Necessita Token (Escrita ou Leitura Privada)
-async function fetchPrivateData() {
-  if(!DECRYPTED_TOKEN) return;
-  const user = _deobf(SECURE_DATA.u);
-  const repo = _deobf(SECURE_DATA.r);
-  const url = `https://api.github.com/repos/${user}/${repo}/contents/database.json`;
-
-  try {
-    const resp = await fetch(url, { headers: { 'Authorization': `token ${DECRYPTED_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' } });
-    if(resp.ok) {
-      const json = await resp.json();
-      currentSHA = json.sha; // Importante para Update
-      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-      appData = content.appData || appData;
-      savedLists = content.savedLists || savedLists;
-    }
-  } catch(e) { console.error(e); }
-}
-
 async function pushToGithub() {
-  if(!DECRYPTED_TOKEN) { 
-    alert("Sessão expirada ou não iniciada. Entre na Área Admin para liberar o salvamento."); 
-    openAdmin(); 
-    return false; 
-  }
   showLoading('Salvando na Nuvem...');
+  const u = _deobf(GLOBAL_CONFIG.u);
+  const r = _deobf(GLOBAL_CONFIG.r);
+  const t = _deobf(GLOBAL_CONFIG.t); // Token acessível a todos
   
-  // Garante que temos o SHA mais recente
-  await fetchPrivateData();
+  if(!u || !t) { hideLoading(); return alert("Erro de configuração."); }
 
-  const user = _deobf(SECURE_DATA.u);
-  const repo = _deobf(SECURE_DATA.r);
-  const url = `https://api.github.com/repos/${user}/${repo}/contents/database.json`;
+  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
   
   const payload = { appData, savedLists };
   const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
   
-  const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
+  const body = {
+    message: "Update SISU Data " + new Date().toISOString(),
+    content: contentBase64
+  };
   if(currentSHA) body.sha = currentSHA;
 
   try {
     const resp = await fetch(url, {
       method: 'PUT',
-      headers: { 'Authorization': `token ${DECRYPTED_TOKEN}`, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': `token ${t}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     
@@ -498,6 +449,7 @@ async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => w
 
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
+  if(savedLists.length === 0) await fetchFromGithub();
   const l = savedLists.find(x=>x.id===id); 
   if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
   const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
@@ -507,35 +459,31 @@ async function loadChecklist(id) {
 function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
 async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await pushToGithub(); if(ok) renderSavedList(); }
 
-/* === ADMIN & CRIPTOGRAFIA === */
-function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!SECURE_DATA) openGithubConfig(); }
+/* === ADMIN (Protegido por Hash) === */
+function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!GLOBAL_CONFIG) openGithubConfig(); }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
 
 async function checkLogin() {
   const pass = document.getElementById('admin-pass').value;
-  if(!SECURE_DATA) {
-    if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta");
-    return;
-  }
-  const token = await decryptToken(SECURE_DATA.token, pass);
-  if(token) {
-    DECRYPTED_TOKEN = token; 
-    document.getElementById('login-screen').style.display='none'; 
-    document.getElementById('admin-panel').style.display='block';
-    await fetchPrivateData(); // Pega dados privados ao logar
+  if(!GLOBAL_CONFIG) { if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta"); return; }
+  
+  // Verifica Hash da Senha
+  const hash = await sha256(pass);
+  if(hash === GLOBAL_CONFIG.h) {
+    document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
     renderAdminLists(); renderSavedList();
   } else { alert("Senha incorreta."); }
 }
 
 function openGithubConfig() { document.getElementById('github-config').style.display='block'; }
-async function generateSecureConfig() {
+async function generateConfig() {
   const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
   
-  const encToken = await encryptToken(token, pass);
-  const data = { u: _obf(user), r: _obf(repo), token: encToken };
+  const hash = await sha256(pass);
+  const data = { u: _obf(user), r: _obf(repo), t: _obf(token), h: hash }; // Tudo ofuscado, não criptografado, para acesso público. Hash protege apenas o painel.
   
-  const code = `const SECURE_DATA = ${JSON.stringify(data, null, 2)};`;
+  const code = `const GLOBAL_CONFIG = ${JSON.stringify(data, null, 2)};`;
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
@@ -560,4 +508,3 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
-
