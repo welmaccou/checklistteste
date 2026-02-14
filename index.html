@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
   <style>
-    /* --- Estilos Visuais (Mantidos) --- */
+    /* --- Estilos Visuais --- */
     :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
@@ -13,12 +13,13 @@
     .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
     .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
+    
     label { 
         display: block; 
         font-weight: 600; 
         color: #444; 
         font-size: 0.9rem;
-    }    
+    } 
     
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
@@ -33,23 +34,30 @@
     .btn-link { background: var(--warning); color: #333; }
     .btn-back { background: var(--primary); }
     
+    /* Checklist UI */
     #checklist-screen { display: none; }
     .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
     .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
     .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
+    
     .doc-label { 
           display: flex; 
           align-items: flex-start; 
           cursor: pointer; 
           width: 100%;
           align-items: center;
-    }    
+    }  
     
     .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
     .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
+    
+    /* Estilo do Link no documento */
+    .doc-text a { color: #0056b3; font-weight: bold; text-decoration: underline; }
+    .doc-text a:hover { color: #003d80; }
+
     .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: none; z-index: 10; }
     li.doc-item:hover .btn-remove { display: block; }
     .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
@@ -147,12 +155,12 @@
       </div>
 
       <div id="login-screen">
-        <label>Senha de Acesso (para descriptografar o cofre):</label>
+        <label>Senha de Acesso (Cofre):</label>
         <div style="display:flex; gap:10px;">
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
-        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Seus dados do GitHub estão criptografados neste arquivo. A senha correta irá desbloqueá-los.</p>
+        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Seus dados do GitHub estão criptografados neste arquivo.</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
@@ -179,21 +187,17 @@
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
           <h3>Configurar Cofre (Criptografado)</h3>
-          <p style="font-size:0.85rem;">Insira seus dados reais. Eles serão criptografados com a senha que você usar para entrar.</p>
-          
-          <label>Nova Senha de Admin (usada para criptografar):</label>
-          <input type="text" id="new-admin-pass" placeholder="ex: 14121992">
-          
+          <p style="font-size:0.85rem;">Insira seus dados. Eles serão criptografados com a senha que você definir agora.</p>
+          <label>Nova Senha de Admin:</label><input type="text" id="new-admin-pass">
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
-          
           <div style="margin-top:10px; display:flex; gap:10px;">
              <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateEncryptedConfig()">Gerar Bloco de Configuração</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Substitua a variável ENCRYPTED_CONFIG no código por isso:</label>
+            <label>Substitua a variável ENCRYPTED_CONFIG no código:</label>
             <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
@@ -202,7 +206,11 @@
           <h3 id="edit-title">Editar</h3>
           <input type="hidden" id="edit-id"><input type="hidden" id="edit-type">
           <label>Título:</label><input type="text" id="edit-label">
-          <div id="situation-fields" style="display:none;"><label>Documentos:</label><textarea id="sit-docs" style="width:100%; min-height:150px;"></textarea></div>
+          <div id="situation-fields" style="display:none;">
+            <label>Documentos:</label>
+            <p style="font-size:0.8em; color:#666; margin:0 0 5px 0;">Dica: Para adicionar link, use <b>[Texto do Rótulo](http://site.com)</b></p>
+            <textarea id="sit-docs" style="width:100%; min-height:150px;"></textarea>
+          </div>
           <div id="question-fields" style="display:none;"><label>Opções:</label><div id="options-container"></div><button class="btn-sm btn-add" onclick="addOptionRow()">+ Opção</button></div>
           <div style="margin-top:15px; display:flex; gap:10px;"><button class="btn-primary" onclick="saveEdit()">Salvar na Nuvem</button><button class="btn-sm" style="background:#999; color:white;" onclick="cancelEdit()">Cancelar</button></div>
         </div>
@@ -214,8 +222,6 @@
 /* ==========================================================================
    CONFIGURAÇÃO CRIPTOGRAFADA (COFRE)
    ========================================================================== */
-// Cole o código gerado no Admin aqui.
-// Exemplo: const ENCRYPTED_CONFIG = { salt: "...", iv: "...", data: "..." };
 const ENCRYPTED_CONFIG = {
   "salt": "hb+O+PAVm7WEtEVKfAz0Nw==",
   "iv": "I17hidPpwLs/2Lt2",
@@ -233,20 +239,14 @@ async function getKey(password, salt) {
     keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
   );
 }
-
 async function encryptData(data, password) {
   const salt = window.crypto.getRandomValues(new Uint8Array(16));
   const iv = window.crypto.getRandomValues(new Uint8Array(12));
   const key = await getKey(password, btoa(String.fromCharCode(...salt)));
   const encoded = new TextEncoder().encode(JSON.stringify(data));
   const encrypted = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
-  return {
-    salt: btoa(String.fromCharCode(...salt)),
-    iv: btoa(String.fromCharCode(...iv)),
-    data: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-  };
+  return { salt: btoa(String.fromCharCode(...salt)), iv: btoa(String.fromCharCode(...iv)), data: btoa(String.fromCharCode(...new Uint8Array(encrypted))) };
 }
-
 async function decryptData(encryptedObj, password) {
   try {
     const key = await getKey(password, encryptedObj.salt);
@@ -254,12 +254,8 @@ async function decryptData(encryptedObj, password) {
     const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
     const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
     return JSON.parse(new TextDecoder().decode(decrypted));
-  } catch (e) {
-    return null; // Senha errada ou dados corrompidos
-  }
+  } catch (e) { return null; }
 }
-
-// Variáveis Globais de Credenciais (Só existem na RAM após login)
 let GH_CREDS = { user: null, repo: null, token: null };
 
 /* ==========================================================================
@@ -288,35 +284,22 @@ let currentSHA = null;
 let currentChecklistId = null; 
 let isDirty = false; 
 
-// --- Evento: Aviso de saída se não salvo ---
-window.addEventListener('beforeunload', (e) => {
-  if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; }
-});
+window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; } });
 
 /* ==========================================================================
    GITHUB API
    ========================================================================== */
 window.onload = async function() {
-  // Verifica se temos config. Se não tiver, não conseguimos carregar automaticamente
-  // sem a senha do usuário.
-  // Modificação: Se tiver ID na URL, pedimos a senha para carregar.
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
-  
-  if(ENCRYPTED_CONFIG && id) {
-    // Se tiver ID, forçamos o login para descriptografar e carregar
-    openAdmin();
-    document.getElementById('login-screen').insertAdjacentHTML('beforeend', '<p style="color:red;font-weight:bold;">Digite a senha para carregar o checklist compartilhado.</p>');
-  } else if (!ENCRYPTED_CONFIG) {
-    document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin.";
-  }
+  if(ENCRYPTED_CONFIG && id) { openAdmin(); document.getElementById('login-screen').insertAdjacentHTML('beforeend', '<p style="color:red;font-weight:bold;margin-top:5px;">Digite a senha para carregar o checklist compartilhado.</p>'); } 
+  else if (!ENCRYPTED_CONFIG) { document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin."; }
 };
 
 async function fetchFromGithub() {
   if(!GH_CREDS.token) return;
   showLoading('Sincronizando com a Nuvem...');
   const url = `https://api.github.com/repos/${GH_CREDS.user}/${GH_CREDS.repo}/contents/database.json`;
-
   try {
     const resp = await fetch(url, { headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Accept': 'application/vnd.github.v3+json' } });
     if(resp.ok) {
@@ -326,52 +309,26 @@ async function fetchFromGithub() {
       appData = content.appData || defaultData;
       savedLists = content.savedLists || [];
       document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
-      
-      // Se tiver ID pendente na URL, carrega agora
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-      if(id && !currentChecklistId) {
-        closeAdmin(); // Fecha modal de login
-        loadChecklist(parseInt(id));
-      }
-
-    } else if(resp.status === 404) {
-      document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
-    }
-  } catch(e) {
-    alert("Erro GitHub: " + e.message);
-  } finally {
-    hideLoading();
-  }
+      if(id && !currentChecklistId) { closeAdmin(); loadChecklist(parseInt(id)); }
+    } else if(resp.status === 404) { document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar."; }
+  } catch(e) { alert("Erro GitHub: " + e.message); } finally { hideLoading(); }
 }
 
 async function pushToGithub() {
   if(!GH_CREDS.token) { alert("Você precisa logar na área admin para salvar na nuvem."); openAdmin(); return false; }
   showLoading('Salvando na Nuvem...');
   const url = `https://api.github.com/repos/${GH_CREDS.user}/${GH_CREDS.repo}/contents/database.json`;
-  
   const payload = { appData, savedLists };
   const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
-  
   const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
   if(currentSHA) body.sha = currentSHA;
-
   try {
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    
-    if(resp.ok) {
-      const json = await resp.json();
-      currentSHA = json.content.sha;
-      document.getElementById('status-bar').textContent = "✅ Salvo na nuvem às " + new Date().toLocaleTimeString();
-      return true;
-    } else { throw new Error('Erro GitHub: ' + resp.status); }
-  } catch(e) {
-    alert("Falha ao salvar: " + e.message); return false;
-  } finally { hideLoading(); }
+    const resp = await fetch(url, { method: 'PUT', headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if(resp.ok) { const json = await resp.json(); currentSHA = json.content.sha; document.getElementById('status-bar').textContent = "✅ Salvo na nuvem às " + new Date().toLocaleTimeString(); return true; } 
+    else { throw new Error('Erro GitHub: ' + resp.status); }
+  } catch(e) { alert("Falha ao salvar: " + e.message); return false; } finally { hideLoading(); }
 }
 
 /* ==========================================================================
@@ -428,16 +385,25 @@ function markDirty() { isDirty = true; }
 function removeDoc(btn) { btn.parentElement.remove(); markDirty(); }
 function addNewDoc(btn) {
   const input = btn.previousElementSibling; const text = input.value.trim(); if(!text) return;
-  const ul = btn.closest('div').previousElementSibling; // Pega o UL acima
+  const ul = btn.closest('div').previousElementSibling; 
   const li = document.createElement('li'); li.className = 'doc-item';
-  li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${text}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
+  // Usa o formatDocText para permitir links também nos manuais
+  li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
   ul.appendChild(li); input.value = ''; markDirty();
+}
+
+// --- NOVO: Função para formatar Links Markdown ---
+function formatDocText(text) {
+  // 1. Limpa parênteses do início se houver
+  let clean = text.replace(/^[\(\s\)]+/, '').trim();
+  // 2. Substitui [Texto](URL) por <a href...>
+  return clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
 }
 
 function generateChecklist() {
   const size = parseInt(document.getElementById('family-size').value);
-  const clean = t => t.replace(/^[\(\s\)]+/, '').trim();
-  const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${clean(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button></li>`;
+  
+  const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button></li>`;
   const addBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar documento..."><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
 
   let html = '', cName = '';
@@ -447,6 +413,7 @@ function generateChecklist() {
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
     
     html += `<div class="person-block"><h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
+    
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
     html += addBox + '</div>';
@@ -472,7 +439,6 @@ async function saveLogic(silent = false) {
   const name = div.dataset.candidate || 'Sem Nome';
   div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked','checked') : c.removeAttribute('checked'));
   const html = div.innerHTML;
-
   if(currentChecklistId) {
     const idx = savedLists.findIndex(l=>l.id===currentChecklistId);
     if(idx!==-1) { savedLists[idx].html=html; savedLists[idx].updated=new Date().toLocaleString(); }
@@ -507,39 +473,23 @@ function closeAdmin() { document.getElementById('admin-modal').style.display='no
 async function checkLogin() {
   const pass = document.getElementById('admin-pass').value;
   if(!ENCRYPTED_CONFIG) {
-    // Fallback para primeira configuração ou uso sem cofre
-    if(pass === "14121992") {
-       document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
-    } else alert("Senha incorreta (Modo Padrão)");
+    if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta");
     return;
   }
-  // Tenta descriptografar as credenciais
   const creds = await decryptData(ENCRYPTED_CONFIG, pass);
   if(creds) {
-    GH_CREDS = creds; // Salva credenciais na RAM
-    document.getElementById('login-screen').style.display='none'; 
-    document.getElementById('admin-panel').style.display='block';
+    GH_CREDS = creds; document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
     fetchFromGithub().then(() => { renderAdminLists(); renderSavedList(); });
-  } else {
-    alert("Senha incorreta ou dados corrompidos.");
-  }
+  } else { alert("Senha incorreta."); }
 }
 
 function openGithubConfig() { document.getElementById('github-config').style.display='block'; }
 async function generateEncryptedConfig() {
-  const pass = document.getElementById('new-admin-pass').value;
-  const user = document.getElementById('gh-user').value;
-  const repo = document.getElementById('gh-repo').value;
-  const token = document.getElementById('gh-token').value;
-  
+  const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
-  
-  const dataToEncrypt = { user, repo, token };
-  const encrypted = await encryptData(dataToEncrypt, pass);
-  
+  const encrypted = await encryptData({ user, repo, token }, pass);
   const code = `const ENCRYPTED_CONFIG = ${JSON.stringify(encrypted, null, 2)};`;
-  document.getElementById('obfuscated-output').style.display='block';
-  document.getElementById('output-code').value = code;
+  document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
@@ -563,4 +513,3 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
-
