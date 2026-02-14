@@ -2,15 +2,6 @@
   "appData": {
     "situations": [
       {
-        "id": "autonomo",
-        "label": "Autônomo/Informal",
-        "docs": [
-          "Declaração de Autônomo",
-          "CTPS",
-          "Extratos bancários"
-        ]
-      },
-      {
         "id": "aposentado/pensionista",
         "label": "Aposentado/Pensionista",
         "docs": [
