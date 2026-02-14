@@ -446,7 +446,7 @@
         color: white;
         border: none;
         padding: 6px 0;
-        width: 90%;
+        width: 100%;
         border-radius: 4px;
         cursor: pointer;
         font-weight: bold;
@@ -570,9 +570,19 @@
         <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
         <button class="btn-tool btn-save" onclick="manualSave()">💾 Salvar</button>
         <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
-        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir</button>
+        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir / PDF</button>
       </div>
       <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
+
+   <div class="alert">
+        <h4>Instruções:</h4>
+        <strong>a)</strong> Não é necessário que as declarações estejam autenticadas, mas é preciso que o declarante assine como no RG, que deve acompanhar as declarações;</br>
+
+		    <strong>b)</strong> No caso de extratos bancários emitidos via Internet que não contenham o nome do titular da conta, o estudante deverá identificar;</br>
+
+		    <strong>c)</strong> Em casos extremos, em que não seja possível apresentar um determinado documento, poderá ser apresentada uma declaração de ausência, devidamente justificada e comprovada.
+    </div>
+      
       <div id="checklist-content" class="checklist-content"></div>
     </div>
   </div>
@@ -1036,6 +1046,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
