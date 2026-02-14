@@ -4,511 +4,91 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
-<style>
+  <style>
     /* --- Estilos Visuais --- */
-    :root {
-        --primary: #0056b3;
-        --primary-light: #007BFF;
-        --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        --surface: #ffffff;
-        --text: #333333;
-        --border: #e0e0e0;
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        --success: #28a745;
-        --warning: #ffc107;
-    }
-    body {
-        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-        background-image: var(--bg-gradient);
-        margin: 0;
-        padding: 20px;
-        min-height: 100vh;
-        color: var(--text);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .container {
-        background: var(--surface);
-        width: 100%;
-        max-width: 850px;
-        padding: 40px;
-        border-radius: 16px;
-        box-shadow: var(--shadow);
-        margin-bottom: 40px;
-        position: relative;
-    }
-    h1 {
-        color: var(--primary);
-        text-align: center;
-        margin-bottom: 10px;
-        font-weight: 700;
-    }
-    .subtitle {
-        text-align: center;
-        color: #666;
-        margin-bottom: 30px;
-        font-size: 0.95rem;
-    }
-    .alert {
-        background: #e7f1ff;
-        border-left: 5px solid var(--primary-light);
-        padding: 15px;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        margin-bottom: 30px;
-    }
-    .section-header {
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 10px;
-        margin: 30px 0 20px 0;
-        color: var(--primary);
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-    label {
-        display: block;
-        font-weight: 600;
-        color: #444;
-        font-size: 0.9rem;
-    }
-    input[type="text"],
-    input[type="number"],
-    input[type="password"],
-    select {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: border-color 0.3s;
-        box-sizing: border-box;
-        background: #fcfcfc;
-    }
-    input:focus,
-    select:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-    }
-    .btn-primary {
-        background: var(--primary-light);
-        color: white;
-        border: none;
-        padding: 14px 24px;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        width: 100%;
-        margin-top: 20px;
-        transition: background 0.3s, transform 0.2s;
-    }
-    .btn-primary:hover {
-        background: var(--primary);
-        transform: translateY(-2px);
-    }
-    .btn-primary:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-    }
+    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
+    .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
+    h1 { color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
+    .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
+    .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
+    input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
+    input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
+    .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
+    .btn-primary:hover { background: var(--primary); transform: translateY(-2px); }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+    
+    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+    .btn-tool { padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+    .btn-print { background: #6c757d; }
+    .btn-save { background: var(--success); }
+    .btn-link { background: var(--warning); color: #333; }
+    .btn-back { background: var(--primary); }
+    
+    #checklist-screen { display: none; }
+    .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
+    .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
+    .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
+    li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
+    li.doc-item:hover { background-color: #f0f0f0; }
+    .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
+    .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
+    .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
+    .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
+    .doc-text a { color: #0056b3; font-weight: bold; text-decoration: underline; }
+    .doc-text a:hover { color: #003d80; }
+    .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: none; z-index: 10; }
+    li.doc-item:hover .btn-remove { display: block; }
+    .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
+    
+    .add-doc-row { display: flex; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
+    .add-doc-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
+    .btn-add-item { background: #28a745; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold; }
+    
+    footer { text-align: center; margin-top: auto; padding: 20px; font-size: 0.8rem; }
+    .admin-link { color: #aaa; text-decoration: none; }
+    #admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; overflow-y: auto; }
+    .admin-content { background: white; margin: 30px auto; padding: 30px; width: 90%; max-width: 900px; border-radius: 12px; position: relative; }
+    .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; overflow-x: auto; }
+    .tab-btn { padding: 10px 20px; border: none; background: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .item-list { border: 1px solid #eee; border-radius: 8px; max-height: 400px; overflow-y: auto; }
+    .list-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; background: #fff; }
+    .btn-sm { padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.85rem; margin-left: 5px; }
+    .btn-edit { background: #ffc107; color: #333; }
+    .btn-del { background: #dc3545; color: white; }
+    .btn-add { background: #28a745; color: white; }
+    
+    .dropdown-container { position: relative; user-select: none; }
+    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
+    .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
+    .dropdown-menu { position: absolute; top: 105%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; max-height: 300px; overflow-y: auto; display: none; padding-top: 5px; }
+    .dropdown-menu.show { display: block; }
+    .dropdown-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; transition: background 0.2s; }
+    .dropdown-item:hover { background-color: #f0f7ff; }
+    .dropdown-item input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
+    .dropdown-ok { padding: 8px; border-top: 1px solid #eee; position: sticky; bottom: 0; background: white; text-align: center; }
+    .dropdown-ok button { background: var(--success); color: white; border: none; padding: 6px 0; width: 90%; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+    .dropdown-ok button:hover { background: #218838; }
 
-    .toolbar {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    .btn-tool {
-        padding: 10px 15px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        color: white;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .btn-print {
-        background: #6c757d;
-    }
-    .btn-save {
-        background: var(--success);
-    }
-    .btn-link {
-        background: var(--warning);
-        color: #333;
-    }
-    .btn-back {
-        background: var(--primary);
-    }
-
-    #checklist-screen {
-        display: none;
-    }
-    .person-block {
-        margin-bottom: 25px;
-        padding: 15px;
-        border-left: 5px solid #0056b3;
-        background-color: #fcfcfc;
-        page-break-inside: avoid;
-    }
-    .checklist-content h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        color: #333;
-        font-size: 1.2rem;
-        text-transform: uppercase;
-    }
-    .checklist-content ul {
-        list-style: none;
-        padding-left: 0;
-        margin-top: 5px;
-    }
-    li.doc-item {
-        position: relative;
-        margin-bottom: 4px;
-        padding: 4px;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-    li.doc-item:hover {
-        background-color: #f0f0f0;
-    }
-    .doc-label {
-        display: flex;
-        align-items: flex-start;
-        cursor: pointer;
-        width: 100%;
-        align-items: center;
-    }
-    .doc-checkbox {
-        appearance: none;
-        -webkit-appearance: none;
-        min-width: 20px;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #000;
-        margin-right: 12px;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 2px;
-        background: #fff;
-        cursor: pointer;
-        flex-shrink: 0;
-    }
-    .doc-checkbox:checked::after {
-        content: "X";
-        font-weight: 900;
-        color: #000;
-        font-size: 16px;
-        line-height: 1;
-        font-family: Arial, sans-serif;
-    }
-    .doc-text {
-        flex: 1;
-        line-height: 1.4;
-        word-break: break-word;
-    }
-    .doc-text a {
-        color: #0056b3;
-        font-weight: bold;
-        text-decoration: underline;
-    }
-    .doc-text a:hover {
-        color: #003d80;
-    }
-    .btn-remove {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 4px 8px;
-        font-size: 12px;
-        cursor: pointer;
-        display: none;
-        z-index: 10;
-    }
-    li.doc-item:hover .btn-remove {
-        display: block;
-    }
-    .extra-docs {
-        background: #fffbe6;
-        padding: 15px;
-        border: 1px solid #ffe58f;
-        border-radius: 4px;
-        margin-top: 20px;
-    }
-
-    .add-doc-row {
-        display: flex;
-        gap: 5px;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px dashed #ccc;
-    }
-    .add-doc-input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 0.9rem;
-    }
-    .btn-add-item {
-        background: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 0 15px;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    footer {
-        text-align: center;
-        margin-top: auto;
-        padding: 20px;
-        font-size: 0.8rem;
-    }
-    .admin-link {
-        color: #aaa;
-        text-decoration: none;
-    }
-    #admin-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 2000;
-        overflow-y: auto;
-    }
-    .admin-content {
-        background: white;
-        margin: 30px auto;
-        padding: 30px;
-        width: 90%;
-        max-width: 900px;
-        border-radius: 12px;
-        position: relative;
-    }
-    .admin-tabs {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        border-bottom: 2px solid #eee;
-        overflow-x: auto;
-    }
-    .tab-btn {
-        padding: 10px 20px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        font-weight: 600;
-        color: #666;
-        border-bottom: 3px solid transparent;
-        white-space: nowrap;
-    }
-    .tab-btn.active {
-        color: var(--primary);
-        border-bottom-color: var(--primary);
-    }
-    .item-list {
-        border: 1px solid #eee;
-        border-radius: 8px;
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    .list-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        background: #fff;
-    }
-    .btn-sm {
-        padding: 5px 10px;
-        border-radius: 4px;
-        border: none;
-        cursor: pointer;
-        font-size: 0.85rem;
-        margin-left: 5px;
-    }
-    .btn-edit {
-        background: #ffc107;
-        color: #333;
-    }
-    .btn-del {
-        background: #dc3545;
-        color: white;
-    }
-    .btn-add {
-        background: #28a745;
-        color: white;
-    }
-
-    .dropdown-container {
-        position: relative;
-        user-select: none;
-    }
-    .dropdown-trigger {
-        background: #fff;
-        border: 1px solid var(--border);
-        padding: 12px 15px;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-height: 21px;
-    }
-    .dropdown-trigger::after {
-        content: "";
-        border: 5px solid transparent;
-        border-top-color: #666;
-        margin-left: 10px;
-    }
-    .dropdown-menu {
-        position: absolute;
-        top: 105%;
-        left: 0;
-        width: 100%;
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        z-index: 100;
-        max-height: 300px;
-        overflow-y: auto;
-        display: none;
-        padding-top: 5px;
-    }
-    .dropdown-menu.show {
-        display: block;
-    }
-    .dropdown-item {
-        padding: 10px 15px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        transition: background 0.2s;
-    }
-    .dropdown-item:hover {
-        background-color: #f0f7ff;
-    }
-    .dropdown-item input[type="checkbox"] {
-        margin-right: 12px;
-        transform: scale(1.2);
-        cursor: pointer;
-    }
-    .dropdown-ok {
-        padding: 8px;
-        border-top: 1px solid #eee;
-        position: sticky;
-        bottom: 0;
-        background: white;
-        text-align: center;
-    }
-    .dropdown-ok button {
-        background: var(--success);
-        color: white;
-        border: none;
-        padding: 6px 0;
-        width: 90%;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 0.85rem;
-    }
-    .dropdown-ok button:hover {
-        background: #218838;
-    }
-
-    #loading-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.9);
-        z-index: 3000;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #0056b3;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
-    }
+    #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0056b3; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     @media print {
-        body {
-            padding: 0;
-            font-size: 12pt;
-            background: white;
-        }
-        .container {
-            box-shadow: none;
-            padding: 0;
-            max-width: 100%;
-        }
-        .toolbar,
-        footer,
-        #creation-screen,
-        #loading-overlay,
-        .add-doc-row {
-            display: none !important;
-        }
-        #checklist-screen {
-            display: block !important;
-        }
-        .btn-remove {
-            display: none !important;
-        }
-        li.doc-item:hover {
-            background-color: transparent;
-        }
-        .person-block {
-            border-left-width: 2px;
-        }
-        .doc-checkbox {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            border-color: #000 !important;
-        }
-        .doc-checkbox:checked::after {
-            color: #000 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
+      body { padding: 0; font-size: 12pt; background: white; }
+      .container { box-shadow: none; padding: 0; max-width: 100%; }
+      .toolbar, footer, #creation-screen, #loading-overlay, .add-doc-row { display: none !important; }
+      #checklist-screen { display: block !important; }
+      .btn-remove { display: none !important; }
+      li.doc-item:hover { background-color: transparent; }
+      .person-block { border-left-width: 2px; }
+      .doc-checkbox { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-color: #000 !important; }
+      .doc-checkbox:checked::after { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
-</style>
+  </style>
 </head>
 <body>
 
@@ -517,10 +97,11 @@
     <p id="loading-text" style="margin-top:15px; font-weight:bold; color:#0056b3;">Carregando dados...</p>
   </div>
 
-    <div class="container">
-      <h1>Checklist de Documentos - Cadastro Único UFG</h1>
+  <div class="container">
+    <div id="creation-screen">
+      <h1>Gerador de Checklist</h1>
       <div class="subtitle">Matrícula SISU UFG - Análise Socioeconômica</div>
-     <div id="step-1">
+      <div id="step-1">
         <label for="family-size">Quantidade de pessoas no grupo familiar (além do candidato):</label>
         <div style="display: flex; gap: 10px;">
           <input type="number" id="family-size" min="0" value="0">
@@ -529,9 +110,6 @@
       </div>
       <div id="form-container"></div>
     </div>
-
-
-
 
     <div id="checklist-screen">
       <div class="toolbar">
@@ -628,12 +206,7 @@
 /* ==========================================================================
    CONFIGURAÇÃO GITHUB & SEGURANÇA (IIFE OBFUSCADA)
    ========================================================================== */
-var GLOBAL_CONFIG = {
-  "u": "JCw/OD4rKisx",
-  "r": "MCE2NjQkIDcwMSssPyA=",
-  "t": "NCAnPSoqFjQlMRFuegRvDGFqZxhjHwwJDQ4LcSdmJg06ABtqGw4yBzE+IBcGKxolEi8oaRR4FwEBNAclHDEJCH8dByYyaBhkFRonPg0eAgZyBwocBHBhKx98ITEx",
-  "h": "d5a7d040e8c9a049f1b2ebdaa96fb34ea6f9a67197a7b27c0fe387db70e55bef"
-};
+var GLOBAL_CONFIG = null; // Cole o código gerado no Admin aqui.
 
 /* ==========================================================================
    MODULO DE NUVEM SEGURO (CloudManager)
@@ -1043,6 +616,3 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
-
-
-
