@@ -4,63 +4,71 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
   <style>
     /* --- Estilos Visuais --- */
-    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
+    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; --whatsapp: #25D366; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
     h1 { color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; }
     .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
     .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
-
-    label { 
-        display: block; 
-        font-weight: 600; 
-        color: #444; 
-        font-size: 0.9rem;
-    }    
-    
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
+    
     .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
     .btn-primary:hover { background: var(--primary); transform: translateY(-2px); }
     .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
     
+    /* Toolbar */
     .toolbar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-    .btn-tool { padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+    .btn-tool { padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; transition: transform 0.2s; }
+    .btn-tool:hover { transform: translateY(-2px); }
     .btn-print { background: #6c757d; }
     .btn-save { background: var(--success); }
     .btn-link { background: var(--warning); color: #333; }
+    .btn-whats { background: var(--whatsapp); }
     .btn-back { background: var(--primary); }
     
+    /* Checklist UI */
     #checklist-screen { display: none; }
-    .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
-    .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
-    .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
-    li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
-    li.doc-item:hover { background-color: #f0f0f0; }
-   
-    .doc-label { 
-          display: flex; 
-          align-items: flex-start; 
-          cursor: pointer; 
-          width: 100%;
-          align-items: center;
+    .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    
+    /* Accordion Header (Mobile) */
+    .block-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .block-header h3 { margin: 0; color: #333; font-size: 1.2rem; text-transform: uppercase; }
+    .toggle-icon { font-size: 1.2rem; color: var(--primary); transition: transform 0.3s; }
+    .collapsed .toggle-icon { transform: rotate(-90deg); }
+    .block-content { transition: max-height 0.3s ease-out; overflow: hidden; }
+    
+    /* Tooltips */
+    .term-tooltip { border-bottom: 1px dotted #666; color: #0056b3; cursor: help; position: relative; font-weight: 500; }
+    .term-tooltip:hover::after {
+      content: attr(data-tip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+      background: #333; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; width: 250px; z-index: 1000; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); pointer-events: none;
     }
     
-    .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
-    .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
-    .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
+    /* Document Items */
+    .checklist-content ul { list-style: none; padding-left: 0; margin-top: 10px; }
+    li.doc-item { position: relative; margin-bottom: 6px; padding: 8px; border-radius: 6px; transition: background-color 0.2s; border-bottom: 1px solid #eee; }
+    li.doc-item:hover { background-color: #f0f7ff; }
+    .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
+    .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 22px; width: 22px; height: 22px; border: 2px solid #555; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; border-radius: 4px; }
+    .doc-checkbox:checked { background: var(--primary); border-color: var(--primary); }
+    .doc-checkbox:checked::after { content: '✓'; font-weight: 900; color: #fff; font-size: 14px; }
+    .doc-text { flex: 1; line-height: 1.5; word-break: break-word; color: #333; }
     .doc-text a { color: #0056b3; font-weight: bold; text-decoration: underline; }
-    .doc-text a:hover { color: #003d80; }
-    .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: none; z-index: 10; }
-    li.doc-item:hover .btn-remove { display: block; }
-    .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
     
-    .add-doc-row { display: flex; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
+    .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #ff4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; line-height: 24px; text-align: center; cursor: pointer; display: none; font-weight: bold; font-size: 14px; }
+    li.doc-item:hover .btn-remove { display: block; }
+    .extra-docs { background: #fff9db; padding: 15px; border: 1px solid #ffe066; border-radius: 8px; margin-top: 20px; }
+    
+    .add-doc-row { display: flex; gap: 5px; margin-top: 10px; padding-top: 10px; }
     .add-doc-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
-    .btn-add-item { background: #28a745; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold; }
+    .btn-add-item { background: #28a745; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
     
     footer { text-align: center; margin-top: auto; padding: 20px; font-size: 0.8rem; }
     .admin-link { color: #aaa; text-decoration: none; }
@@ -76,8 +84,9 @@
     .btn-del { background: #dc3545; color: white; }
     .btn-add { background: #28a745; color: white; }
     
+    /* DROPDOWN */
     .dropdown-container { position: relative; user-select: none; }
-    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 21px; }
+    .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
     .dropdown-menu { position: absolute; top: 105%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; max-height: 300px; overflow-y: auto; display: none; padding-top: 5px; }
     .dropdown-menu.show { display: block; }
@@ -92,16 +101,12 @@
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0056b3; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    @media print {
-      body { padding: 0; font-size: 12pt; background: white; }
-      .container { box-shadow: none; padding: 0; max-width: 100%; }
-      .toolbar, footer, #creation-screen, #loading-overlay, .add-doc-row { display: none !important; }
-      #checklist-screen { display: block !important; }
-      .btn-remove { display: none !important; }
-      li.doc-item:hover { background-color: transparent; }
-      .person-block { border-left-width: 2px; }
-      .doc-checkbox { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-color: #000 !important; }
-      .doc-checkbox:checked::after { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Estilos Mobile Compacto */
+    @media (max-width: 768px) {
+      .block-content.collapsed { display: none; }
+      .container { padding: 20px; }
+      .toolbar { flex-direction: column; }
+      .btn-tool { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -128,10 +133,11 @@
 
     <div id="checklist-screen">
       <div class="toolbar">
-        <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
+        <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar</button>
         <button class="btn-tool btn-save" onclick="manualSave()">💾 Salvar</button>
-        <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
-        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir</button>
+        <button class="btn-tool btn-link" onclick="copyLink()">🔗 Link</button>
+        <button class="btn-tool btn-whats" onclick="shareWhatsapp()">📱 WhatsApp</button>
+        <button class="btn-tool btn-print" onclick="downloadPDF()">📄 Baixar PDF</button>
       </div>
       <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
       <div id="checklist-content" class="checklist-content"></div>
@@ -151,7 +157,7 @@
       </div>
 
       <div id="login-screen">
-        <label>Senha de Acesso:</label>
+        <label>Senha de Acesso (Cofre):</label>
         <div style="display:flex; gap:10px;">
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
@@ -160,13 +166,14 @@
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Configuração</button>
         </div>
 
         <div id="tab-saved">
+          <input type="text" id="search-candidate" placeholder="🔍 Buscar candidato..." style="margin-bottom:10px; padding:8px;" onkeyup="filterSavedLists()">
           <div class="item-list" id="saved-list"></div>
         </div>
 
@@ -182,18 +189,18 @@
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
           <h3>Configuração de Nuvem (Ofuscada)</h3>
-          <p style="font-size:0.85rem;">Insira seus dados para gerar o código seguro. O token será protegido dentro de uma função privada.</p>
-          <label>Senha de Admin (Definir nova):</label><input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
+          <p style="font-size:0.85rem;">Insira seus dados para gerar o código seguro.</p>
+          <label>Definir Senha de Admin:</label><input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
           <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Código</button>
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Códigos</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Substitua a variável `var GLOBAL_CONFIG` no topo do script por este bloco:</label>
-            <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
+            <label>Substitua a variável GLOBAL_CONFIG no topo do código:</label>
+            <textarea id="output-code" style="width:100%; height:120px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
 
@@ -215,7 +222,7 @@
 
 <script>
 /* ==========================================================================
-   CONFIGURAÇÃO GITHUB & SEGURANÇA (IIFE OBFUSCADA)
+   CONFIGURAÇÃO (Copie o bloco gerado no Admin e cole aqui)
    ========================================================================== */
 var GLOBAL_CONFIG = {
   "u": "JCw/OD4rKisx",
@@ -225,137 +232,50 @@ var GLOBAL_CONFIG = {
 };
 
 /* ==========================================================================
-   MODULO DE NUVEM SEGURO (CloudManager)
-   Este módulo usa uma closure para esconder as chaves da janela global.
+   DICIONÁRIO DE TOOLTIPS (AJUDA)
    ========================================================================== */
-const CloudManager = (function() {
-  // Variáveis privadas (Não acessíveis via console)
-  let _u = ""; 
-  let _r = "";
-  let _t = "";
-  let _h = ""; // Hash da senha de admin
-  
-  // Função interna de desofuscação (Não acessível via console)
-  function _decode(s) {
-    if(!s) return "";
-    try {
-      // Algoritmo simples de deslocamento para evitar leitura direta no HTML
-      let d = atob(s);
-      let r = "";
-      // Chave interna fixa para este build
-      const k = "SISU_HIDDEN_KEY_V2";
-      for (let i = 0; i < d.length; i++) {
-        r += String.fromCharCode(d.charCodeAt(i) ^ k.charCodeAt(i % k.length));
-      }
-      return r;
-    } catch(e) { return ""; }
-  }
-
-  // Inicializa o módulo lendo a config global e DELETANDO-A
-  function init() {
-    if (typeof GLOBAL_CONFIG !== 'undefined' && GLOBAL_CONFIG) {
-      _u = _decode(GLOBAL_CONFIG.u);
-      _r = _decode(GLOBAL_CONFIG.r);
-      _t = _decode(GLOBAL_CONFIG.t);
-      _h = GLOBAL_CONFIG.h; // Hash SHA-256 da senha
-      
-      // Limpa a variável global para dificultar inspeção
-      try { delete window.GLOBAL_CONFIG; } catch(e) { window.GLOBAL_CONFIG = null; }
-      console.log("Sistema de nuvem inicializado de forma segura.");
-      return true;
-    }
-    return false;
-  }
-
-  // Retorna se está configurado
-  function isReady() { return _u && _r && _t; }
-
-  // Verifica a senha de Admin (Hash SHA-256)
-  async function checkPass(inputPass) {
-    const msgBuffer = new TextEncoder().encode(inputPass);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex === _h;
-  }
-
-  // Método Público: Buscar dados (Qualquer um pode ler se tiver o token)
-  async function fetchDB() {
-    if(!isReady()) throw new Error("Cloud não configurada.");
-    const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
-    const resp = await fetch(url, { headers: { 'Authorization': `token ${_t}`, 'Accept': 'application/vnd.github.v3+json' } });
-    if(resp.ok) {
-      const json = await resp.json();
-      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-      return { data: content, sha: json.sha };
-    } else if(resp.status === 404) {
-      return { data: null, sha: null }; // Novo arquivo
-    }
-    throw new Error("Erro GitHub: " + resp.status);
-  }
-
-  // Método Público: Salvar dados (Qualquer um pode salvar checklist, mas admin é protegido pela UI)
-  async function saveDB(data, sha) {
-    if(!isReady()) throw new Error("Cloud não configurada.");
-    const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
-    const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
-    if(sha) body.sha = sha;
-
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${_t}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if(!resp.ok) throw new Error("Erro ao salvar: " + resp.status);
-    return await resp.json();
-  }
-
-  // Utilitário para gerar código no Admin (Publicamente exposto no Admin)
-  function generateCode(user, repo, token, passHash) {
-    // Mesma lógica de _decode, mas inversa
-    const k = "SISU_HIDDEN_KEY_V2";
-    function _enc(s) {
-      let r = "";
-      for (let i = 0; i < s.length; i++) {
-        r += String.fromCharCode(s.charCodeAt(i) ^ k.charCodeAt(i % k.length));
-      }
-      return btoa(r);
-    }
-    return { u: _enc(user), r: _enc(repo), t: _enc(token), h: passHash };
-  }
-
-  return {
-    init: init,
-    isReady: isReady,
-    checkPass: checkPass,
-    fetch: fetchDB,
-    save: saveDB,
-    generateCode: generateCode // Apenas utilitário, não expõe credenciais atuais
-  };
-})();
-
-// Inicializa imediatamente
-const isCloudConfigured = CloudManager.init();
+const GLOSSARY = {
+  "Registrato": "Sistema do Banco Central. Acesse com sua conta Gov.br para emitir o relatório de contas bancárias (CCS).",
+  "CNIS": "Extrato de contribuições previdenciárias. Baixe no site ou app 'Meu INSS'.",
+  "DECORE": "Declaração Comprobatória de Percepção de Rendimentos. Emitida por contador para autônomos/empresários.",
+  "CTPS": "Carteira de Trabalho e Previdência Social. Se for digital, baixe o PDF completo no app.",
+  "DASN": "Declaração Anual do Simples Nacional (para MEI).",
+  "IRPF": "Imposto de Renda Pessoa Física. Necessário entregar a declaração completa e o recibo.",
+  "DITR": "Declaração do Imposto sobre a Propriedade Territorial Rural."
+};
 
 /* ==========================================================================
-   DADOS E ESTADO DA APP
+   UTILITÁRIOS (Ofuscação, Hash e Links)
    ========================================================================== */
-const defaultData = {
-  situations: [
-    { id: 'assalariado', label: 'Assalariado', docs: ['Contracheques (Out, Nov, Dez 2025)', 'CTPS completa', 'IRPF 2025 (se declarou)'] },
-    { id: 'autonomo', label: 'Autônomo/Informal', docs: ['Declaração de Autônomo', 'CTPS', 'Extratos bancários'] },
-    { id: 'aposentado', label: 'Aposentado/Pensionista', docs: ['Extrato do benefício', 'IRPF 2025'] },
-    { id: 'mei', label: 'Microempreendedor (MEI)', docs: ['DASN Simei', 'Declaração de MEI', 'Extratos'] },
-    { id: 'desempregado', label: 'Desempregado', docs: ['CTPS (Baixa)', 'Declaração de desemprego', 'Seguro-desemprego (se houver)'] },
-    { id: 'nunca', label: 'Nunca Trabalhou', docs: ['CTPS (em branco)', 'CNIS (se maior de 18)'] }
-  ],
-  questions: [
-    { id: 'moradia', text: 'Moradia', options: [ { label: 'Alugada', docs: ['Contrato de locação ou recibos.'] }, { label: 'Cedida', docs: ['Declaração de imóvel cedido.'] }, { label: 'Financiada', docs: ['Comprovante da prestação.'] }, { label: 'Própria', docs: [] } ]},
-    { id: 'orfao', text: 'É solteiro(a) com pais falecidos?', options: [ { label: 'Sim', docs: ['Certidão de óbito pai/mãe.'] }, { label: 'Não', docs: [] } ]},
-    { id: 'aluguel', text: 'Renda de aluguel?', options: [ { label: 'Sim', docs: ['Contratos e recibos de aluguel.'] }, { label: 'Não', docs: [] } ]},
-    { id: 'rural', text: 'Proprietário rural?', options: [ { label: 'Sim', docs: ['Escritura/INCRA', 'DITR 2025'] }, { label: 'Não', docs: [] } ]}
-  ]
-};
+const _k = "SISU_PUB_KEY";
+function _obf(s){if(!s)return "";let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)^_k.charCodeAt(i%_k.length));return btoa(r);}
+function _deobf(s){if(!s)return "";try{let d=atob(s),r="";for(let i=0;i<d.length;i++)r+=String.fromCharCode(d.charCodeAt(i)^_k.charCodeAt(i%_k.length));return r;}catch(e){return "";}}
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Formata Texto com Link e Tooltips
+function formatDocText(text) {
+  let clean = text.replace(/^[\(\s\)]+/, '').trim();
+  
+  // 1. Links Markdown [Texto](Url)
+  clean = clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
+  
+  // 2. Tooltips do Glossário
+  for (const [key, value] of Object.entries(GLOSSARY)) {
+    const regex = new RegExp(`\\b${key}\\b`, 'g'); // Palavra exata
+    clean = clean.replace(regex, `<span class="term-tooltip" data-tip="${value}">${key} <small>(?)</small></span>`);
+  }
+  return clean;
+}
+
+/* ==========================================================================
+   ESTADO DA APLICAÇÃO
+   ========================================================================== */
+const defaultData = { situations: [ { id: 'assalariado', label: 'Assalariado', docs: ['Contracheques (Out, Nov, Dez 2025)', 'CTPS completa', 'IRPF 2025 (se declarou)'] }, { id: 'autonomo', label: 'Autônomo/Informal', docs: ['Declaração de Autônomo', 'CTPS', 'Extratos bancários'] }, { id: 'aposentado', label: 'Aposentado/Pensionista', docs: ['Extrato do benefício', 'IRPF 2025'] }, { id: 'mei', label: 'Microempreendedor (MEI)', docs: ['DASN Simei', 'Declaração de MEI', 'Extratos'] }, { id: 'desempregado', label: 'Desempregado', docs: ['CTPS (Baixa)', 'Declaração de desemprego', 'Seguro-desemprego (se houver)'] }, { id: 'nunca', label: 'Nunca Trabalhou', docs: ['CTPS (em branco)', 'CNIS (se maior de 18)'] } ], questions: [ { id: 'moradia', text: 'Moradia', options: [ { label: 'Alugada', docs: ['Contrato de locação ou recibos.'] }, { label: 'Cedida', docs: ['Declaração de imóvel cedido.'] }, { label: 'Financiada', docs: ['Comprovante da prestação.'] }, { label: 'Própria', docs: [] } ]}, { id: 'orfao', text: 'É solteiro(a) com pais falecidos?', options: [ { label: 'Sim', docs: ['Certidão de óbito pai/mãe.'] }, { label: 'Não', docs: [] } ]}, { id: 'aluguel', text: 'Renda de aluguel?', options: [ { label: 'Sim', docs: ['Contratos e recibos de aluguel.'] }, { label: 'Não', docs: [] } ]}, { id: 'rural', text: 'Proprietário rural?', options: [ { label: 'Sim', docs: ['Escritura/INCRA', 'DITR 2025'] }, { label: 'Não', docs: [] } ]} ] };
 
 let appData = defaultData;
 let savedLists = [];
@@ -366,70 +286,56 @@ let isDirty = false;
 window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; } });
 
 /* ==========================================================================
-   CARREGAMENTO E SINCRONIZAÇÃO
+   GITHUB API (ACESSO PÚBLICO/OFUSCADO)
    ========================================================================== */
 window.onload = async function() {
-  if(isCloudConfigured) {
-    await syncData();
+  if(GLOBAL_CONFIG) {
+    await fetchFromGithub();
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if(id) loadChecklist(parseInt(id));
-  } else {
-    document.getElementById('status-bar').textContent = "⚠️ Nuvem não configurada. Use o menu Admin.";
-  }
+  } else { document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin."; }
 };
 
-async function syncData() {
-  showLoading('Sincronizando...');
+async function fetchFromGithub() {
+  showLoading('Sincronizando com a Nuvem...');
+  const u = _deobf(GLOBAL_CONFIG.u); const r = _deobf(GLOBAL_CONFIG.r); const t = _deobf(GLOBAL_CONFIG.t);
+  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
   try {
-    const res = await CloudManager.fetch();
-    if(res.data) {
-      appData = res.data.appData || defaultData;
-      savedLists = res.data.savedLists || [];
-      currentSHA = res.sha;
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(resp.ok) {
+      const json = await resp.json();
+      currentSHA = json.sha;
+      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+      appData = content.appData || defaultData;
+      savedLists = content.savedLists || [];
       document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
-    } else {
-      document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
-    }
-  } catch(e) {
-    alert("Erro de conexão: " + e.message);
-  } finally {
-    hideLoading();
-  }
+    } else if(resp.status === 404) { document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar."; }
+  } catch(e) { alert("Erro de conexão GitHub: " + e.message); } finally { hideLoading(); }
 }
 
-async function saveDataToCloud() {
-  if(!isCloudConfigured) return alert("Erro: Nuvem não configurada.");
-  showLoading('Salvando...');
-  
-  // Primeiro, sincroniza para pegar o SHA mais recente e evitar conflitos
+async function pushToGithub() {
+  showLoading('Salvando na Nuvem...');
+  const u = _deobf(GLOBAL_CONFIG.u); const r = _deobf(GLOBAL_CONFIG.r); const t = _deobf(GLOBAL_CONFIG.t);
+  if(!u || !t) { hideLoading(); return alert("Erro de configuração."); }
+  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
+  const payload = { appData, savedLists };
+  const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
+  const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
+  if(currentSHA) body.sha = currentSHA;
   try {
-    const res = await CloudManager.fetch();
-    if(res.data) {
-      currentSHA = res.sha;
-      // Mescla inteligente: mantém listas que não temos localmente
-      const remoteLists = res.data.savedLists || [];
-      // (Simplificado: sobrescrevemos o remote com o local atual + remotos que não deletamos)
-      // Para uso simples, vamos enviar o estado atual da memória como verdade
-    }
-  } catch(e) { console.log("Criando novo arquivo..."); }
-
-  try {
-    const payload = { appData, savedLists };
-    const res = await CloudManager.save(payload, currentSHA);
-    currentSHA = res.content.sha;
-    document.getElementById('status-bar').textContent = "✅ Salvo às " + new Date().toLocaleTimeString();
-    return true;
-  } catch(e) {
-    alert("Falha ao salvar: " + e.message);
-    return false;
-  } finally {
-    hideLoading();
-  }
+    const resp = await fetch(url, { method: 'PUT', headers: { 'Authorization': `token ${t}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if(resp.ok) {
+      const json = await resp.json();
+      currentSHA = json.content.sha;
+      document.getElementById('status-bar').textContent = "✅ Salvo com sucesso às " + new Date().toLocaleTimeString();
+      return true;
+    } else { throw new Error('Erro GitHub: ' + resp.status); }
+  } catch(e) { alert("Falha ao salvar: " + e.message); return false; } finally { hideLoading(); }
 }
 
 /* ==========================================================================
-   LÓGICA UI
+   LÓGICA PRINCIPAL (PDF, WHATSAPP, DROPDOWN)
    ========================================================================== */
 function showLoading(msg) { document.getElementById('loading-text').textContent=msg; document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading() { document.getElementById('loading-overlay').style.display='none'; }
@@ -478,6 +384,7 @@ function createMemberCard(title, i, isCand) {
   card.innerHTML = h; card.querySelector(`#sit-wrapper-${i}`).appendChild(createMultiSelect(`multi-${i}`, appData.situations)); return card;
 }
 
+// Funções de manipulação do checklist (Excluir, Adicionar)
 function markDirty() { isDirty = true; }
 function removeDoc(btn) { btn.parentElement.remove(); markDirty(); }
 function addNewDoc(btn) {
@@ -486,11 +393,6 @@ function addNewDoc(btn) {
   const li = document.createElement('li'); li.className = 'doc-item';
   li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
   ul.appendChild(li); input.value = ''; markDirty();
-}
-
-function formatDocText(text) {
-  let clean = text.replace(/^[\(\s\)]+/, '').trim();
-  return clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
 }
 
 function generateChecklist() {
@@ -503,12 +405,18 @@ function generateChecklist() {
     const n = document.getElementById(`name-${i}`).value.trim();
     if(!n && i===0) return alert('Nome do candidato é obrigatório'); if(!n) continue; if(i===0) cName = n;
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
-    
-    html += `<div class="person-block"><h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
+    // Cabeçalho com função de acordeão para mobile
+    html += `<div class="person-block">
+               <div class="block-header" onclick="toggleBlock(this)">
+                 <h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3>
+                 <span class="toggle-icon">▼</span>
+               </div>
+               <div class="block-content">
+                 <strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
     
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
-    html += addBox + '</div>';
+    html += addBox + '</div></div>';
   }
   let extra=''; appData.questions.forEach((q,qi)=>{ const v=document.getElementById(`extra-${qi}`).value; if(v){ const[x,y]=v.split('-'); const op=appData.questions[x].options[y]; if(op.docs.length) extra+=op.docs.map(d=>item(d)).join(''); }});
   html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul>${addBox}</div>`;
@@ -516,6 +424,17 @@ function generateChecklist() {
   const content = document.getElementById('checklist-content'); content.innerHTML = html; content.dataset.candidate = cName;
   currentChecklistId = null; updateUrl(null); isDirty = true; 
   document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block'; window.scrollTo(0,0);
+  
+  // No mobile, começa recolhido
+  if(window.innerWidth <= 768) {
+    document.querySelectorAll('.block-content').forEach(b => b.classList.add('collapsed'));
+    document.querySelectorAll('.block-header').forEach(h => h.classList.add('collapsed'));
+  }
+}
+
+function toggleBlock(header) {
+  header.classList.toggle('collapsed');
+  header.nextElementSibling.classList.toggle('collapsed');
 }
 
 function closeChecklist() { 
@@ -525,7 +444,7 @@ function closeChecklist() {
 }
 function updateUrl(id) { const url = new URL(window.location); if(id) url.searchParams.set('id', id); else url.searchParams.delete('id'); window.history.pushState({}, '', url); }
 
-/* === SALVAR / CARREGAR === */
+/* === SALVAR / PDF / WHATSAPP === */
 async function saveLogic(silent = false) {
   const div = document.getElementById('checklist-content');
   const name = div.dataset.candidate || 'Sem Nome';
@@ -539,17 +458,36 @@ async function saveLogic(silent = false) {
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
     currentChecklistId = newId; updateUrl(newId);
   }
-  const success = await saveDataToCloud();
+  const success = await pushToGithub();
   if(success) { isDirty = false; if(!silent) alert("Salvo com sucesso!"); }
   return success;
 }
 async function manualSave() { await saveLogic(false); }
-async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => window.print(), 200); }
+
+async function downloadPDF() {
+  await saveLogic(true);
+  const element = document.getElementById('checklist-content');
+  // Opções para quebras de página perfeitas
+  const opt = {
+    margin: [10, 10],
+    filename: `Checklist_${document.getElementById('checklist-content').dataset.candidate}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
+async function shareWhatsapp() {
+  if(!currentChecklistId || isDirty) { alert("Por favor, salve o checklist primeiro."); await manualSave(); }
+  if(!currentChecklistId) return; // Se falhou ao salvar
+  const text = `Olá! Segue o link do checklist de documentos para o SISU:\n\n${window.location.href}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
 
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-  // Recarrega do Cloud para garantir
-  await syncData();
   const l = savedLists.find(x=>x.id===id); 
   if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
   const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
@@ -557,20 +495,17 @@ async function loadChecklist(id) {
   closeAdmin(); document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block';
 }
 function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
-async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await saveDataToCloud(); if(ok) renderSavedList(); }
+async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await pushToGithub(); if(ok) renderSavedList(); }
 
-/* === ADMIN === */
-function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!isCloudConfigured) openGithubConfig(); }
+/* === ADMIN (Protegido) === */
+function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!GLOBAL_CONFIG) openGithubConfig(); }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
 
 async function checkLogin() {
   const pass = document.getElementById('admin-pass').value;
-  if(!isCloudConfigured) {
-    if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta");
-    return;
-  }
-  const isValid = await CloudManager.checkPass(pass);
-  if(isValid) {
+  if(!GLOBAL_CONFIG) { if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta"); return; }
+  const hash = await sha256(pass);
+  if(hash === GLOBAL_CONFIG.h) {
     document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
     renderAdminLists(); renderSavedList();
   } else { alert("Senha incorreta."); }
@@ -580,17 +515,18 @@ function openGithubConfig() { document.getElementById('github-config').style.dis
 async function generateConfig() {
   const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
-  
-  const msgBuffer = new TextEncoder().encode(pass);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-  
-  const codeObj = CloudManager.generateCode(user, repo, token, hashHex);
-  const code = `var GLOBAL_CONFIG = ${JSON.stringify(codeObj, null, 2)};`;
+  const hash = await sha256(pass);
+  const data = { u: _obf(user), r: _obf(repo), t: _obf(token), h: hash }; 
+  const code = `const GLOBAL_CONFIG = ${JSON.stringify(data, null, 2)};`;
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
+function filterSavedLists() {
+  const term = document.getElementById('search-candidate').value.toLowerCase();
+  const rows = document.querySelectorAll('#saved-list .list-row');
+  rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(term) ? 'flex' : 'none'; });
+}
 function renderSavedList() { const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>'; el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">Excluir</button></div></div>`).join(''); }
 function renderAdminLists() {
   document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">Del</button></div></div>`).join('');
@@ -605,11 +541,9 @@ async function saveEdit() {
   const type=document.getElementById('edit-type').value, id=parseInt(document.getElementById('edit-id').value), label=document.getElementById('edit-label').value;
   if(type==='situation') { const d=document.getElementById('sit-docs').value.split('\n').filter(x=>x.trim()); const o={id:label.toLowerCase(),label,docs:d}; id===-1?appData.situations.push(o):appData.situations[id]=o; }
   else { const ops=[]; document.querySelectorAll('.option-row').forEach(r=>{ops.push({label:r.querySelector('.opt-label').value,docs:r.querySelector('.doc-input').value.split('\n').filter(x=>x.trim())})}); const o={id:'q'+Date.now(),text:label,options:ops}; id===-1?appData.questions.push(o):appData.questions[id]=o; }
-  const ok = await saveDataToCloud(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
+  const ok = await pushToGithub(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
 }
-async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await saveDataToCloud(); if(ok) renderAdminLists(); }
+async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await pushToGithub(); if(ok) renderAdminLists(); }
 </script>
 </body>
 </html>
-
-
