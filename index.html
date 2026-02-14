@@ -102,6 +102,7 @@
         transition: border-color 0.3s;
         box-sizing: border-box;
         background: #fcfcfc;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
     }
     input:focus,
     select:focus {
@@ -853,7 +854,7 @@ function hideLoading() { document.getElementById('loading-overlay').style.displa
 
 function createMultiSelect(id, items) {
   const c = document.createElement('div'); c.className = 'dropdown-container'; c.id = `container-${id}`;
-  const t = document.createElement('div'); t.className = 'dropdown-trigger'; t.innerHTML = '<span class="trigger-text">Selecione...</span>';
+  const t = document.createElement('div'); t.className = 'dropdown-trigger'; t.innerHTML = '<span class="trigger-text">Selecione todas as situações aplicáveis...</span>';
   t.onclick = (e) => { e.stopPropagation(); toggleDropdown(id); };
   const m = document.createElement('div'); m.className = 'dropdown-menu'; m.id = `menu-${id}`;
   items.forEach(i => {
@@ -1035,6 +1036,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
