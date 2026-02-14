@@ -1,31 +1,6 @@
 {
   "appData": {
-    "situations": [
-      {
-        "id": "desempregado",
-        "label": "Desempregado",
-        "docs": [
-          "Test",
-          "TestTest",
-          "Test",
-          "Test1",
-          "Test",
-          "Test2",
-          "Test",
-          "Test3",
-          "Test",
-          "TestTest",
-          "TestTest",
-          "Test",
-          "Test",
-          "Test",
-          "Test",
-          "Test",
-          "Test",
-          "v"
-        ]
-      }
-    ],
+    "situations": [],
     "questions": [
       {
         "id": "moradia",
