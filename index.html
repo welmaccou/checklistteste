@@ -6,7 +6,7 @@
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
   <style>
     /* --- Estilos Visuais --- */
-    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; }
+    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
     h1 { color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; }
@@ -20,9 +20,11 @@
     .btn-primary:hover { background: var(--primary); transform: translateY(-2px); }
     .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
     
-    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-    .btn-tool { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+    .btn-tool { padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
     .btn-print { background: #6c757d; }
+    .btn-save { background: var(--success); }
+    .btn-link { background: var(--warning); color: #333; }
     .btn-back { background: var(--primary); }
     
     #checklist-screen { display: none; }
@@ -63,7 +65,7 @@
     .dropdown-item input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
 
     /* Loading Overlay */
-    #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+    #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0056b3; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -103,8 +105,10 @@
 
     <div id="checklist-screen">
       <div class="toolbar">
-        <button class="btn-tool btn-back" onclick="closeChecklist()">Voltar / Novo</button>
-        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir (e Salvar na Nuvem)</button>
+        <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
+        <button class="btn-tool btn-save" onclick="manualSave()">💾 Salvar</button>
+        <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
+        <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir</button>
       </div>
       <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
       <div id="checklist-content" class="checklist-content"></div>
@@ -183,7 +187,7 @@
 
 <script>
 /* ==========================================================================
-   CONFIGURAÇÃO OBFUSCADA (Coloque seus códigos aqui)
+   CONFIGURAÇÃO OBFUSCADA (Copie do Admin e Cole Aqui)
    ========================================================================== */
 const GH_SECRETS = {
   u: "JCw/OD4wJiwg",
@@ -211,9 +215,9 @@ const defaultData = {
   ]
 };
 
-let appData = defaultData; // Dados de Configuração (Situações/Perguntas)
-let savedLists = [];       // Listas de Candidatos Salvas
-let currentSHA = null;     // Necessário para update no GitHub
+let appData = defaultData;
+let savedLists = [];
+let currentSHA = null;
 let currentChecklistId = null; 
 
 // --- Obfuscação ---
@@ -225,10 +229,17 @@ function _deobfuscate(str){if(!str)return "";try{let d=atob(str),r="";for(let i=
    GITHUB API (PERSISTÊNCIA CENTRAL)
    ========================================================================== */
 
-// Carrega tudo ao iniciar a página
-window.onload = function() {
+// Carrega tudo ao iniciar a página e verifica URL
+window.onload = async function() {
   if(GH_SECRETS.u && GH_SECRETS.t) {
-    fetchFromGithub();
+    await fetchFromGithub();
+    
+    // Verifica parâmetro ?id= no link
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if(id) {
+      loadChecklist(parseInt(id));
+    }
   } else {
     document.getElementById('status-bar').textContent = "⚠️ Nuvem não configurada. Use o menu Admin.";
   }
@@ -251,7 +262,6 @@ async function fetchFromGithub() {
       savedLists = content.savedLists || [];
       document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
     } else if(resp.status === 404) {
-      // Arquivo ainda não existe, será criado no primeiro save
       document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
   } catch(e) {
@@ -271,7 +281,6 @@ async function pushToGithub() {
 
   const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
   
-  // Prepara conteúdo
   const payload = { appData, savedLists };
   const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
   
@@ -290,7 +299,7 @@ async function pushToGithub() {
     
     if(resp.ok) {
       const json = await resp.json();
-      currentSHA = json.content.sha; // Atualiza SHA para proximo save
+      currentSHA = json.content.sha;
       document.getElementById('status-bar').textContent = "✅ Salvo na nuvem às " + new Date().toLocaleTimeString();
       return true;
     } else {
@@ -305,7 +314,7 @@ async function pushToGithub() {
 }
 
 /* ==========================================================================
-   LÓGICA PRINCIPAL (FORMULÁRIO & CHECKLIST)
+   LÓGICA PRINCIPAL
    ========================================================================== */
 function showLoading(msg) { document.getElementById('loading-text').textContent=msg; document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading() { document.getElementById('loading-overlay').style.display='none'; }
@@ -368,20 +377,36 @@ function generateChecklist() {
   if(extra) html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul></div>`;
   
   const content = document.getElementById('checklist-content'); content.innerHTML = html; content.dataset.candidate = cName;
+  
+  // Reseta ID para criar novo, se veio do formulário de criação
   currentChecklistId = null; 
+  updateUrl(null); // Limpa URL
+
   document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block'; window.scrollTo(0,0);
 }
-function closeChecklist() { document.getElementById('checklist-screen').style.display='none'; document.getElementById('creation-screen').style.display='block'; currentChecklistId=null; }
 
-/* === SALVAR NA NUVEM AO IMPRIMIR === */
-async function printAndSaveToCloud() {
+function closeChecklist() { 
+  document.getElementById('checklist-screen').style.display='none'; 
+  document.getElementById('creation-screen').style.display='block'; 
+  currentChecklistId=null;
+  updateUrl(null); // Remove ID da URL
+}
+
+function updateUrl(id) {
+  const url = new URL(window.location);
+  if(id) url.searchParams.set('id', id);
+  else url.searchParams.delete('id');
+  window.history.pushState({}, '', url);
+}
+
+/* === SALVAR E CARREGAR === */
+
+async function saveLogic(silent = false) {
   const div = document.getElementById('checklist-content');
   const name = div.dataset.candidate || 'Sem Nome';
-  // Congelar estado dos checkboxes
   div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked','checked') : c.removeAttribute('checked'));
   const html = div.innerHTML;
 
-  // Atualizar array local
   if(currentChecklistId) {
     const idx = savedLists.findIndex(l=>l.id===currentChecklistId);
     if(idx!==-1) { savedLists[idx].html=html; savedLists[idx].updated=new Date().toLocaleString(); }
@@ -389,24 +414,55 @@ async function printAndSaveToCloud() {
     const newId = Date.now();
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
     currentChecklistId = newId; 
+    // Atualiza URL com o novo ID
+    updateUrl(newId);
   }
 
-  // Enviar para GitHub
   const success = await pushToGithub();
-  
-  // Se salvou ok, imprime
-  if(success) {
-    setTimeout(() => window.print(), 200);
-  }
+  if(success && !silent) alert("Salvo com sucesso! Link atualizado.");
+  return success;
 }
 
+// Botão Salvar (Manual)
+async function manualSave() {
+  await saveLogic(false);
+}
+
+// Botão Imprimir (Salvar + Print)
+async function printAndSaveToCloud() {
+  await saveLogic(true); // salva silencioso
+  setTimeout(() => window.print(), 200);
+}
+
+// Carregar Lista
 async function loadChecklist(id) {
-  // Recarrega do Github para garantir versão mais nova
-  await fetchFromGithub();
-  const l = savedLists.find(x=>x.id===id); if(!l) return alert('Lista não encontrada.');
-  const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
-  currentChecklistId=l.id; closeAdmin();
-  document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block';
+  // Se não tiver listas carregadas, tenta buscar
+  if(savedLists.length === 0) await fetchFromGithub();
+  
+  const l = savedLists.find(x=>x.id===id); 
+  
+  if(!l) {
+    alert('Checklist não encontrado ou ID inválido.');
+    updateUrl(null);
+    return;
+  }
+
+  const c = document.getElementById('checklist-content'); 
+  c.innerHTML=l.html; 
+  c.dataset.candidate=l.name;
+  currentChecklistId=l.id; 
+  
+  updateUrl(l.id); // Garante que a URL está certa
+  
+  closeAdmin();
+  document.getElementById('creation-screen').style.display='none'; 
+  document.getElementById('checklist-screen').style.display='block';
+}
+
+function copyLink() {
+  if(!currentChecklistId) return alert("Salve o checklist primeiro para gerar um link.");
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => alert("Link copiado para a área de transferência!"));
 }
 
 async function deleteSavedList(id) {
@@ -423,7 +479,7 @@ function closeAdmin() { document.getElementById('admin-modal').style.display='no
 async function checkLogin() {
   const input = document.getElementById('admin-pass').value;
   const hashHex = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input)))).map(b => b.toString(16).padStart(2, '0')).join('');
-  if(hashHex === "97ea1ecbb57e39348da66330c45adf0de0962a9453fb025f1d25670fcaf36653") {
+  if(hashHex === "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b") {
     document.getElementById('login-screen').style.display='none'; 
     document.getElementById('admin-panel').style.display='block'; 
     fetchFromGithub().then(() => { renderAdminLists(); renderSavedList(); });
@@ -474,4 +530,3 @@ async function delItem(t,i) {
 </script>
 </body>
 </html>
-
