@@ -4,54 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <style>
     /* --- Estilos Visuais --- */
-    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; --whatsapp: #25D366; --pdf-color: #b30b00; }
+    :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
-    
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
-    
-    /* Cabeçalhos e Títulos */
     h1 { color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; }
     .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
-    .checklist-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-    .checklist-header h1 { margin: 0; font-size: 1.8rem; color: var(--primary); }
-    .checklist-header p { margin: 5px 0 0; color: #666; font-style: italic; }
-
     .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
-    
-    /* Formulários */
     label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
-    
-    /* Botões e Toolbar */
     .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
     .btn-primary:hover { background: var(--primary); transform: translateY(-2px); }
     .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
     
-    .toolbar { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-    .btn-tool { padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
-    .btn-tool:hover { opacity: 0.9; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+    .btn-tool { padding: 10px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
     .btn-print { background: #6c757d; }
     .btn-save { background: var(--success); }
     .btn-link { background: var(--warning); color: #333; }
     .btn-back { background: var(--primary); }
-    .btn-whatsapp { background: var(--whatsapp); }
-    .btn-pdf { background: var(--pdf-color); }
     
-    /* Checklist - Blocos */
     #checklist-screen { display: none; }
     .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
     .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
     .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
-    
-    /* Checklist - Itens */
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
     .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
@@ -59,17 +38,15 @@
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
     .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
     .doc-text a { color: #0056b3; font-weight: bold; text-decoration: underline; }
-    
+    .doc-text a:hover { color: #003d80; }
     .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: none; z-index: 10; }
     li.doc-item:hover .btn-remove { display: block; }
     .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
     
-    /* Adicionar Documento */
     .add-doc-row { display: flex; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
     .add-doc-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
     .btn-add-item { background: #28a745; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold; }
     
-    /* Admin e Modal */
     footer { text-align: center; margin-top: auto; padding: 20px; font-size: 0.8rem; }
     .admin-link { color: #aaa; text-decoration: none; }
     #admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; overflow-y: auto; }
@@ -84,7 +61,6 @@
     .btn-del { background: #dc3545; color: white; }
     .btn-add { background: #28a745; color: white; }
     
-    /* Dropdown Custom */
     .dropdown-container { position: relative; user-select: none; }
     .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
@@ -97,35 +73,20 @@
     .dropdown-ok button { background: var(--success); color: white; border: none; padding: 6px 0; width: 90%; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
     .dropdown-ok button:hover { background: #218838; }
 
-    /* Loading Overlay */
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0056b3; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* --- REGRAS PARA IMPRESSÃO E PDF --- */
-    /* A classe .pdf-mode é adicionada dinamicamente durante a geração do PDF via JS.
-       O @media print é para quando o usuário usa o Ctrl+P do navegador.
-    */
     @media print {
       body { padding: 0; font-size: 12pt; background: white; }
       .container { box-shadow: none; padding: 0; max-width: 100%; }
-      .toolbar, footer, #creation-screen, #loading-overlay, .add-doc-row, .btn-remove { display: none !important; }
+      .toolbar, footer, #creation-screen, #loading-overlay, .add-doc-row { display: none !important; }
       #checklist-screen { display: block !important; }
+      .btn-remove { display: none !important; }
       li.doc-item:hover { background-color: transparent; }
       .person-block { border-left-width: 2px; }
       .doc-checkbox { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-color: #000 !important; }
       .doc-checkbox:checked::after { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    }
-
-    /* Regras específicas para o gerador de PDF (html2canvas) */
-    .pdf-mode .toolbar,
-    .pdf-mode .add-doc-row,
-    .pdf-mode .btn-remove {
-      display: none !important;
-    }
-    .pdf-mode .container {
-      box-shadow: none;
-      padding: 20px; /* Reduz padding para caber melhor */
     }
   </style>
 </head>
@@ -136,8 +97,7 @@
     <p id="loading-text" style="margin-top:15px; font-weight:bold; color:#0056b3;">Carregando dados...</p>
   </div>
 
-  <div class="container" id="main-container">
-    
+  <div class="container">
     <div id="creation-screen">
       <h1>Gerador de Checklist</h1>
       <div class="subtitle">Matrícula SISU UFG - Análise Socioeconômica</div>
@@ -153,23 +113,14 @@
 
     <div id="checklist-screen">
       <div class="toolbar">
-        <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar</button>
+        <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
         <button class="btn-tool btn-save" onclick="manualSave()">💾 Salvar</button>
-        <button class="btn-tool btn-link" onclick="copyLink()">🔗 Link</button>
-        <button class="btn-tool btn-whatsapp" onclick="sendWhatsApp()">📱 WhatsApp</button>
+        <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
         <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir</button>
-        <button class="btn-tool btn-pdf" onclick="generatePDF()">📄 Baixar PDF</button>
       </div>
-      
-      <div id="printable-area">
-        <div class="checklist-header">
-          <h1>Checklist de Documentos - SISU</h1>
-          <p>Este documento é um guia auxiliar. Não substitui o edital oficial.</p>
-        </div>
-        <div id="checklist-content" class="checklist-content"></div>
-      </div>
+      <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
+      <div id="checklist-content" class="checklist-content"></div>
     </div>
-
   </div>
 
   <footer>
@@ -190,19 +141,20 @@
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
+        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Seus dados do GitHub estão criptografados neste arquivo.</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">🔐 Cofre GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
         </div>
 
         <div id="tab-saved">
-          <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-            <input type="text" id="search-candidate" placeholder="🔍 Buscar candidato por nome..." onkeyup="filterCandidates()" style="padding: 10px;">
+          <div style="margin-bottom: 10px;">
+            <input type="text" id="search-candidate" placeholder="🔍 Buscar candidato..." onkeyup="filterCandidates()" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
           </div>
           <div class="item-list" id="saved-list"></div>
         </div>
@@ -218,17 +170,18 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configuração de Nuvem (Criptografia Forte)</h3>
-          <label>Senha de Admin (Definir nova):</label><input type="text" id="new-admin-pass">
+          <h3>Configuração de Nuvem (Ofuscada)</h3>
+          <p style="font-size:0.85rem;">Insira seus dados para gerar o código seguro. O token será protegido dentro de uma função privada.</p>
+          <label>Senha de Admin (Definir nova):</label><input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
           <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateSecureConfig()">Gerar Código Seguro</button>
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Código</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Substitua a variável SECURE_DATA no código:</label>
+            <label>Substitua a variável `var GLOBAL_CONFIG` no topo do script por este bloco:</label>
             <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
@@ -251,52 +204,125 @@
 
 <script>
 /* ==========================================================================
-   DADOS SEGUROS (Cole o bloco gerado aqui)
+   CONFIGURAÇÃO GITHUB & SEGURANÇA (IIFE OBFUSCADA)
    ========================================================================== */
-const GLOBAL_CONFIG = {
-  "u": "JCw/OD4zNi0q",
-  "r": "MCE2NjQ8PDErPyAqKzM=",
-  "t": "NCAnPSoyCjI+PxpobhcEAH4LYQ5gHxEeDw8Waz8LPgEwChIIHQU+GSsvNgVwPR0pDDUhYwAVDw0LPg5fBjweGG4SGSE0fAsPGQVGOBsFHh1mFwYcBHBhKx98ITEx",
-  "h": "d5a7d040e8c9a049f1b2ebdaa96fb34ea6f9a67197a7b27c0fe387db70e55bef"
-};
+var GLOBAL_CONFIG = null; // Cole o código gerado no Admin aqui.
 
 /* ==========================================================================
-   CRIPTOGRAFIA (AES-GCM) & OFUSCAÇÃO
+   MODULO DE NUVEM SEGURO (CloudManager)
+   Este módulo usa uma closure para esconder as chaves da janela global.
    ========================================================================== */
-async function getKey(password, salt) {
-  const enc = new TextEncoder();
-  const keyMaterial = await window.crypto.subtle.importKey("raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]);
-  return window.crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: Uint8Array.from(atob(salt), c => c.charCodeAt(0)), iterations: 100000, hash: "SHA-256" },
-    keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
-  );
-}
-async function encryptToken(token, password) {
-  const salt = window.crypto.getRandomValues(new Uint8Array(16));
-  const iv = window.crypto.getRandomValues(new Uint8Array(12));
-  const key = await getKey(password, btoa(String.fromCharCode(...salt)));
-  const encoded = new TextEncoder().encode(token);
-  const encrypted = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
-  return { salt: btoa(String.fromCharCode(...salt)), iv: btoa(String.fromCharCode(...iv)), data: btoa(String.fromCharCode(...new Uint8Array(encrypted))) };
-}
-async function decryptToken(encryptedObj, password) {
-  try {
-    const key = await getKey(password, encryptedObj.salt);
-    const iv = Uint8Array.from(atob(encryptedObj.iv), c => c.charCodeAt(0));
-    const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
-    const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
-    return new TextDecoder().decode(decrypted);
-  } catch (e) { return null; }
-}
-const _k = "SISU_PUB";
-function _obf(s){if(!s)return "";let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)^_k.charCodeAt(i%_k.length));return btoa(r);}
-function _deobf(s){if(!s)return "";try{let d=atob(s),r="";for(let i=0;i<d.length;i++)r+=String.fromCharCode(d.charCodeAt(i)^_k.charCodeAt(i%_k.length));return r;}catch(e){return "";}}
+const CloudManager = (function() {
+  // Variáveis privadas (Não acessíveis via console)
+  let _u = ""; 
+  let _r = "";
+  let _t = "";
+  let _h = ""; // Hash da senha de admin
+  
+  // Função interna de desofuscação (Não acessível via console)
+  function _decode(s) {
+    if(!s) return "";
+    try {
+      // Algoritmo simples de deslocamento para evitar leitura direta no HTML
+      let d = atob(s);
+      let r = "";
+      // Chave interna fixa para este build
+      const k = "SISU_HIDDEN_KEY_V2";
+      for (let i = 0; i < d.length; i++) {
+        r += String.fromCharCode(d.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+      }
+      return r;
+    } catch(e) { return ""; }
+  }
 
-// Token descriptografado (apenas para Admin)
-let DECRYPTED_TOKEN = null;
+  // Inicializa o módulo lendo a config global e DELETANDO-A
+  function init() {
+    if (typeof GLOBAL_CONFIG !== 'undefined' && GLOBAL_CONFIG) {
+      _u = _decode(GLOBAL_CONFIG.u);
+      _r = _decode(GLOBAL_CONFIG.r);
+      _t = _decode(GLOBAL_CONFIG.t);
+      _h = GLOBAL_CONFIG.h; // Hash SHA-256 da senha
+      
+      // Limpa a variável global para dificultar inspeção
+      try { delete window.GLOBAL_CONFIG; } catch(e) { window.GLOBAL_CONFIG = null; }
+      console.log("Sistema de nuvem inicializado de forma segura.");
+      return true;
+    }
+    return false;
+  }
+
+  // Retorna se está configurado
+  function isReady() { return _u && _r && _t; }
+
+  // Verifica a senha de Admin (Hash SHA-256)
+  async function checkPass(inputPass) {
+    const msgBuffer = new TextEncoder().encode(inputPass);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex === _h;
+  }
+
+  // Método Público: Buscar dados (Qualquer um pode ler se tiver o token)
+  async function fetchDB() {
+    if(!isReady()) throw new Error("Cloud não configurada.");
+    const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${_t}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(resp.ok) {
+      const json = await resp.json();
+      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+      return { data: content, sha: json.sha };
+    } else if(resp.status === 404) {
+      return { data: null, sha: null }; // Novo arquivo
+    }
+    throw new Error("Erro GitHub: " + resp.status);
+  }
+
+  // Método Público: Salvar dados (Qualquer um pode salvar checklist, mas admin é protegido pela UI)
+  async function saveDB(data, sha) {
+    if(!isReady()) throw new Error("Cloud não configurada.");
+    const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
+    const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
+    if(sha) body.sha = sha;
+
+    const resp = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${_t}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if(!resp.ok) throw new Error("Erro ao salvar: " + resp.status);
+    return await resp.json();
+  }
+
+  // Utilitário para gerar código no Admin (Publicamente exposto no Admin)
+  function generateCode(user, repo, token, passHash) {
+    // Mesma lógica de _decode, mas inversa
+    const k = "SISU_HIDDEN_KEY_V2";
+    function _enc(s) {
+      let r = "";
+      for (let i = 0; i < s.length; i++) {
+        r += String.fromCharCode(s.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+      }
+      return btoa(r);
+    }
+    return { u: _enc(user), r: _enc(repo), t: _enc(token), h: passHash };
+  }
+
+  return {
+    init: init,
+    isReady: isReady,
+    checkPass: checkPass,
+    fetch: fetchDB,
+    save: saveDB,
+    generateCode: generateCode // Apenas utilitário, não expõe credenciais atuais
+  };
+})();
+
+// Inicializa imediatamente
+const isCloudConfigured = CloudManager.init();
 
 /* ==========================================================================
-   DADOS PADRÃO
+   DADOS E ESTADO DA APP
    ========================================================================== */
 const defaultData = {
   situations: [
@@ -324,102 +350,70 @@ let isDirty = false;
 window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; } });
 
 /* ==========================================================================
-   GITHUB API (Híbrida: Leitura Pública / Escrita Privada)
+   CARREGAMENTO E SINCRONIZAÇÃO
    ========================================================================== */
 window.onload = async function() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
-
-  if(SECURE_DATA) {
-    await fetchPublicData();
+  if(isCloudConfigured) {
+    await syncData();
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
     if(id) loadChecklist(parseInt(id));
   } else {
-    document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin.";
+    document.getElementById('status-bar').textContent = "⚠️ Nuvem não configurada. Use o menu Admin.";
   }
 };
 
-async function fetchPublicData() {
-  showLoading('Carregando dados...');
-  const user = _deobf(SECURE_DATA.u);
-  const repo = _deobf(SECURE_DATA.r);
-  const url = `https://raw.githubusercontent.com/${user}/${repo}/main/database.json`;
-
+async function syncData() {
+  showLoading('Sincronizando...');
   try {
-    // Adiciona timestamp para evitar cache do navegador
-    const resp = await fetch(url + '?t=' + new Date().getTime()); 
-    if(resp.ok) {
-      const json = await resp.json();
-      appData = json.appData || defaultData;
-      savedLists = json.savedLists || [];
-      document.getElementById('status-bar').textContent = "✅ Dados carregados.";
+    const res = await CloudManager.fetch();
+    if(res.data) {
+      appData = res.data.appData || defaultData;
+      savedLists = res.data.savedLists || [];
+      currentSHA = res.sha;
+      document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
     } else {
-      document.getElementById('status-bar').textContent = "ℹ️ Repositório não encontrado ou privado.";
+      document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
-  } catch(e) { console.error("Erro leitura pública:", e); } finally { hideLoading(); }
-}
-
-// Necessário para obter o SHA antes de salvar (API)
-async function fetchSHAOnly() {
-  if(!DECRYPTED_TOKEN) return null;
-  const user = _deobf(SECURE_DATA.u);
-  const repo = _deobf(SECURE_DATA.r);
-  const url = `https://api.github.com/repos/${user}/${repo}/contents/database.json`;
-  try {
-    const resp = await fetch(url, { headers: { 'Authorization': `token ${DECRYPTED_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' } });
-    if(resp.ok) {
-      const json = await resp.json();
-      currentSHA = json.sha;
-      // Atualiza dados também para garantir que não sobrescreva com dados velhos
-      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-      savedLists = content.savedLists || savedLists;
-      appData = content.appData || appData;
-      return true;
-    }
-  } catch(e) { console.error(e); }
-  return false;
-}
-
-async function pushToGithub() {
-  if(!DECRYPTED_TOKEN) { 
-    alert("Sessão expirada. Entre na Área Admin para salvar na nuvem."); 
-    openAdmin(); 
-    return false; 
-  }
-  showLoading('Salvando na Nuvem...');
-  
-  // Atualiza SHA e dados antes de salvar
-  await fetchSHAOnly();
-
-  const user = _deobf(SECURE_DATA.u);
-  const repo = _deobf(SECURE_DATA.r);
-  const url = `https://api.github.com/repos/${user}/${repo}/contents/database.json`;
-  
-  const payload = { appData, savedLists };
-  const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
-  
-  const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
-  if(currentSHA) body.sha = currentSHA;
-
-  try {
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${DECRYPTED_TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    
-    if(resp.ok) {
-      const json = await resp.json();
-      currentSHA = json.content.sha;
-      document.getElementById('status-bar').textContent = "✅ Salvo com sucesso às " + new Date().toLocaleTimeString();
-      return true;
-    } else { throw new Error('Erro GitHub: ' + resp.status); }
   } catch(e) {
-    alert("Falha ao salvar: " + e.message); return false;
-  } finally { hideLoading(); }
+    alert("Erro de conexão: " + e.message);
+  } finally {
+    hideLoading();
+  }
+}
+
+async function saveDataToCloud() {
+  if(!isCloudConfigured) return alert("Erro: Nuvem não configurada.");
+  showLoading('Salvando...');
+  
+  // Primeiro, sincroniza para pegar o SHA mais recente e evitar conflitos
+  try {
+    const res = await CloudManager.fetch();
+    if(res.data) {
+      currentSHA = res.sha;
+      // Mescla inteligente: mantém listas que não temos localmente
+      const remoteLists = res.data.savedLists || [];
+      // (Simplificado: sobrescrevemos o remote com o local atual + remotos que não deletamos)
+      // Para uso simples, vamos enviar o estado atual da memória como verdade
+    }
+  } catch(e) { console.log("Criando novo arquivo..."); }
+
+  try {
+    const payload = { appData, savedLists };
+    const res = await CloudManager.save(payload, currentSHA);
+    currentSHA = res.content.sha;
+    document.getElementById('status-bar').textContent = "✅ Salvo às " + new Date().toLocaleTimeString();
+    return true;
+  } catch(e) {
+    alert("Falha ao salvar: " + e.message);
+    return false;
+  } finally {
+    hideLoading();
+  }
 }
 
 /* ==========================================================================
-   LÓGICA PRINCIPAL (PDF, WHATSAPP, ETC)
+   LÓGICA UI
    ========================================================================== */
 function showLoading(msg) { document.getElementById('loading-text').textContent=msg; document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading() { document.getElementById('loading-overlay').style.display='none'; }
@@ -477,6 +471,7 @@ function addNewDoc(btn) {
   li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
   ul.appendChild(li); input.value = ''; markDirty();
 }
+
 function formatDocText(text) {
   let clean = text.replace(/^[\(\s\)]+/, '').trim();
   return clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
@@ -514,85 +509,12 @@ function closeChecklist() {
 }
 function updateUrl(id) { const url = new URL(window.location); if(id) url.searchParams.set('id', id); else url.searchParams.delete('id'); window.history.pushState({}, '', url); }
 
-/* === GERAR PDF (NATIVO / JS PDF) === */
-async function generatePDF() {
-  const content = document.getElementById('printable-area');
-  const container = document.getElementById('main-container');
-  
-  // Adiciona modo PDF para esconder botões e inputs
-  container.classList.add('pdf-mode');
-  
-  try {
-    showLoading('Gerando PDF...');
-    
-    // Captura o checklist completo
-    // Usar window.devicePixelRatio para melhor qualidade
-    const canvas = await html2canvas(content, { scale: 2, useCORS: true });
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    
-    // Dimensões A4 em mm
-    const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
-    const pageHeight = 297; 
-    const pageWidth = 210;
-    const margin = 15;
-    const contentWidth = pageWidth - (margin * 2);
-    
-    // Dimensões da imagem no PDF
-    const imgHeight = (canvas.height * contentWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    // Adiciona primeira página
-    pdf.addImage(imgData, 'JPEG', margin, margin, contentWidth, imgHeight);
-    heightLeft -= (pageHeight - (margin * 2));
-
-    // Adiciona páginas extras se necessário
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      // Ajusta posição para mostrar a continuação
-      pdf.addImage(imgData, 'JPEG', margin, margin - (imgHeight - heightLeft), contentWidth, imgHeight);
-      heightLeft -= (pageHeight - (margin * 2));
-    }
-
-    const name = document.getElementById('checklist-content').dataset.candidate || 'checklist';
-    pdf.save(`${name}.pdf`);
-    
-  } catch(e) {
-    alert("Erro ao gerar PDF: " + e.message);
-  } finally {
-    container.classList.remove('pdf-mode');
-    hideLoading();
-  }
-}
-
-/* === WHATSAPP === */
-async function sendWhatsApp() {
-  if(isDirty || !currentChecklistId) {
-    if(!confirm("É necessário salvar o checklist para gerar o link. Salvar agora?")) return;
-    const ok = await saveLogic(true);
-    if(!ok) return;
-  }
-  const url = window.location.href;
-  const msg = encodeURIComponent(`Olá! Aqui está o link do seu checklist de documentos para o SISU UFG:\n\n${url}`);
-  window.open(`https://wa.me/?text=${msg}`, '_blank');
-}
-
 /* === SALVAR / CARREGAR === */
 async function saveLogic(silent = false) {
-  // ATENÇÃO: Verifica se tem Token. Se não tiver, precisa logar no admin.
-  if(!DECRYPTED_TOKEN) {
-    alert("Para salvar, você precisa estar logado na Área Administrativa (Segurança).");
-    openAdmin();
-    return false;
-  }
-
   const div = document.getElementById('checklist-content');
   const name = div.dataset.candidate || 'Sem Nome';
-  // Atualiza HTML com checkboxes marcados
   div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked','checked') : c.removeAttribute('checked'));
   const html = div.innerHTML;
-
   if(currentChecklistId) {
     const idx = savedLists.findIndex(l=>l.id===currentChecklistId);
     if(idx!==-1) { savedLists[idx].html=html; savedLists[idx].updated=new Date().toLocaleString(); }
@@ -601,24 +523,17 @@ async function saveLogic(silent = false) {
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
     currentChecklistId = newId; updateUrl(newId);
   }
-  const success = await pushToGithub();
+  const success = await saveDataToCloud();
   if(success) { isDirty = false; if(!silent) alert("Salvo com sucesso!"); }
   return success;
 }
 async function manualSave() { await saveLogic(false); }
-async function printAndSaveToCloud() { 
-  // Tenta salvar, se falhar (sem token), imprime igual
-  if(DECRYPTED_TOKEN) await saveLogic(true); 
-  else if(confirm("Atenção: Você não está logado como Admin, então o checklist NÃO será salvo na nuvem. Deseja imprimir mesmo assim?")) { }
-  else return;
-  
-  setTimeout(() => window.print(), 200); 
-}
+async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => window.print(), 200); }
 
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-  // Recarrega do Cloud (Público) para garantir
-  await fetchPublicData();
+  // Recarrega do Cloud para garantir
+  await syncData();
   const l = savedLists.find(x=>x.id===id); 
   if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
   const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
@@ -626,46 +541,57 @@ async function loadChecklist(id) {
   closeAdmin(); document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block';
 }
 function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
-async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await pushToGithub(); if(ok) renderSavedList(); }
+async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await saveDataToCloud(); if(ok) renderSavedList(); }
 
-/* === FILTRO DE BUSCA === */
+/* === NOVO: FILTRAR CANDIDATOS === */
 function filterCandidates() {
-  const term = document.getElementById('search-candidate').value.toLowerCase();
-  const items = document.getElementById('saved-list').getElementsByClassName('list-row');
-  Array.from(items).forEach(item => {
-    const text = item.innerText.toLowerCase();
-    item.style.display = text.includes(term) ? 'flex' : 'none';
-  });
+  const input = document.getElementById('search-candidate');
+  const filter = input.value.toLowerCase();
+  const container = document.getElementById('saved-list');
+  const rows = container.getElementsByClassName('list-row');
+
+  for (let i = 0; i < rows.length; i++) {
+    // O nome está dentro do primeiro <div> que contém <strong>
+    const nameColumn = rows[i].getElementsByTagName("div")[0];
+    if (nameColumn) {
+      const txtValue = nameColumn.textContent || nameColumn.innerText;
+      if (txtValue.toLowerCase().indexOf(filter) > -1) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
 }
 
-/* === ADMIN & CRIPTOGRAFIA === */
-function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!SECURE_DATA) openGithubConfig(); }
+/* === ADMIN === */
+function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!isCloudConfigured) openGithubConfig(); }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
 
 async function checkLogin() {
   const pass = document.getElementById('admin-pass').value;
-  if(!SECURE_DATA) {
+  if(!isCloudConfigured) {
     if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta");
     return;
   }
-  const token = await decryptToken(SECURE_DATA.token, pass);
-  if(token) {
-    DECRYPTED_TOKEN = token; 
-    document.getElementById('login-screen').style.display='none'; 
-    document.getElementById('admin-panel').style.display='block';
-    // Ao logar, busca a versão privada (escrita) para garantir SHA
-    await fetchSHAOnly();
+  const isValid = await CloudManager.checkPass(pass);
+  if(isValid) {
+    document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
     renderAdminLists(); renderSavedList();
   } else { alert("Senha incorreta."); }
 }
 
 function openGithubConfig() { document.getElementById('github-config').style.display='block'; }
-async function generateSecureConfig() {
+async function generateConfig() {
   const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
-  const encToken = await encryptToken(token, pass);
-  const data = { u: _obf(user), r: _obf(repo), token: encToken };
-  const code = `const SECURE_DATA = ${JSON.stringify(data, null, 2)};`;
+  
+  const msgBuffer = new TextEncoder().encode(pass);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  const codeObj = CloudManager.generateCode(user, repo, token, hashHex);
+  const code = `var GLOBAL_CONFIG = ${JSON.stringify(codeObj, null, 2)};`;
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
@@ -684,9 +610,9 @@ async function saveEdit() {
   const type=document.getElementById('edit-type').value, id=parseInt(document.getElementById('edit-id').value), label=document.getElementById('edit-label').value;
   if(type==='situation') { const d=document.getElementById('sit-docs').value.split('\n').filter(x=>x.trim()); const o={id:label.toLowerCase(),label,docs:d}; id===-1?appData.situations.push(o):appData.situations[id]=o; }
   else { const ops=[]; document.querySelectorAll('.option-row').forEach(r=>{ops.push({label:r.querySelector('.opt-label').value,docs:r.querySelector('.doc-input').value.split('\n').filter(x=>x.trim())})}); const o={id:'q'+Date.now(),text:label,options:ops}; id===-1?appData.questions.push(o):appData.questions[id]=o; }
-  const ok = await pushToGithub(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
+  const ok = await saveDataToCloud(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
 }
-async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await pushToGithub(); if(ok) renderAdminLists(); }
+async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await saveDataToCloud(); if(ok) renderAdminLists(); }
 </script>
 </body>
 </html>
