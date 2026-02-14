@@ -1,6 +1,17 @@
 {
   "appData": {
-    "situations": [],
+    "situations": [
+      {
+        "id": "assalariado",
+        "label": "Assalariado",
+        "docs": [
+          "Último contracheque;",
+          "Declaração de Imposto de Renda Pessoa Física, exercício 2025, ano base 2024, acompanhada do recibo de entrega à Receita Federal do Brasil – se a pessoa não declarou, não é necessário apresentar;",
+          "Extratos de todas as contas bancária, física e/ou digital, corrente e/ou poupança dos meses de dezembro/2025, janeiro/2026 e fevereiro/2026. Caso não tenha conta bancária, apresentar declaração emitida pelo Banco Central do Brasil (BACEN), [Clicando Aqui](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS);",
+          "Relatório de Contas e Relacionamentos em Bancos (CSS) emitido por meio do sistema Registrato do Banco Central do Brasil (BACEN), [Clicando Aqui](https://www.bcb.gov.br/meubc/registrato);"
+        ]
+      }
+    ],
     "questions": [
       {
         "id": "moradia",
