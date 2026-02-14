@@ -2,11 +2,6 @@
   "appData": {
     "situations": [
       {
-        "id": "bpc",
-        "label": "BPC",
-        "docs": []
-      },
-      {
         "id": "arroz",
         "label": "Arroz",
         "docs": []
