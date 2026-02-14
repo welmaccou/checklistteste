@@ -1,12 +1,6 @@
 {
   "appData": {
-    "situations": [
-      {
-        "id": "maracanã",
-        "label": "Maracanã",
-        "docs": []
-      }
-    ],
+    "situations": [],
     "questions": [
       {
         "id": "moradia",
