@@ -612,6 +612,7 @@
           <button class="tab-btn active" onclick="switchTab('saved')">Listas Geradas</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
+		  <button class="tab-btn" onclick="switchTab('basics')">Docs Gerais</button>
           <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">Configurações</button>
         </div>
 
@@ -631,6 +632,19 @@
           <button class="btn-sm btn-add" onclick="editQuestion(-1)">+ Nova Pergunta</button>
           <div class="item-list" id="questions-list" style="margin-top:10px;"></div>
         </div>
+
+		<div id="tab-basics" style="display:none; padding-top:10px;">
+		  <h3>Editar Documentos Gerais</h3>
+		  <p style="font-size:0.85rem; color:#666;">Estes documentos aparecerão automaticamente para todas as pessoas.</p>
+		  
+		  <label style="margin-top:15px;">Para o Estudante (um por linha):</label>
+		  <textarea id="basic-student-text" style="width:100%; min-height:120px; font-family:monospace; padding:10px;"></textarea>
+		  
+		  <label style="margin-top:15px;">Para Familiares (um por linha):</label>
+		  <textarea id="basic-family-text" style="width:100%; min-height:120px; font-family:monospace; padding:10px;"></textarea>
+		  
+		  <button class="btn-primary" onclick="saveBasicDocs()">Salvar Alterações</button>
+		</div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
           <h3>Configuração do GitHub</h3>
@@ -772,7 +786,19 @@ const isCloudConfigured = CloudManager.init();
    DADOS E ESTADO DA APP
    ========================================================================== */
 const defaultData = {
-  situations: [
+  	
+basicDocsStudent: [
+    'RG e CPF',
+    'Declaração de Composição Familiar',
+    'Extratos Bancários',
+    'Registrato (BACEN)'
+  ],
+basicDocsFamily: [
+    'RG e CPF',
+    'Extratos Bancários',
+    'Registrato (BACEN)'
+  ],
+situations: [
     { id: 'assalariado', label: 'Assalariado', docs: ['Contracheques (Out, Nov, Dez 2025)', 'CTPS completa', 'IRPF 2025 (se declarou)'] },
     { id: 'autonomo', label: 'Autônomo/Informal', docs: ['Declaração de Autônomo', 'CTPS', 'Extratos bancários'] },
     { id: 'aposentado', label: 'Aposentado/Pensionista', docs: ['Extrato do benefício', 'IRPF 2025'] },
@@ -780,7 +806,7 @@ const defaultData = {
     { id: 'desempregado', label: 'Desempregado', docs: ['CTPS (Baixa)', 'Declaração de desemprego', 'Seguro-desemprego (se houver)'] },
     { id: 'nunca', label: 'Nunca Trabalhou', docs: ['CTPS (em branco)', 'CNIS (se maior de 18)'] }
   ],
-  questions: [
+questions: [
     { id: 'moradia', text: 'Moradia', options: [ { label: 'Alugada', docs: ['Contrato de locação ou recibos.'] }, { label: 'Cedida', docs: ['Declaração de imóvel cedido.'] }, { label: 'Financiada', docs: ['Comprovante da prestação.'] }, { label: 'Própria', docs: [] } ]},
     { id: 'orfao', text: 'É solteiro(a) com pais falecidos?', options: [ { label: 'Sim', docs: ['Certidão de óbito pai/mãe.'] }, { label: 'Não', docs: [] } ]},
     { id: 'aluguel', text: 'Renda de aluguel?', options: [ { label: 'Sim', docs: ['Contratos e recibos de aluguel.'] }, { label: 'Não', docs: [] } ]},
@@ -952,8 +978,22 @@ function generateChecklist() {
     if(!n && i===0) return alert('Nome do estudante obrigatório'); if(!n) continue; if(i===0) cName = n;
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
     
-    html += `<div class="person-block"><h3>${i===0?'Estudante':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
-    
+// Define qual lista usar (Estudante ou Familiar)
+    // Usa '|| []' para evitar erro se a lista estiver vazia ou undefined em dados antigos
+    const basicList = (i === 0) 
+      ? (appData.basicDocsStudent || defaultData.basicDocsStudent) 
+      : (appData.basicDocsFamily || defaultData.basicDocsFamily);
+
+    // Gera o HTML dos itens gerais
+    let basicHtml = '';
+    basicList.forEach(docText => {
+      basicHtml += item(docText);
+    });
+
+    html += `<div class="person-block">
+               <h3>${i===0?'Estudante':'Familiar'}: ${n}</h3>
+               <strong>Documentos Gerais:</strong>
+               <ul>${basicHtml}</ul>`;    
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
     html += addBox + '</div>';
@@ -1054,7 +1094,47 @@ async function generateConfig() {
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
-function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
+function switchTab(t) { 
+  // Remove classe ativa de todos
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+  // Adiciona ao clicado
+  const buttons = document.querySelectorAll('.tab-btn');
+  if(t==='saved') buttons[0].classList.add('active');
+  if(t==='situations') buttons[1].classList.add('active');
+  if(t==='questions') buttons[2].classList.add('active');
+  if(t==='basics') buttons[3].classList.add('active'); // Novo botão
+
+  // Esconde todas as abas
+  ['saved', 'situations', 'questions', 'basics'].forEach(x => {
+    const el = document.getElementById(`tab-${x}`);
+    if(el) el.style.display = 'none';
+  });
+  
+  // Mostra a aba selecionada
+  document.getElementById(`tab-${t}`).style.display = 'block';
+
+  // Se for a aba de gerais, carrega os dados atuais nos textareas
+  if (t === 'basics') {
+    // Garante que existam arrays, senão usa o padrão
+    const stdDocs = appData.basicDocsStudent || defaultData.basicDocsStudent;
+    const famDocs = appData.basicDocsFamily || defaultData.basicDocsFamily;
+    
+    document.getElementById('basic-student-text').value = stdDocs.join('\n');
+    document.getElementById('basic-family-text').value = famDocs.join('\n');
+  }
+}
+
+async function saveBasicDocs() {
+  const stdText = document.getElementById('basic-student-text').value;
+  const famText = document.getElementById('basic-family-text').value;
+
+  // Converte texto em array
+  appData.basicDocsStudent = stdText.split('\n').filter(line => line.trim() !== '');
+  appData.basicDocsFamily = famText.split('\n').filter(line => line.trim() !== '');
+
+  const ok = await saveDataToCloud();
+  if (ok) alert("Documentos gerais atualizados com sucesso!");
+}
 function renderSavedList() { const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>'; el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>`).join(''); }
 function renderAdminLists() {
   document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">X</button></div></div>`).join('');
@@ -1075,6 +1155,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
