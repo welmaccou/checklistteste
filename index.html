@@ -912,7 +912,7 @@ function formatDocText(text) {
 
 function generateChecklist() {
   const size = parseInt(document.getElementById('family-size').value);
-  const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button></li>`;
+  const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`;
   const addBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar documento..."><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
 
   let html = '', cName = '';
@@ -1015,7 +1015,7 @@ async function generateConfig() {
 }
 
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
-function renderSavedList() { const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>'; el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">Excluir</button></div></div>`).join(''); }
+function renderSavedList() { const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>'; el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>`).join(''); }
 function renderAdminLists() {
   document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">Del</button></div></div>`).join('');
   document.getElementById('questions-list').innerHTML = appData.questions.map((q,i)=>`<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">Del</button></div></div>`).join('');
@@ -1035,5 +1035,6 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
