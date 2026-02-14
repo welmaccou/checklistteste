@@ -27,6 +27,7 @@
     .btn-link { background: var(--warning); color: #333; }
     .btn-back { background: var(--primary); }
     
+    /* Checklist UI */
     #checklist-screen { display: none; }
     .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
     .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
@@ -34,12 +35,17 @@
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
     .doc-label { display: flex; align-items: flex-start; cursor: pointer; width: 100%; }
-    .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; }
+    .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
-    .doc-text { flex: 1; line-height: 1.4; }
+    .doc-text { flex: 1; line-height: 1.4; word-break: break-word; }
     .btn-remove { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: none; z-index: 10; }
     li.doc-item:hover .btn-remove { display: block; }
     .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
+    
+    /* Novo: Área de Adicionar Documento */
+    .add-doc-row { display: flex; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
+    .add-doc-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
+    .btn-add-item { background: #28a745; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold; }
     
     footer { text-align: center; margin-top: auto; padding: 20px; font-size: 0.8rem; }
     .admin-link { color: #aaa; text-decoration: none; }
@@ -72,7 +78,7 @@
     @media print {
       body { padding: 0; font-size: 12pt; background: white; }
       .container { box-shadow: none; padding: 0; max-width: 100%; }
-      .toolbar, footer, #creation-screen, #loading-overlay { display: none !important; }
+      .toolbar, footer, #creation-screen, #loading-overlay, .add-doc-row { display: none !important; }
       #checklist-screen { display: block !important; }
       .btn-remove { display: none !important; }
       li.doc-item:hover { background-color: transparent; }
@@ -219,6 +225,15 @@ let appData = defaultData;
 let savedLists = [];
 let currentSHA = null;
 let currentChecklistId = null; 
+let isDirty = false; // Flag para alterações não salvas
+
+// --- Evento: Aviso de saída se não salvo ---
+window.addEventListener('beforeunload', (e) => {
+  if (isDirty) {
+    e.preventDefault();
+    e.returnValue = 'Você tem alterações não salvas. Deseja sair?';
+  }
+});
 
 // --- Obfuscação ---
 const _key = "SISU_SECURE_KEY";
@@ -359,37 +374,94 @@ function createMemberCard(title, i, isCand) {
   card.innerHTML = h; card.querySelector(`#sit-wrapper-${i}`).appendChild(createMultiSelect(`multi-${i}`, appData.situations)); return card;
 }
 
+// Marca que houve mudança não salva
+function markDirty() {
+  isDirty = true;
+}
+
+// Remove item e marca dirty
+function removeDoc(btn) {
+  btn.parentElement.remove();
+  markDirty();
+}
+
+// Adiciona novo documento
+function addNewDoc(btn) {
+  const input = btn.previousElementSibling;
+  const text = input.value.trim();
+  if(!text) return;
+  
+  const ul = btn.closest('div').previousElementSibling; // Pega o UL acima
+  const li = document.createElement('li');
+  li.className = 'doc-item';
+  li.innerHTML = `
+    <label class="doc-label">
+      <input type="checkbox" class="doc-checkbox" onchange="markDirty()">
+      <span class="doc-text">${text}</span>
+    </label>
+    <button class="btn-remove" onclick="removeDoc(this)">Excluir</button>
+  `;
+  ul.appendChild(li);
+  input.value = '';
+  markDirty();
+}
+
 function generateChecklist() {
   const size = parseInt(document.getElementById('family-size').value);
   const clean = t => t.replace(/^[\(\s\)]+/, '').trim();
-  const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox"><span class="doc-text">${clean(t)}</span></label><button class="btn-remove" onclick="this.parentElement.remove()">Excluir</button></li>`;
+  
+  const item = t => `
+    <li class="doc-item">
+      <label class="doc-label">
+        <input type="checkbox" class="doc-checkbox" onchange="markDirty()">
+        <span class="doc-text">${clean(t)}</span>
+      </label>
+      <button class="btn-remove" onclick="removeDoc(this)">Excluir</button>
+    </li>`;
+    
+  const addBox = `
+    <div class="add-doc-row">
+      <input type="text" class="add-doc-input" placeholder="Adicionar documento...">
+      <button class="btn-add-item" onclick="addNewDoc(this)">+</button>
+    </div>`;
+
   let html = '', cName = '';
   for(let i=0; i<=size; i++) {
     const n = document.getElementById(`name-${i}`).value.trim();
     if(!n && i===0) return alert('Nome do candidato é obrigatório'); if(!n) continue; if(i===0) cName = n;
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
+    
     html += `<div class="person-block"><h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
+    
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
+    
+    // Adiciona caixa de input para essa pessoa
+    html += addBox;
     html+='</div>';
   }
+  
   let extra=''; appData.questions.forEach((q,qi)=>{ const v=document.getElementById(`extra-${qi}`).value; if(v){ const[x,y]=v.split('-'); const op=appData.questions[x].options[y]; if(op.docs.length) extra+=op.docs.map(d=>item(d)).join(''); }});
-  if(extra) html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul></div>`;
+  
+  // Adiciona caixa de input para Extras
+  html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul>${addBox}</div>`;
   
   const content = document.getElementById('checklist-content'); content.innerHTML = html; content.dataset.candidate = cName;
   
-  // Reseta ID para criar novo, se veio do formulário de criação
   currentChecklistId = null; 
-  updateUrl(null); // Limpa URL
+  updateUrl(null); 
+  isDirty = true; // Gerou novo checklist = não salvo
 
   document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block'; window.scrollTo(0,0);
 }
 
 function closeChecklist() { 
+  if(isDirty && !confirm("Existem alterações não salvas. Deseja realmente voltar?")) return;
   document.getElementById('checklist-screen').style.display='none'; 
   document.getElementById('creation-screen').style.display='block'; 
   currentChecklistId=null;
-  updateUrl(null); // Remove ID da URL
+  isDirty = false;
+  updateUrl(null);
 }
 
 function updateUrl(id) {
@@ -414,12 +486,14 @@ async function saveLogic(silent = false) {
     const newId = Date.now();
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
     currentChecklistId = newId; 
-    // Atualiza URL com o novo ID
     updateUrl(newId);
   }
 
   const success = await pushToGithub();
-  if(success && !silent) alert("Salvo com sucesso! Link atualizado.");
+  if(success) {
+    isDirty = false; // Salvo com sucesso
+    if(!silent) alert("Salvo com sucesso! Link atualizado.");
+  }
   return success;
 }
 
@@ -430,13 +504,14 @@ async function manualSave() {
 
 // Botão Imprimir (Salvar + Print)
 async function printAndSaveToCloud() {
-  await saveLogic(true); // salva silencioso
+  await saveLogic(true); 
   setTimeout(() => window.print(), 200);
 }
 
 // Carregar Lista
 async function loadChecklist(id) {
-  // Se não tiver listas carregadas, tenta buscar
+  if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
+
   if(savedLists.length === 0) await fetchFromGithub();
   
   const l = savedLists.find(x=>x.id===id); 
@@ -451,8 +526,9 @@ async function loadChecklist(id) {
   c.innerHTML=l.html; 
   c.dataset.candidate=l.name;
   currentChecklistId=l.id; 
+  isDirty = false; // Acabou de carregar
   
-  updateUrl(l.id); // Garante que a URL está certa
+  updateUrl(l.id); 
   
   closeAdmin();
   document.getElementById('creation-screen').style.display='none'; 
@@ -460,7 +536,7 @@ async function loadChecklist(id) {
 }
 
 function copyLink() {
-  if(!currentChecklistId) return alert("Salve o checklist primeiro para gerar um link.");
+  if(!currentChecklistId || isDirty) return alert("Salve o checklist primeiro para gerar um link atualizado.");
   const url = window.location.href;
   navigator.clipboard.writeText(url).then(() => alert("Link copiado para a área de transferência!"));
 }
