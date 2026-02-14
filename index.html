@@ -924,12 +924,11 @@ function addNewObs(btn) {
   const li = document.createElement('li'); 
   li.className = 'doc-item';
   
-  // Cria o item SEM o checkbox, apenas com o texto e botão excluir
   li.innerHTML = `
     <div style="padding: 5px 30px 5px 5px;">
       <span class="doc-text" style="display:block;">${formatDocText(text)}</span>
     </div>
-    <button class="btn-remove" onclick="removeDoc(this)">Excluir</button>
+    <button class="btn-remove" onclick="removeDoc(this)">X</button>
   `;
   
   ul.appendChild(li); 
@@ -966,7 +965,7 @@ function generateChecklist() {
   
   // Cria um bloco cinza para diferenciar dos blocos de pessoas
   html += `<div class="person-block" style="border-left-color: #666; margin-top: 20px;">
-             <h3>Observações Gerais</h3>
+             <h3>Observações</h3>
              <ul></ul>
              ${addObsBox}
            </div>`;
@@ -1076,6 +1075,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
