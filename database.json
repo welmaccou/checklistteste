@@ -2,15 +2,6 @@
   "appData": {
     "situations": [
       {
-        "id": "mei",
-        "label": "Microempreendedor (MEI)",
-        "docs": [
-          "DASN Simei",
-          "Declaração de MEI",
-          "Extratos"
-        ]
-      },
-      {
         "id": "desempregado",
         "label": "Desempregado",
         "docs": [
