@@ -959,7 +959,7 @@ function generateChecklist() {
     html += addBox + '</div>';
   }
   let extra=''; appData.questions.forEach((q,qi)=>{ const v=document.getElementById(`extra-${qi}`).value; if(v){ const[x,y]=v.split('-'); const op=appData.questions[x].options[y]; if(op.docs.length) extra+=op.docs.map(d=>item(d)).join(''); }});
-	html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul>${addBox}</div>`;
+	html+=`<div class="extra-docs"><h3>Outros Documentos</h3><ul>${extra}</ul>${addBox}</div>`;
   
   const addObsBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar observação..."><button class="btn-add-item" onclick="addNewObs(this)">+</button></div>`;
   
@@ -1075,6 +1075,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
