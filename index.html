@@ -3,19 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de Checklist - Matrícula SISU UFG</title>
+  <title>Checklist de Documentos - Cadastro Único UFG</title>
   <style>
     /* --- Estilos Visuais --- */
     :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
-    h1 { color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; }
-    .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
-    .alert { background: #e7f1ff; border-left: 5px solid var(--primary-light); padding: 15px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 30px; }
+    
+    h1 { color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; font-size: 1.8rem; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1rem; }
+    
+    .alert { background: #eff6ff; border-left: 5px solid var(--primary-light); padding: 20px; border-radius: 4px; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
+    .alert h4 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1rem; }
+    
+    .info-text { text-align: justify; margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; color: #444; }
+    
     .section-header { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 30px 0 20px 0; color: var(--primary); font-size: 1.2rem; font-weight: 600; }
     label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 0.9rem; }
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
+    
     .btn-primary { background: var(--primary-light); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
     .btn-primary:hover { background: var(--primary); transform: translateY(-2px); }
     .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
@@ -99,10 +106,24 @@
 
   <div class="container">
     <div id="creation-screen">
-      <h1>Gerador de Checklist</h1>
+      <h1>Checklist de Documentos - Cadastro Único UFG</h1>
       <div class="subtitle">Matrícula SISU UFG - Análise Socioeconômica</div>
+      
+      <div class="alert">
+        <h4>Atenção</h4>
+        Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong>
+      </div>
+
+      <div class="info-text">
+        <strong>Definição de Grupo Familiar:</strong> é considerado grupo familiar todas as pessoas que moram com você, que dividem ou não a mesma renda, eventualmente ampliada por outras pessoas que contribuam para o rendimento ou tenham suas despesas atendidas por aquela unidade familiar, todas moradoras em um mesmo domicílio.
+      </div>
+
+      <div class="info-text" style="margin-bottom:30px;">
+        <strong>Importante:</strong> o/a estudante que se define como único membro do grupo familiar e não possua rendimento próprio suficiente para a sua subsistência deverá informar o grupo familiar de origem, ainda que residente em local diverso do seu domicílio.
+      </div>
+
       <div id="step-1">
-        <label for="family-size">Quantidade de pessoas no grupo familiar (além do candidato):</label>
+        <label for="family-size">Quantidade de pessoas no grupo familiar (além do estudante):</label>
         <div style="display: flex; gap: 10px;">
           <input type="number" id="family-size" min="0" value="0">
           <button class="btn-primary" style="width: auto; margin-top:0;" onclick="renderForm()">Iniciar</button>
@@ -146,15 +167,15 @@
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Estudantes (GitHub)</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
           <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
         </div>
 
         <div id="tab-saved">
-          <div style="margin-bottom: 10px;">
-            <input type="text" id="search-candidate" placeholder="🔍 Buscar candidato..." onkeyup="filterCandidates()" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+          <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+            <input type="text" id="search-candidate" placeholder="🔍 Buscar estudante por nome..." onkeyup="filterCandidates()" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
           </div>
           <div class="item-list" id="saved-list"></div>
         </div>
@@ -218,20 +239,16 @@ var GLOBAL_CONFIG = {
    Este módulo usa uma closure para esconder as chaves da janela global.
    ========================================================================== */
 const CloudManager = (function() {
-  // Variáveis privadas (Não acessíveis via console)
   let _u = ""; 
   let _r = "";
   let _t = "";
-  let _h = ""; // Hash da senha de admin
+  let _h = ""; 
   
-  // Função interna de desofuscação (Não acessível via console)
   function _decode(s) {
     if(!s) return "";
     try {
-      // Algoritmo simples de deslocamento para evitar leitura direta no HTML
       let d = atob(s);
       let r = "";
-      // Chave interna fixa para este build
       const k = "SISU_HIDDEN_KEY_V2";
       for (let i = 0; i < d.length; i++) {
         r += String.fromCharCode(d.charCodeAt(i) ^ k.charCodeAt(i % k.length));
@@ -240,15 +257,12 @@ const CloudManager = (function() {
     } catch(e) { return ""; }
   }
 
-  // Inicializa o módulo lendo a config global e DELETANDO-A
   function init() {
     if (typeof GLOBAL_CONFIG !== 'undefined' && GLOBAL_CONFIG) {
       _u = _decode(GLOBAL_CONFIG.u);
       _r = _decode(GLOBAL_CONFIG.r);
       _t = _decode(GLOBAL_CONFIG.t);
-      _h = GLOBAL_CONFIG.h; // Hash SHA-256 da senha
-      
-      // Limpa a variável global para dificultar inspeção
+      _h = GLOBAL_CONFIG.h; 
       try { delete window.GLOBAL_CONFIG; } catch(e) { window.GLOBAL_CONFIG = null; }
       console.log("Sistema de nuvem inicializado de forma segura.");
       return true;
@@ -256,10 +270,8 @@ const CloudManager = (function() {
     return false;
   }
 
-  // Retorna se está configurado
   function isReady() { return _u && _r && _t; }
 
-  // Verifica a senha de Admin (Hash SHA-256)
   async function checkPass(inputPass) {
     const msgBuffer = new TextEncoder().encode(inputPass);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -267,7 +279,6 @@ const CloudManager = (function() {
     return hashHex === _h;
   }
 
-  // Método Público: Buscar dados (Qualquer um pode ler se tiver o token)
   async function fetchDB() {
     if(!isReady()) throw new Error("Cloud não configurada.");
     const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
@@ -277,12 +288,11 @@ const CloudManager = (function() {
       const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
       return { data: content, sha: json.sha };
     } else if(resp.status === 404) {
-      return { data: null, sha: null }; // Novo arquivo
+      return { data: null, sha: null }; 
     }
     throw new Error("Erro GitHub: " + resp.status);
   }
 
-  // Método Público: Salvar dados (Qualquer um pode salvar checklist, mas admin é protegido pela UI)
   async function saveDB(data, sha) {
     if(!isReady()) throw new Error("Cloud não configurada.");
     const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
@@ -299,9 +309,7 @@ const CloudManager = (function() {
     return await resp.json();
   }
 
-  // Utilitário para gerar código no Admin (Publicamente exposto no Admin)
   function generateCode(user, repo, token, passHash) {
-    // Mesma lógica de _decode, mas inversa
     const k = "SISU_HIDDEN_KEY_V2";
     function _enc(s) {
       let r = "";
@@ -313,17 +321,9 @@ const CloudManager = (function() {
     return { u: _enc(user), r: _enc(repo), t: _enc(token), h: passHash };
   }
 
-  return {
-    init: init,
-    isReady: isReady,
-    checkPass: checkPass,
-    fetch: fetchDB,
-    save: saveDB,
-    generateCode: generateCode // Apenas utilitário, não expõe credenciais atuais
-  };
+  return { init, isReady, checkPass, fetch: fetchDB, save: saveDB, generateCode };
 })();
 
-// Inicializa imediatamente
 const isCloudConfigured = CloudManager.init();
 
 /* ==========================================================================
@@ -391,15 +391,11 @@ async function saveDataToCloud() {
   if(!isCloudConfigured) return alert("Erro: Nuvem não configurada.");
   showLoading('Salvando...');
   
-  // Primeiro, sincroniza para pegar o SHA mais recente e evitar conflitos
   try {
     const res = await CloudManager.fetch();
     if(res.data) {
       currentSHA = res.sha;
-      // Mescla inteligente: mantém listas que não temos localmente
       const remoteLists = res.data.savedLists || [];
-      // (Simplificado: sobrescrevemos o remote com o local atual + remotos que não deletamos)
-      // Para uso simples, vamos enviar o estado atual da memória como verdade
     }
   } catch(e) { console.log("Criando novo arquivo..."); }
 
@@ -450,7 +446,7 @@ document.addEventListener('click', () => document.querySelectorAll('.dropdown-me
 function renderForm() {
   const c = document.getElementById('form-container'); const s = parseInt(document.getElementById('family-size').value);
   if(isNaN(s)||s<0) return alert('Inválido');
-  c.innerHTML = ''; c.appendChild(createMemberCard('Candidato',0,true));
+  c.innerHTML = ''; c.appendChild(createMemberCard('Estudante',0,true));
   for(let i=1; i<=s; i++) c.appendChild(createMemberCard(`Membro ${i}`,i,false));
   const b = document.createElement('button'); b.className = 'btn-primary'; b.textContent = 'Gerar Checklist'; b.onclick = generateChecklist; c.appendChild(b);
 }
@@ -490,10 +486,10 @@ function generateChecklist() {
   let html = '', cName = '';
   for(let i=0; i<=size; i++) {
     const n = document.getElementById(`name-${i}`).value.trim();
-    if(!n && i===0) return alert('Nome do candidato é obrigatório'); if(!n) continue; if(i===0) cName = n;
+    if(!n && i===0) return alert('Nome do estudante obrigatório'); if(!n) continue; if(i===0) cName = n;
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
     
-    html += `<div class="person-block"><h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
+    html += `<div class="person-block"><h3>${i===0?'Estudante':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
     
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
@@ -537,7 +533,6 @@ async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => w
 
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-  // Recarrega do Cloud para garantir
   await syncData();
   const l = savedLists.find(x=>x.id===id); 
   if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
@@ -548,24 +543,13 @@ async function loadChecklist(id) {
 function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
 async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await saveDataToCloud(); if(ok) renderSavedList(); }
 
-/* === NOVO: FILTRAR CANDIDATOS === */
+/* === FILTRAR ESTUDANTES (NOVA FUNÇÃO) === */
 function filterCandidates() {
-  const input = document.getElementById('search-candidate');
-  const filter = input.value.toLowerCase();
-  const container = document.getElementById('saved-list');
-  const rows = container.getElementsByClassName('list-row');
-
+  const filter = document.getElementById('search-candidate').value.toLowerCase();
+  const rows = document.getElementById('saved-list').getElementsByClassName('list-row');
   for (let i = 0; i < rows.length; i++) {
-    // O nome está dentro do primeiro <div> que contém <strong>
-    const nameColumn = rows[i].getElementsByTagName("div")[0];
-    if (nameColumn) {
-      const txtValue = nameColumn.textContent || nameColumn.innerText;
-      if (txtValue.toLowerCase().indexOf(filter) > -1) {
-        rows[i].style.display = "";
-      } else {
-        rows[i].style.display = "none";
-      }
-    }
+    const text = rows[i].innerText.toLowerCase();
+    rows[i].style.display = text.indexOf(filter) > -1 ? "" : "none";
   }
 }
 
@@ -590,11 +574,9 @@ function openGithubConfig() { document.getElementById('github-config').style.dis
 async function generateConfig() {
   const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
-  
   const msgBuffer = new TextEncoder().encode(pass);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
   const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-  
   const codeObj = CloudManager.generateCode(user, repo, token, hashHex);
   const code = `var GLOBAL_CONFIG = ${JSON.stringify(codeObj, null, 2)};`;
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
@@ -621,4 +603,3 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
-
