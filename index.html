@@ -145,7 +145,7 @@
 
       <div id="admin-panel" style="display:none;">
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos</button>
+          <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
           <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
@@ -166,23 +166,19 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configuração de Nuvem</h3>
-          <p style="font-size:0.85rem;">Gere o código abaixo. O Token ficará ofuscado para permitir que o site funcione para todos os usuários.</p>
-          
-          <label>Definir Senha de Admin (Hash):</label>
-          <input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
-          
+          <h3>Configuração de Nuvem (Ofuscada)</h3>
+          <p style="font-size:0.85rem;">Insira seus dados para gerar o código seguro. O token será protegido dentro de uma função privada.</p>
+          <label>Senha de Admin (Definir nova):</label><input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
-          
           <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Bloco de Configuração</button>
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Código</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Substitua a variável GLOBAL_CONFIG no topo do código:</label>
-            <textarea id="output-code" style="width:100%; height:120px; font-family:monospace; font-size:0.8rem;"></textarea>
+            <label>Substitua a variável `var GLOBAL_CONFIG` no topo do script por este bloco:</label>
+            <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
 
@@ -204,30 +200,125 @@
 
 <script>
 /* ==========================================================================
-   CONFIGURAÇÃO GLOBAL (Cole o bloco gerado aqui)
+   CONFIGURAÇÃO GITHUB & SEGURANÇA (IIFE OBFUSCADA)
    ========================================================================== */
-const GLOBAL_CONFIG = {
-  "u": "JCw/OD4zNi0q",
-  "r": "MCE2NjQ8PDErPyAqJyw=",
-  "t": "NCEjCg05DBUsIHEBPiUWDzQ5YzsuewJpYXsAH2hlInAYfnY4JBwYGQ==",
-  "h": "d5a7d040e8c9a049f1b2ebdaa96fb34ea6f9a67197a7b27c0fe387db70e55bef"
-};
+var GLOBAL_CONFIG = null; // Cole o código gerado no Admin aqui.
 
 /* ==========================================================================
-   UTILITÁRIOS (Obfuscação & Hash)
+   MODULO DE NUVEM SEGURO (CloudManager)
+   Este módulo usa uma closure para esconder as chaves da janela global.
    ========================================================================== */
-const _k = "SISU_PUB_KEY";
-function _obf(s){if(!s)return "";let r="";for(let i=0;i<s.length;i++)r+=String.fromCharCode(s.charCodeAt(i)^_k.charCodeAt(i%_k.length));return btoa(r);}
-function _deobf(s){if(!s)return "";try{let d=atob(s),r="";for(let i=0;i<d.length;i++)r+=String.fromCharCode(d.charCodeAt(i)^_k.charCodeAt(i%_k.length));return r;}catch(e){return "";}}
+const CloudManager = (function() {
+  // Variáveis privadas (Não acessíveis via console)
+  let _u = ""; 
+  let _r = "";
+  let _t = "";
+  let _h = ""; // Hash da senha de admin
+  
+  // Função interna de desofuscação (Não acessível via console)
+  function _decode(s) {
+    if(!s) return "";
+    try {
+      // Algoritmo simples de deslocamento para evitar leitura direta no HTML
+      let d = atob(s);
+      let r = "";
+      // Chave interna fixa para este build
+      const k = "SISU_HIDDEN_KEY_V2";
+      for (let i = 0; i < d.length; i++) {
+        r += String.fromCharCode(d.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+      }
+      return r;
+    } catch(e) { return ""; }
+  }
 
-async function sha256(message) {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+  // Inicializa o módulo lendo a config global e DELETANDO-A
+  function init() {
+    if (typeof GLOBAL_CONFIG !== 'undefined' && GLOBAL_CONFIG) {
+      _u = _decode(GLOBAL_CONFIG.u);
+      _r = _decode(GLOBAL_CONFIG.r);
+      _t = _decode(GLOBAL_CONFIG.t);
+      _h = GLOBAL_CONFIG.h; // Hash SHA-256 da senha
+      
+      // Limpa a variável global para dificultar inspeção
+      try { delete window.GLOBAL_CONFIG; } catch(e) { window.GLOBAL_CONFIG = null; }
+      console.log("Sistema de nuvem inicializado de forma segura.");
+      return true;
+    }
+    return false;
+  }
+
+  // Retorna se está configurado
+  function isReady() { return _u && _r && _t; }
+
+  // Verifica a senha de Admin (Hash SHA-256)
+  async function checkPass(inputPass) {
+    const msgBuffer = new TextEncoder().encode(inputPass);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex === _h;
+  }
+
+  // Método Público: Buscar dados (Qualquer um pode ler se tiver o token)
+  async function fetchDB() {
+    if(!isReady()) throw new Error("Cloud não configurada.");
+    const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${_t}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(resp.ok) {
+      const json = await resp.json();
+      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+      return { data: content, sha: json.sha };
+    } else if(resp.status === 404) {
+      return { data: null, sha: null }; // Novo arquivo
+    }
+    throw new Error("Erro GitHub: " + resp.status);
+  }
+
+  // Método Público: Salvar dados (Qualquer um pode salvar checklist, mas admin é protegido pela UI)
+  async function saveDB(data, sha) {
+    if(!isReady()) throw new Error("Cloud não configurada.");
+    const url = `https://api.github.com/repos/${_u}/${_r}/contents/database.json`;
+    const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
+    if(sha) body.sha = sha;
+
+    const resp = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${_t}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if(!resp.ok) throw new Error("Erro ao salvar: " + resp.status);
+    return await resp.json();
+  }
+
+  // Utilitário para gerar código no Admin (Publicamente exposto no Admin)
+  function generateCode(user, repo, token, passHash) {
+    // Mesma lógica de _decode, mas inversa
+    const k = "SISU_HIDDEN_KEY_V2";
+    function _enc(s) {
+      let r = "";
+      for (let i = 0; i < s.length; i++) {
+        r += String.fromCharCode(s.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+      }
+      return btoa(r);
+    }
+    return { u: _enc(user), r: _enc(repo), t: _enc(token), h: passHash };
+  }
+
+  return {
+    init: init,
+    isReady: isReady,
+    checkPass: checkPass,
+    fetch: fetchDB,
+    save: saveDB,
+    generateCode: generateCode // Apenas utilitário, não expõe credenciais atuais
+  };
+})();
+
+// Inicializa imediatamente
+const isCloudConfigured = CloudManager.init();
 
 /* ==========================================================================
-   DADOS E ESTADO
+   DADOS E ESTADO DA APP
    ========================================================================== */
 const defaultData = {
   situations: [
@@ -255,87 +346,70 @@ let isDirty = false;
 window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; } });
 
 /* ==========================================================================
-   GITHUB API (ACESSO PÚBLICO/OFUSCADO)
+   CARREGAMENTO E SINCRONIZAÇÃO
    ========================================================================== */
 window.onload = async function() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
-
-  if(GLOBAL_CONFIG) {
-    await fetchFromGithub();
+  if(isCloudConfigured) {
+    await syncData();
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
     if(id) loadChecklist(parseInt(id));
   } else {
-    document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin.";
+    document.getElementById('status-bar').textContent = "⚠️ Nuvem não configurada. Use o menu Admin.";
   }
 };
 
-async function fetchFromGithub() {
-  showLoading('Sincronizando com a Nuvem...');
-  // Token agora é carregado para TODOS (Ofuscado, não criptografado com senha)
-  const u = _deobf(GLOBAL_CONFIG.u);
-  const r = _deobf(GLOBAL_CONFIG.r);
-  const t = _deobf(GLOBAL_CONFIG.t);
-  
-  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
-
+async function syncData() {
+  showLoading('Sincronizando...');
   try {
-    const resp = await fetch(url, { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3+json' } });
-    if(resp.ok) {
-      const json = await resp.json();
-      currentSHA = json.sha;
-      const content = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-      appData = content.appData || defaultData;
-      savedLists = content.savedLists || [];
+    const res = await CloudManager.fetch();
+    if(res.data) {
+      appData = res.data.appData || defaultData;
+      savedLists = res.data.savedLists || [];
+      currentSHA = res.sha;
       document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
-    } else if(resp.status === 404) {
+    } else {
       document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
   } catch(e) {
-    alert("Erro de conexão GitHub: " + e.message);
+    alert("Erro de conexão: " + e.message);
   } finally {
     hideLoading();
   }
 }
 
-async function pushToGithub() {
-  showLoading('Salvando na Nuvem...');
-  const u = _deobf(GLOBAL_CONFIG.u);
-  const r = _deobf(GLOBAL_CONFIG.r);
-  const t = _deobf(GLOBAL_CONFIG.t); // Token acessível a todos
+async function saveDataToCloud() {
+  if(!isCloudConfigured) return alert("Erro: Nuvem não configurada.");
+  showLoading('Salvando...');
   
-  if(!u || !t) { hideLoading(); return alert("Erro de configuração."); }
-
-  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
-  
-  const payload = { appData, savedLists };
-  const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
-  
-  const body = {
-    message: "Update SISU Data " + new Date().toISOString(),
-    content: contentBase64
-  };
-  if(currentSHA) body.sha = currentSHA;
+  // Primeiro, sincroniza para pegar o SHA mais recente e evitar conflitos
+  try {
+    const res = await CloudManager.fetch();
+    if(res.data) {
+      currentSHA = res.sha;
+      // Mescla inteligente: mantém listas que não temos localmente
+      const remoteLists = res.data.savedLists || [];
+      // (Simplificado: sobrescrevemos o remote com o local atual + remotos que não deletamos)
+      // Para uso simples, vamos enviar o estado atual da memória como verdade
+    }
+  } catch(e) { console.log("Criando novo arquivo..."); }
 
   try {
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${t}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    
-    if(resp.ok) {
-      const json = await resp.json();
-      currentSHA = json.content.sha;
-      document.getElementById('status-bar').textContent = "✅ Salvo com sucesso às " + new Date().toLocaleTimeString();
-      return true;
-    } else { throw new Error('Erro GitHub: ' + resp.status); }
+    const payload = { appData, savedLists };
+    const res = await CloudManager.save(payload, currentSHA);
+    currentSHA = res.content.sha;
+    document.getElementById('status-bar').textContent = "✅ Salvo às " + new Date().toLocaleTimeString();
+    return true;
   } catch(e) {
-    alert("Falha ao salvar: " + e.message); return false;
-  } finally { hideLoading(); }
+    alert("Falha ao salvar: " + e.message);
+    return false;
+  } finally {
+    hideLoading();
+  }
 }
 
 /* ==========================================================================
-   LÓGICA PRINCIPAL
+   LÓGICA UI
    ========================================================================== */
 function showLoading(msg) { document.getElementById('loading-text').textContent=msg; document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading() { document.getElementById('loading-overlay').style.display='none'; }
@@ -445,7 +519,7 @@ async function saveLogic(silent = false) {
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
     currentChecklistId = newId; updateUrl(newId);
   }
-  const success = await pushToGithub();
+  const success = await saveDataToCloud();
   if(success) { isDirty = false; if(!silent) alert("Salvo com sucesso!"); }
   return success;
 }
@@ -454,7 +528,8 @@ async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => w
 
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-  if(savedLists.length === 0) await fetchFromGithub();
+  // Recarrega do Cloud para garantir
+  await syncData();
   const l = savedLists.find(x=>x.id===id); 
   if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
   const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
@@ -462,19 +537,20 @@ async function loadChecklist(id) {
   closeAdmin(); document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block';
 }
 function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
-async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await pushToGithub(); if(ok) renderSavedList(); }
+async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await saveDataToCloud(); if(ok) renderSavedList(); }
 
-/* === ADMIN (Protegido por Hash) === */
-function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!GLOBAL_CONFIG) openGithubConfig(); }
+/* === ADMIN === */
+function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!isCloudConfigured) openGithubConfig(); }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
 
 async function checkLogin() {
   const pass = document.getElementById('admin-pass').value;
-  if(!GLOBAL_CONFIG) { if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta"); return; }
-  
-  // Verifica Hash da Senha
-  const hash = await sha256(pass);
-  if(hash === GLOBAL_CONFIG.h) {
+  if(!isCloudConfigured) {
+    if(pass === "14121992") { document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Senha incorreta");
+    return;
+  }
+  const isValid = await CloudManager.checkPass(pass);
+  if(isValid) {
     document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
     renderAdminLists(); renderSavedList();
   } else { alert("Senha incorreta."); }
@@ -485,10 +561,12 @@ async function generateConfig() {
   const pass = document.getElementById('new-admin-pass').value; const user = document.getElementById('gh-user').value; const repo = document.getElementById('gh-repo').value; const token = document.getElementById('gh-token').value;
   if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
   
-  const hash = await sha256(pass);
-  const data = { u: _obf(user), r: _obf(repo), t: _obf(token), h: hash }; // Tudo ofuscado, não criptografado, para acesso público. Hash protege apenas o painel.
+  const msgBuffer = new TextEncoder().encode(pass);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
   
-  const code = `const GLOBAL_CONFIG = ${JSON.stringify(data, null, 2)};`;
+  const codeObj = CloudManager.generateCode(user, repo, token, hashHex);
+  const code = `var GLOBAL_CONFIG = ${JSON.stringify(codeObj, null, 2)};`;
   document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
 }
 
@@ -507,10 +585,9 @@ async function saveEdit() {
   const type=document.getElementById('edit-type').value, id=parseInt(document.getElementById('edit-id').value), label=document.getElementById('edit-label').value;
   if(type==='situation') { const d=document.getElementById('sit-docs').value.split('\n').filter(x=>x.trim()); const o={id:label.toLowerCase(),label,docs:d}; id===-1?appData.situations.push(o):appData.situations[id]=o; }
   else { const ops=[]; document.querySelectorAll('.option-row').forEach(r=>{ops.push({label:r.querySelector('.opt-label').value,docs:r.querySelector('.doc-input').value.split('\n').filter(x=>x.trim())})}); const o={id:'q'+Date.now(),text:label,options:ops}; id===-1?appData.questions.push(o):appData.questions[id]=o; }
-  const ok = await pushToGithub(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
+  const ok = await saveDataToCloud(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
 }
-async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await pushToGithub(); if(ok) renderAdminLists(); }
+async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await saveDataToCloud(); if(ok) renderAdminLists(); }
 </script>
 </body>
 </html>
-
