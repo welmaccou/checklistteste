@@ -1017,8 +1017,8 @@ async function generateConfig() {
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
 function renderSavedList() { const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>'; el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>`).join(''); }
 function renderAdminLists() {
-  document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">Del</button></div></div>`).join('');
-  document.getElementById('questions-list').innerHTML = appData.questions.map((q,i)=>`<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">Del</button></div></div>`).join('');
+  document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">X</button></div></div>`).join('');
+  document.getElementById('questions-list').innerHTML = appData.questions.map((q,i)=>`<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">X</button></div></div>`).join('');
 }
 function editSituation(i) { setupEdit('situation',i); if(i!==-1) { document.getElementById('edit-label').value=appData.situations[i].label; document.getElementById('sit-docs').value=appData.situations[i].docs.join('\n'); } }
 function editQuestion(i) { setupEdit('question',i); if(i!==-1) { document.getElementById('edit-label').value=appData.questions[i].text; appData.questions[i].options.forEach(o=>addOptionRow(o.label,o.docs.join('\n'))); } else addOptionRow('',''); }
@@ -1035,6 +1035,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
