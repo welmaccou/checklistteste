@@ -55,6 +55,11 @@
           "CTPS (em branco)",
           "CNIS (se maior de 18)"
         ]
+      },
+      {
+        "id": "bolsa família",
+        "label": "Bolsa Família",
+        "docs": []
       }
     ],
     "questions": [
