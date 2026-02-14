@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Checklist - Matrícula SISU UFG</title>
   <style>
-    /* --- Estilos Visuais --- */
+    /* --- Estilos Visuais (Mantidos) --- */
     :root { --primary: #0056b3; --primary-light: #007BFF; --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); --surface: #ffffff; --text: #333333; --border: #e0e0e0; --shadow: 0 10px 30px rgba(0,0,0,0.1); --success: #28a745; --warning: #ffc107; }
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-image: var(--bg-gradient); margin: 0; padding: 20px; min-height: 100vh; color: var(--text); display: flex; flex-direction: column; align-items: center; }
     .container { background: var(--surface); width: 100%; max-width: 850px; padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 40px; position: relative; }
@@ -17,8 +17,8 @@
         display: block; 
         font-weight: 600; 
         color: #444; 
-        font-size: 0.9rem; 
-    }
+        font-size: 0.9rem;
+    }    
     
     input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; background: #fcfcfc; }
     input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
@@ -33,21 +33,19 @@
     .btn-link { background: var(--warning); color: #333; }
     .btn-back { background: var(--primary); }
     
-    /* Checklist UI */
     #checklist-screen { display: none; }
     .person-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid #0056b3; background-color: #fcfcfc; page-break-inside: avoid; }
     .checklist-content h3 { margin-top: 0; margin-bottom: 10px; color: #333; font-size: 1.2rem; text-transform: uppercase; }
     .checklist-content ul { list-style: none; padding-left: 0; margin-top: 5px; }
     li.doc-item { position: relative; margin-bottom: 4px; padding: 4px; border-radius: 4px; transition: background-color 0.2s; }
     li.doc-item:hover { background-color: #f0f0f0; }
-  
     .doc-label { 
-      display: flex; 
-      align-items: flex-start; 
-      cursor: pointer; 
-      width: 100%;
-      align-items: center;
-    }
+          display: flex; 
+          align-items: flex-start; 
+          cursor: pointer; 
+          width: 100%;
+          align-items: center;
+    }    
     
     .doc-checkbox { appearance: none; -webkit-appearance: none; min-width: 20px; width: 20px; height: 20px; border: 2px solid #000; margin-right: 12px; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 2px; background: #fff; cursor: pointer; flex-shrink: 0; }
     .doc-checkbox:checked::after { content: 'X'; font-weight: 900; color: #000; font-size: 16px; line-height: 1; font-family: Arial, sans-serif; }
@@ -56,7 +54,6 @@
     li.doc-item:hover .btn-remove { display: block; }
     .extra-docs { background: #fffbe6; padding: 15px; border: 1px solid #ffe58f; border-radius: 4px; margin-top: 20px; }
     
-    /* Novo: Área de Adicionar Documento */
     .add-doc-row { display: flex; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
     .add-doc-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
     .btn-add-item { background: #28a745; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold; }
@@ -75,7 +72,6 @@
     .btn-del { background: #dc3545; color: white; }
     .btn-add { background: #28a745; color: white; }
     
-    /* DROPDOWN MELHORADO COM OK */
     .dropdown-container { position: relative; user-select: none; }
     .dropdown-trigger { background: #fff; border: 1px solid var(--border); padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 21px; }
     .dropdown-trigger::after { content: ''; border: 5px solid transparent; border-top-color: #666; margin-left: 10px; }
@@ -84,12 +80,10 @@
     .dropdown-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; transition: background 0.2s; }
     .dropdown-item:hover { background-color: #f0f7ff; }
     .dropdown-item input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
-    
     .dropdown-ok { padding: 8px; border-top: 1px solid #eee; position: sticky; bottom: 0; background: white; text-align: center; }
     .dropdown-ok button { background: var(--success); color: white; border: none; padding: 6px 0; width: 90%; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
     .dropdown-ok button:hover { background: #218838; }
 
-    /* Loading Overlay */
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0056b3; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -153,11 +147,12 @@
       </div>
 
       <div id="login-screen">
-        <label>Senha de Acesso:</label>
+        <label>Senha de Acesso (para descriptografar o cofre):</label>
         <div style="display:flex; gap:10px;">
-          <input type="password" id="admin-pass">
+          <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
+        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Seus dados do GitHub estão criptografados neste arquivo. A senha correta irá desbloqueá-los.</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
@@ -165,7 +160,7 @@
           <button class="tab-btn active" onclick="switchTab('saved')">Candidatos (GitHub)</button>
           <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
           <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
-          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">☁️ Config GitHub</button>
+          <button class="tab-btn" onclick="openGithubConfig()" style="color:#24292e;">⚙️ Cofre GitHub</button>
         </div>
 
         <div id="tab-saved">
@@ -183,17 +178,22 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configuração de Nuvem (Obfuscada)</h3>
-          <p style="font-size:0.85rem;">Preencha para gerar os códigos. Cole os códigos no topo do arquivo HTML para acesso permanente.</p>
+          <h3>Configurar Cofre (Criptografado)</h3>
+          <p style="font-size:0.85rem;">Insira seus dados reais. Eles serão criptografados com a senha que você usar para entrar.</p>
+          
+          <label>Nova Senha de Admin (usada para criptografar):</label>
+          <input type="text" id="new-admin-pass" placeholder="ex: 14121992">
+          
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
           <label>Token (PAT):</label><input type="password" id="gh-token">
+          
           <div style="margin-top:10px; display:flex; gap:10px;">
-             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateObfuscatedCode()">Gerar Códigos</button>
+             <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateEncryptedConfig()">Gerar Bloco de Configuração</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
           </div>
           <div id="obfuscated-output" style="display:none; margin-top:15px;">
-            <label>Copie e substitua a variável GH_SECRETS no código:</label>
+            <label>Substitua a variável ENCRYPTED_CONFIG no código por isso:</label>
             <textarea id="output-code" style="width:100%; height:80px; font-family:monospace; font-size:0.8rem;"></textarea>
           </div>
         </div>
@@ -212,13 +212,51 @@
 
 <script>
 /* ==========================================================================
-   CONFIGURAÇÃO OBFUSCADA (Copie do Admin e Cole Aqui)
+   CONFIGURAÇÃO CRIPTOGRAFADA (COFRE)
    ========================================================================== */
-const GH_SECRETS = {
-  u: "JCw/OD4wJiwg",
-  r: "MCE2NjQ/LDAhJiAsPyA=",
-  t: "NCEjCisyAjlnYBQaHx8TOXg8Ags3PwdgICANIigQOgcaEGw3FnIYZA=="
-};
+// Cole o código gerado no Admin aqui.
+// Exemplo: const ENCRYPTED_CONFIG = { salt: "...", iv: "...", data: "..." };
+const ENCRYPTED_CONFIG = null;
+
+/* ==========================================================================
+   CRIPTOGRAFIA (AES-GCM)
+   ========================================================================== */
+async function getKey(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await window.crypto.subtle.importKey("raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]);
+  return window.crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: Uint8Array.from(atob(salt), c => c.charCodeAt(0)), iterations: 100000, hash: "SHA-256" },
+    keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
+  );
+}
+
+async function encryptData(data, password) {
+  const salt = window.crypto.getRandomValues(new Uint8Array(16));
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const key = await getKey(password, btoa(String.fromCharCode(...salt)));
+  const encoded = new TextEncoder().encode(JSON.stringify(data));
+  const encrypted = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
+  return {
+    salt: btoa(String.fromCharCode(...salt)),
+    iv: btoa(String.fromCharCode(...iv)),
+    data: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+  };
+}
+
+async function decryptData(encryptedObj, password) {
+  try {
+    const key = await getKey(password, encryptedObj.salt);
+    const iv = Uint8Array.from(atob(encryptedObj.iv), c => c.charCodeAt(0));
+    const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
+    const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
+    return JSON.parse(new TextDecoder().decode(decrypted));
+  } catch (e) {
+    return null; // Senha errada ou dados corrompidos
+  }
+}
+
+// Variáveis Globais de Credenciais (Só existem na RAM após login)
+let GH_CREDS = { user: null, repo: null, token: null };
 
 /* ==========================================================================
    DADOS E ESTADO
@@ -244,50 +282,39 @@ let appData = defaultData;
 let savedLists = [];
 let currentSHA = null;
 let currentChecklistId = null; 
-let isDirty = false; // Flag para alterações não salvas
+let isDirty = false; 
 
 // --- Evento: Aviso de saída se não salvo ---
 window.addEventListener('beforeunload', (e) => {
-  if (isDirty) {
-    e.preventDefault();
-    e.returnValue = 'Você tem alterações não salvas. Deseja sair?';
-  }
+  if (isDirty) { e.preventDefault(); e.returnValue = 'Alterações não salvas.'; }
 });
 
-// --- Obfuscação ---
-const _key = "SISU_SECURE_KEY";
-function _obfuscate(str){if(!str)return "";let r="";for(let i=0;i<str.length;i++)r+=String.fromCharCode(str.charCodeAt(i)^_key.charCodeAt(i%_key.length));return btoa(r);}
-function _deobfuscate(str){if(!str)return "";try{let d=atob(str),r="";for(let i=0;i<d.length;i++)r+=String.fromCharCode(d.charCodeAt(i)^_key.charCodeAt(i%_key.length));return r;}catch(e){return "";}}
-
 /* ==========================================================================
-   GITHUB API (PERSISTÊNCIA CENTRAL)
+   GITHUB API
    ========================================================================== */
-
-// Carrega tudo ao iniciar a página e verifica URL
 window.onload = async function() {
-  if(GH_SECRETS.u && GH_SECRETS.t) {
-    await fetchFromGithub();
-    
-    // Verifica parâmetro ?id= no link
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if(id) {
-      loadChecklist(parseInt(id));
-    }
-  } else {
-    document.getElementById('status-bar').textContent = "⚠️ Nuvem não configurada. Use o menu Admin.";
+  // Verifica se temos config. Se não tiver, não conseguimos carregar automaticamente
+  // sem a senha do usuário.
+  // Modificação: Se tiver ID na URL, pedimos a senha para carregar.
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  
+  if(ENCRYPTED_CONFIG && id) {
+    // Se tiver ID, forçamos o login para descriptografar e carregar
+    openAdmin();
+    document.getElementById('login-screen').insertAdjacentHTML('beforeend', '<p style="color:red;font-weight:bold;">Digite a senha para carregar o checklist compartilhado.</p>');
+  } else if (!ENCRYPTED_CONFIG) {
+    document.getElementById('status-bar').textContent = "⚠️ Sistema não configurado. Acesse a Área Admin.";
   }
 };
 
 async function fetchFromGithub() {
+  if(!GH_CREDS.token) return;
   showLoading('Sincronizando com a Nuvem...');
-  const u = _deobfuscate(GH_SECRETS.u);
-  const r = _deobfuscate(GH_SECRETS.r);
-  const t = _deobfuscate(GH_SECRETS.t);
-  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
+  const url = `https://api.github.com/repos/${GH_CREDS.user}/${GH_CREDS.repo}/contents/database.json`;
 
   try {
-    const resp = await fetch(url, { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3+json' } });
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Accept': 'application/vnd.github.v3+json' } });
     if(resp.ok) {
       const json = await resp.json();
       currentSHA = json.sha;
@@ -295,39 +322,40 @@ async function fetchFromGithub() {
       appData = content.appData || defaultData;
       savedLists = content.savedLists || [];
       document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
+      
+      // Se tiver ID pendente na URL, carrega agora
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if(id && !currentChecklistId) {
+        closeAdmin(); // Fecha modal de login
+        loadChecklist(parseInt(id));
+      }
+
     } else if(resp.status === 404) {
       document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
   } catch(e) {
-    alert("Erro de conexão GitHub: " + e.message);
+    alert("Erro GitHub: " + e.message);
   } finally {
     hideLoading();
   }
 }
 
 async function pushToGithub() {
+  if(!GH_CREDS.token) { alert("Você precisa logar na área admin para salvar na nuvem."); openAdmin(); return false; }
   showLoading('Salvando na Nuvem...');
-  const u = _deobfuscate(GH_SECRETS.u);
-  const r = _deobfuscate(GH_SECRETS.r);
-  const t = _deobfuscate(GH_SECRETS.t);
-  
-  if(!u || !t) { hideLoading(); return alert("Configure a nuvem no Admin primeiro."); }
-
-  const url = `https://api.github.com/repos/${u}/${r}/contents/database.json`;
+  const url = `https://api.github.com/repos/${GH_CREDS.user}/${GH_CREDS.repo}/contents/database.json`;
   
   const payload = { appData, savedLists };
   const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
   
-  const body = {
-    message: "Update SISU Data " + new Date().toISOString(),
-    content: contentBase64
-  };
+  const body = { message: "Update SISU Data " + new Date().toISOString(), content: contentBase64 };
   if(currentSHA) body.sha = currentSHA;
 
   try {
     const resp = await fetch(url, {
       method: 'PUT',
-      headers: { 'Authorization': `token ${t}`, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': `token ${GH_CREDS.token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     
@@ -336,15 +364,10 @@ async function pushToGithub() {
       currentSHA = json.content.sha;
       document.getElementById('status-bar').textContent = "✅ Salvo na nuvem às " + new Date().toLocaleTimeString();
       return true;
-    } else {
-      throw new Error('Erro GitHub: ' + resp.status);
-    }
+    } else { throw new Error('Erro GitHub: ' + resp.status); }
   } catch(e) {
-    alert("Falha ao salvar: " + e.message);
-    return false;
-  } finally {
-    hideLoading();
-  }
+    alert("Falha ao salvar: " + e.message); return false;
+  } finally { hideLoading(); }
 }
 
 /* ==========================================================================
@@ -358,19 +381,15 @@ function createMultiSelect(id, items) {
   const t = document.createElement('div'); t.className = 'dropdown-trigger'; t.innerHTML = '<span class="trigger-text">Selecione...</span>';
   t.onclick = (e) => { e.stopPropagation(); toggleDropdown(id); };
   const m = document.createElement('div'); m.className = 'dropdown-menu'; m.id = `menu-${id}`;
-  
   items.forEach(i => {
     const r = document.createElement('label'); r.className = 'dropdown-item';
     r.innerHTML = `<input type="checkbox" value="${i.id}" onchange="updateTrigger('${id}')">${i.label}`;
     r.onclick = (e) => e.stopPropagation(); m.appendChild(r);
   });
-
-  // Botão OK no final
   const okDiv = document.createElement('div'); okDiv.className = 'dropdown-ok';
   okDiv.innerHTML = '<button type="button">OK - Concluir</button>';
   okDiv.onclick = (e) => { e.stopPropagation(); toggleDropdown(id); };
   m.appendChild(okDiv);
-
   c.appendChild(t); c.appendChild(m); return c;
 }
 function toggleDropdown(id) { document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== `menu-${id}`) m.classList.remove('show'); }); document.getElementById(`menu-${id}`).classList.toggle('show'); }
@@ -401,56 +420,21 @@ function createMemberCard(title, i, isCand) {
   card.innerHTML = h; card.querySelector(`#sit-wrapper-${i}`).appendChild(createMultiSelect(`multi-${i}`, appData.situations)); return card;
 }
 
-// Marca que houve mudança não salva
-function markDirty() {
-  isDirty = true;
-}
-
-// Remove item e marca dirty
-function removeDoc(btn) {
-  btn.parentElement.remove();
-  markDirty();
-}
-
-// Adiciona novo documento
+function markDirty() { isDirty = true; }
+function removeDoc(btn) { btn.parentElement.remove(); markDirty(); }
 function addNewDoc(btn) {
-  const input = btn.previousElementSibling;
-  const text = input.value.trim();
-  if(!text) return;
-  
+  const input = btn.previousElementSibling; const text = input.value.trim(); if(!text) return;
   const ul = btn.closest('div').previousElementSibling; // Pega o UL acima
-  const li = document.createElement('li');
-  li.className = 'doc-item';
-  li.innerHTML = `
-    <label class="doc-label">
-      <input type="checkbox" class="doc-checkbox" onchange="markDirty()">
-      <span class="doc-text">${text}</span>
-    </label>
-    <button class="btn-remove" onclick="removeDoc(this)">Excluir</button>
-  `;
-  ul.appendChild(li);
-  input.value = '';
-  markDirty();
+  const li = document.createElement('li'); li.className = 'doc-item';
+  li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${text}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
+  ul.appendChild(li); input.value = ''; markDirty();
 }
 
 function generateChecklist() {
   const size = parseInt(document.getElementById('family-size').value);
   const clean = t => t.replace(/^[\(\s\)]+/, '').trim();
-  
-  const item = t => `
-    <li class="doc-item">
-      <label class="doc-label">
-        <input type="checkbox" class="doc-checkbox" onchange="markDirty()">
-        <span class="doc-text">${clean(t)}</span>
-      </label>
-      <button class="btn-remove" onclick="removeDoc(this)">Excluir</button>
-    </li>`;
-    
-  const addBox = `
-    <div class="add-doc-row">
-      <input type="text" class="add-doc-input" placeholder="Adicionar documento...">
-      <button class="btn-add-item" onclick="addNewDoc(this)">+</button>
-    </div>`;
+  const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${clean(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button></li>`;
+  const addBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar documento..."><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
 
   let html = '', cName = '';
   for(let i=0; i<=size; i++) {
@@ -459,55 +443,30 @@ function generateChecklist() {
     const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
     
     html += `<div class="person-block"><h3>${i===0?'Candidato(a)':'Familiar'}: ${n}</h3><strong>Básicos:</strong><ul>${item('RG e CPF')}${i===0?item('Declaração Composição Familiar'):''}${item('Extratos Bancários')}${item('Registrato (BACEN)')}</ul>`;
-    
     if(ch.length) { html+='<strong>Específicos:</strong><ul>'; let d=[]; ch.forEach(c=>{ const s=appData.situations.find(x=>x.id===c.value); if(s) d.push(...s.docs); }); [...new Set(d)].forEach(x=>html+=item(x)); html+='</ul>'; }
     else html+='<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
-    
-    html += addBox;
-    html+='</div>';
+    html += addBox + '</div>';
   }
-  
   let extra=''; appData.questions.forEach((q,qi)=>{ const v=document.getElementById(`extra-${qi}`).value; if(v){ const[x,y]=v.split('-'); const op=appData.questions[x].options[y]; if(op.docs.length) extra+=op.docs.map(d=>item(d)).join(''); }});
-  
   html+=`<div class="extra-docs"><h3>Complementar</h3><ul>${extra}</ul>${addBox}</div>`;
   
   const content = document.getElementById('checklist-content'); content.innerHTML = html; content.dataset.candidate = cName;
-  
-  currentChecklistId = null; 
-  updateUrl(null); 
-  isDirty = true; 
-
+  currentChecklistId = null; updateUrl(null); isDirty = true; 
   document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block'; window.scrollTo(0,0);
 }
 
 function closeChecklist() { 
   if(isDirty && !confirm("Existem alterações não salvas. Deseja realmente voltar?")) return;
-  document.getElementById('checklist-screen').style.display='none'; 
-  document.getElementById('creation-screen').style.display='block'; 
-  currentChecklistId=null;
-  isDirty = false;
-  updateUrl(null);
+  document.getElementById('checklist-screen').style.display='none'; document.getElementById('creation-screen').style.display='block'; 
+  currentChecklistId=null; isDirty = false; updateUrl(null);
 }
+function updateUrl(id) { const url = new URL(window.location); if(id) url.searchParams.set('id', id); else url.searchParams.delete('id'); window.history.pushState({}, '', url); }
 
-function updateUrl(id) {
-  const url = new URL(window.location);
-  if(id) url.searchParams.set('id', id);
-  else url.searchParams.delete('id');
-  window.history.pushState({}, '', url);
-}
-
-/* === SALVAR E CARREGAR === */
-
+/* === SALVAR / CARREGAR === */
 async function saveLogic(silent = false) {
   const div = document.getElementById('checklist-content');
   const name = div.dataset.candidate || 'Sem Nome';
   div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked','checked') : c.removeAttribute('checked'));
-  
-  // Remove temporariamente os inputs de adicionar para salvar limpo no HTML (Opcional - aqui estou mantendo para permitir adicionar depois de salvar)
-  // const tempDiv = div.cloneNode(true);
-  // tempDiv.querySelectorAll('.add-doc-row').forEach(e => e.remove());
-  // const html = tempDiv.innerHTML;
-  
   const html = div.innerHTML;
 
   if(currentChecklistId) {
@@ -516,124 +475,87 @@ async function saveLogic(silent = false) {
   } else {
     const newId = Date.now();
     savedLists.push({ id:newId, name, html, created:new Date().toLocaleString(), updated:new Date().toLocaleString() });
-    currentChecklistId = newId; 
-    updateUrl(newId);
+    currentChecklistId = newId; updateUrl(newId);
   }
-
   const success = await pushToGithub();
-  if(success) {
-    isDirty = false; 
-    if(!silent) alert("Salvo com sucesso! Link atualizado.");
-  }
+  if(success) { isDirty = false; if(!silent) alert("Salvo com sucesso!"); }
   return success;
 }
+async function manualSave() { await saveLogic(false); }
+async function printAndSaveToCloud() { await saveLogic(true); setTimeout(() => window.print(), 200); }
 
-// Botão Salvar (Manual)
-async function manualSave() {
-  await saveLogic(false);
-}
-
-// Botão Imprimir (Salvar + Print)
-async function printAndSaveToCloud() {
-  await saveLogic(true); 
-  setTimeout(() => window.print(), 200);
-}
-
-// Carregar Lista
 async function loadChecklist(id) {
   if(isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-
   if(savedLists.length === 0) await fetchFromGithub();
-  
   const l = savedLists.find(x=>x.id===id); 
-  
-  if(!l) {
-    alert('Checklist não encontrado ou ID inválido.');
-    updateUrl(null);
-    return;
-  }
-
-  const c = document.getElementById('checklist-content'); 
-  c.innerHTML=l.html; 
-  c.dataset.candidate=l.name;
-  currentChecklistId=l.id; 
-  isDirty = false; 
-  
-  updateUrl(l.id); 
-  
-  closeAdmin();
-  document.getElementById('creation-screen').style.display='none'; 
-  document.getElementById('checklist-screen').style.display='block';
+  if(!l) { alert('Checklist não encontrado.'); updateUrl(null); return; }
+  const c = document.getElementById('checklist-content'); c.innerHTML=l.html; c.dataset.candidate=l.name;
+  currentChecklistId=l.id; isDirty = false; updateUrl(l.id); 
+  closeAdmin(); document.getElementById('creation-screen').style.display='none'; document.getElementById('checklist-screen').style.display='block';
 }
+function copyLink() { if(!currentChecklistId || isDirty) return alert("Salve primeiro."); navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
+async function deleteSavedList(id) { if(!confirm('Excluir?')) return; savedLists = savedLists.filter(x=>x.id!==id); const ok = await pushToGithub(); if(ok) renderSavedList(); }
 
-function copyLink() {
-  if(!currentChecklistId || isDirty) return alert("Salve o checklist primeiro para gerar um link atualizado.");
-  const url = window.location.href;
-  navigator.clipboard.writeText(url).then(() => alert("Link copiado para a área de transferência!"));
-}
-
-async function deleteSavedList(id) {
-  if(!confirm('Excluir esta lista da nuvem?')) return;
-  savedLists = savedLists.filter(x=>x.id!==id);
-  const ok = await pushToGithub();
-  if(ok) renderSavedList();
-}
-
-/* === ADMIN === */
-function openAdmin() { document.getElementById('admin-modal').style.display='block'; }
+/* === ADMIN & CRIPTOGRAFIA === */
+function openAdmin() { document.getElementById('admin-modal').style.display='block'; if(!ENCRYPTED_CONFIG) openGithubConfig(); }
 function closeAdmin() { document.getElementById('admin-modal').style.display='none'; document.getElementById('login-screen').style.display='block'; document.getElementById('admin-panel').style.display='none'; document.getElementById('admin-pass').value=''; }
 
 async function checkLogin() {
-  const input = document.getElementById('admin-pass').value;
-  const hashHex = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input)))).map(b => b.toString(16).padStart(2, '0')).join('');
-  if(hashHex === "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b") {
+  const pass = document.getElementById('admin-pass').value;
+  if(!ENCRYPTED_CONFIG) {
+    // Fallback para primeira configuração ou uso sem cofre
+    if(pass === "14121992") {
+       document.getElementById('login-screen').style.display='none'; document.getElementById('admin-panel').style.display='block';
+    } else alert("Senha incorreta (Modo Padrão)");
+    return;
+  }
+  // Tenta descriptografar as credenciais
+  const creds = await decryptData(ENCRYPTED_CONFIG, pass);
+  if(creds) {
+    GH_CREDS = creds; // Salva credenciais na RAM
     document.getElementById('login-screen').style.display='none'; 
-    document.getElementById('admin-panel').style.display='block'; 
+    document.getElementById('admin-panel').style.display='block';
     fetchFromGithub().then(() => { renderAdminLists(); renderSavedList(); });
-  } else { alert('Senha incorreta'); }
+  } else {
+    alert("Senha incorreta ou dados corrompidos.");
+  }
+}
+
+function openGithubConfig() { document.getElementById('github-config').style.display='block'; }
+async function generateEncryptedConfig() {
+  const pass = document.getElementById('new-admin-pass').value;
+  const user = document.getElementById('gh-user').value;
+  const repo = document.getElementById('gh-repo').value;
+  const token = document.getElementById('gh-token').value;
+  
+  if(!pass || !user || !repo || !token) return alert("Preencha todos os campos");
+  
+  const dataToEncrypt = { user, repo, token };
+  const encrypted = await encryptData(dataToEncrypt, pass);
+  
+  const code = `const ENCRYPTED_CONFIG = ${JSON.stringify(encrypted, null, 2)};`;
+  document.getElementById('obfuscated-output').style.display='block';
+  document.getElementById('output-code').value = code;
 }
 
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); ['saved','situations','questions'].forEach(x=>document.getElementById(`tab-${x}`).style.display='none'); document.getElementById(`tab-${t}`).style.display='block'; }
-
-function renderSavedList() {
-  const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>';
-  el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">Excluir</button></div></div>`).join('');
-}
+function renderSavedList() { const el = document.getElementById('saved-list'); if(!savedLists.length) return el.innerHTML='<p style="padding:10px">Vazio</p>'; el.innerHTML = savedLists.map(i=>`<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">Excluir</button></div></div>`).join(''); }
 function renderAdminLists() {
   document.getElementById('situations-list').innerHTML = appData.situations.map((s,i)=>`<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">Del</button></div></div>`).join('');
   document.getElementById('questions-list').innerHTML = appData.questions.map((q,i)=>`<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Edit</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">Del</button></div></div>`).join('');
 }
-/* Funções de Config GitHub UI */
-function openGithubConfig() { document.getElementById('github-config').style.display='block'; if(GH_SECRETS.u) { document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value="Configuração já no código."; } }
-function generateObfuscatedCode() {
-  const u = document.getElementById('gh-user').value.trim(); const r = document.getElementById('gh-repo').value.trim(); const t = document.getElementById('gh-token').value.trim();
-  if(!u || !r || !t) return alert("Preencha tudo.");
-  const code = `const GH_SECRETS = {\n  u: "${_obfuscate(u)}",\n  r: "${_obfuscate(r)}",\n  t: "${_obfuscate(t)}"\n};`;
-  document.getElementById('obfuscated-output').style.display='block'; document.getElementById('output-code').value = code;
-}
-
-/* Funções de Edição Admin */
 function editSituation(i) { setupEdit('situation',i); if(i!==-1) { document.getElementById('edit-label').value=appData.situations[i].label; document.getElementById('sit-docs').value=appData.situations[i].docs.join('\n'); } }
 function editQuestion(i) { setupEdit('question',i); if(i!==-1) { document.getElementById('edit-label').value=appData.questions[i].text; appData.questions[i].options.forEach(o=>addOptionRow(o.label,o.docs.join('\n'))); } else addOptionRow('',''); }
 function setupEdit(type, id) { document.getElementById('edit-overlay').style.display='block'; document.getElementById('edit-type').value=type; document.getElementById('edit-id').value=id; document.getElementById('situation-fields').style.display=type==='situation'?'block':'none'; document.getElementById('question-fields').style.display=type==='question'?'block':'none'; document.getElementById('options-container').innerHTML=''; document.getElementById('edit-label').value=''; document.getElementById('sit-docs').value=''; }
 function addOptionRow(l='',d='') { document.getElementById('options-container').innerHTML+=`<div class="option-row" style="display:grid;grid-template-columns:1fr 2fr auto;gap:5px;margin-bottom:5px;"><input class="opt-label" value="${l}"><textarea class="doc-input">${d}</textarea><button onclick="this.parentElement.remove()">X</button></div>`; }
 function cancelEdit() { document.getElementById('edit-overlay').style.display='none'; }
-
 async function saveEdit() {
   const type=document.getElementById('edit-type').value, id=parseInt(document.getElementById('edit-id').value), label=document.getElementById('edit-label').value;
   if(type==='situation') { const d=document.getElementById('sit-docs').value.split('\n').filter(x=>x.trim()); const o={id:label.toLowerCase(),label,docs:d}; id===-1?appData.situations.push(o):appData.situations[id]=o; }
   else { const ops=[]; document.querySelectorAll('.option-row').forEach(r=>{ops.push({label:r.querySelector('.opt-label').value,docs:r.querySelector('.doc-input').value.split('\n').filter(x=>x.trim())})}); const o={id:'q'+Date.now(),text:label,options:ops}; id===-1?appData.questions.push(o):appData.questions[id]=o; }
-  
-  const ok = await pushToGithub();
-  if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
+  const ok = await pushToGithub(); if(ok) { renderAdminLists(); document.getElementById('edit-overlay').style.display='none'; }
 }
-
-async function delItem(t,i) { 
-  if(!confirm('Excluir e salvar na nuvem?')) return;
-  t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); 
-  const ok = await pushToGithub();
-  if(ok) renderAdminLists();
-}
+async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return; t==='situation'?appData.situations.splice(i,1):appData.questions.splice(i,1); const ok = await pushToGithub(); if(ok) renderAdminLists(); }
 </script>
 </body>
 </html>
