@@ -571,15 +571,15 @@
         <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
         <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir / PDF</button>
       </div>
-      <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - SISU</h1>
+      <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - Cadastro Único UFG</h1>
 
    <div class="alert">
         <h4>Instruções:</h4>
         <strong>a)</strong> Não é necessário que as declarações estejam autenticadas, mas é preciso que o declarante assine como no RG, que deve acompanhar as declarações;</br>
 
-		    <strong>b)</strong> No caso de extratos bancários emitidos via Internet que não contenham o nome do titular da conta, o estudante deverá identificar;</br>
+		<strong>b)</strong> No caso de extratos bancários emitidos via Internet que não contenham o nome do titular da conta, o estudante deverá identificar;</br>
 
-		    <strong>c)</strong> Em casos extremos, em que não seja possível apresentar um determinado documento, poderá ser apresentada uma declaração de ausência, devidamente justificada e comprovada.
+		<strong>c)</strong> Em casos extremos, em que não seja possível apresentar um determinado documento, poderá ser apresentada uma declaração de ausência, devidamente justificada e comprovada.
     </div>
       
       <div id="checklist-content" class="checklist-content"></div>
@@ -599,12 +599,12 @@
       </div>
 
       <div id="login-screen">
-        <label>Senha de Acesso (Cofre):</label>
+        <label>Senha de Acesso:</label>
         <div style="display:flex; gap:10px;">
           <input type="password" id="admin-pass" placeholder="Sua senha de admin">
           <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
         </div>
-        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Seus dados do GitHub estão criptografados neste arquivo.</p>
+        <p style="font-size:0.8rem; color:#666; margin-top:10px;">Acesse a área de administração</p>
       </div>
 
       <div id="admin-panel" style="display:none;">
@@ -1045,6 +1045,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
