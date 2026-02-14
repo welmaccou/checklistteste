@@ -2,15 +2,6 @@
   "appData": {
     "situations": [
       {
-        "id": "assalariado",
-        "label": "Assalariado",
-        "docs": [
-          "Contracheques (Out, Nov, Dez 2025)",
-          "CTPS completa",
-          "IRPF 2025 (se declarou)"
-        ]
-      },
-      {
         "id": "autonomo",
         "label": "Autônomo/Informal",
         "docs": [
