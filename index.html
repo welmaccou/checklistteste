@@ -809,7 +809,7 @@ async function syncData() {
       appData = res.data.appData || defaultData;
       savedLists = res.data.savedLists || [];
       currentSHA = res.sha;
-      document.getElementById('status-bar').textContent = "✅ Dados sincronizados.";
+      document.getElementById('status-bar').textContent = "✅ Tudo ok!";
     } else {
       document.getElementById('status-bar').textContent = "ℹ️ Repositório conectado. Arquivo será criado ao salvar.";
     }
@@ -1036,6 +1036,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
