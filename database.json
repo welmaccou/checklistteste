@@ -20,11 +20,11 @@
         ]
       },
       {
-        "id": "aposentado",
+        "id": "aposentado/pensionista",
         "label": "Aposentado/Pensionista",
         "docs": [
           "Extrato do benefício",
-          "IRPF 2025"
+          "IRPF 2025 ([Modelo aqui (google.com)])"
         ]
       },
       {
