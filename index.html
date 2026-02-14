@@ -901,7 +901,7 @@ function addNewDoc(btn) {
   const input = btn.previousElementSibling; const text = input.value.trim(); if(!text) return;
   const ul = btn.closest('div').previousElementSibling; 
   const li = document.createElement('li'); li.className = 'doc-item';
-  li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">Excluir</button>`;
+  li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button>`;
   ul.appendChild(li); input.value = ''; markDirty();
 }
 
@@ -1035,4 +1035,5 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
