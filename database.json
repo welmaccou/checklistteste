@@ -7,6 +7,13 @@
         "docs": [
           "IRPF 2025 ([Modelo aqui](google.com))"
         ]
+      },
+      {
+        "id": "desempregado",
+        "label": "Desempregado",
+        "docs": [
+          "Test"
+        ]
       }
     ],
     "questions": [
