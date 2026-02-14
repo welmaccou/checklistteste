@@ -2,18 +2,6 @@
   "appData": {
     "situations": [
       {
-        "id": "desempregado",
-        "label": "Desempregado",
-        "docs": [
-          "Comprovante de seguro-desemprego – se estiver recebendo;",
-          "Termo de rescisão de contrato – para demissões que ocorreram nos últimos 6 meses;",
-          "Declaração de desempregado. Modelo disponível em: https://aestudantil.goias.ufg.br/p/edital-unificado-dois-mil-e-vinte-seis;",
-          "Declaração de Imposto de Renda Pessoa Jurídica, exercício 2025, ano base 2024, acompanhada do recibo de entrega à Receita Federal do Brasil – se a pessoa não declarou, não é necessário apresentar;",
-          "Extratos de todas as contas bancária, física e/ou digital, corrente e/ou poupança, dos 03(três) últimos meses (dezembro/2025, janeiro/2026 e fevereiro/2026). Caso não tenha conta bancária, apresentar declaração emitida pelo Banco Central do Brasil (BACEN), por meio do link: https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS; ",
-          "Relatório de Contas e Relacionamentos em Bancos (CSS) emitido por meio do sistema Registrato do Banco Central do Brasil (BACEN), por meio do link: https://www.bcb.gov.br/meubc/registrato;"
-        ]
-      },
-      {
         "id": "nunca",
         "label": "Nunca Trabalhou",
         "docs": [
