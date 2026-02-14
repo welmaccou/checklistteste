@@ -129,6 +129,19 @@
           }
         ]
       }
+    ],
+    "basicDocsStudent": [
+      "RG e CPF",
+      "Declaração de Composição Familiar",
+      "Extratos Bancários",
+      "Registrato (BACEN)",
+      "Teste33"
+    ],
+    "basicDocsFamily": [
+      "RG e CPF",
+      "Extratos Bancários",
+      "Registrato (BACEN)",
+      "Teste32"
     ]
   },
   "savedLists": [
