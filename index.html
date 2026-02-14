@@ -633,12 +633,12 @@
         </div>
 
         <div id="github-config" style="display:none; margin-top:20px; padding:20px; border:1px solid #ccc; background:#f9f9f9; border-radius:8px;">
-          <h3>Configuração de Nuvem (Ofuscada)</h3>
-          <p style="font-size:0.85rem;">Insira seus dados para gerar o código seguro. O token será protegido dentro de uma função privada.</p>
+          <h3>Configuração do GitHub</h3>
+          <p style="font-size:0.85rem;">Insira seus dados para gerar o código seguro.</p>
           <label>Senha de Admin (Definir nova):</label><input type="text" id="new-admin-pass" placeholder="Ex: 14121992">
           <label>Usuário GitHub:</label><input type="text" id="gh-user">
           <label>Nome do Repositório:</label><input type="text" id="gh-repo">
-          <label>Token (PAT):</label><input type="password" id="gh-token">
+          <label>Token:</label><input type="password" id="gh-token">
           <div style="margin-top:10px; display:flex; gap:10px;">
              <button class="btn-primary" style="margin:0; background:#24292e;" onclick="generateConfig()">Gerar Código</button>
              <button class="btn-sm" onclick="document.getElementById('github-config').style.display='none'">Cancelar</button>
@@ -655,7 +655,7 @@
           <label>Título:</label><input type="text" id="edit-label">
           <div id="situation-fields" style="display:none;">
             <label>Documentos:</label>
-            <p style="font-size:0.8em; color:#666; margin:0 0 5px 0;">Use: <b>[Texto do Link](http://site.com)</b></p>
+            <p style="font-size:0.8em; color:#666; margin:0 0 5px 0;">Para incluir link, use: <b>[Texto do Link](http://site.com)</b></p>
             <textarea id="sit-docs" style="width:100%; min-height:150px;"></textarea>
           </div>
           <div id="question-fields" style="display:none;"><label>Opções:</label><div id="options-container"></div><button class="btn-sm btn-add" onclick="addOptionRow()">+ Opção</button></div>
@@ -1045,6 +1045,7 @@ async function delItem(t,i) { if(!confirm('Excluir e salvar na nuvem?')) return;
 </script>
 </body>
 </html>
+
 
 
 
