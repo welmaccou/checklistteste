@@ -1,6 +1,14 @@
 {
   "appData": {
-    "situations": [],
+    "situations": [
+      {
+        "id": "aposentado/pensionista",
+        "label": "Aposentado/Pensionista",
+        "docs": [
+          "IRPF 2025 ([Modelo aqui](google.com))"
+        ]
+      }
+    ],
     "questions": [
       {
         "id": "moradia",
