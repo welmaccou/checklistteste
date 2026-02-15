@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist de Documentos - Cadastro Único UFG</title>
+    <title id="page-title-tag">Checklist de Documentos - Cadastro Único UFG</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -68,8 +68,8 @@
             margin-bottom: 25px;
             line-height: 1.6;
         }
-		
-		.extra-docs ul {
+        
+        .extra-docs ul {
         list-style: none !important; 
         padding-left: 0 !important;  
         margin: 5px 0 !important;    
@@ -113,6 +113,8 @@
         input[type="text"],
         input[type="number"],
         input[type="password"],
+        input[type="date"],
+        textarea,
         select {
             width: 100%;
             padding: 12px 15px;
@@ -126,7 +128,8 @@
         }
 
         input:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--primary-light);
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
@@ -438,7 +441,7 @@
             background: #f9f9f9;
             color: #adb5bd;
             cursor: not-allowed;
-			visibility: hidden;
+            visibility: hidden;
         }
 
         .btn-edit {
@@ -542,6 +545,24 @@
         .dropdown-ok button:hover {
             background: #218838;
         }
+        
+        /* Bulk Actions Styles */
+        .bulk-actions {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .bulk-check {
+            transform: scale(1.3);
+            margin-right: 10px;
+        }
 
         #loading-overlay {
             display: none;
@@ -636,9 +657,10 @@
     <div class="container">
         <div id="creation-screen">
             <h1>Gerador de Checklist</h1>
-            <div class="subtitle">Documentos para inscrição no Cadastro Único de Bolsas da UFG</div>
-            <div class="alert">
-                <h4>Atenção</h4> Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong>
+            <div class="subtitle" id="gen-subtitle">Documentos para inscrição no Cadastro Único de Bolsas da UFG</div>
+            <div class="alert" id="gen-alert-box">
+                <h4 id="gen-alert-title">Atenção</h4> 
+                <span id="gen-alert-body">Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong></span>
             </div>
             <div class="info-text">
                 <strong>Definição de Grupo Familiar:</strong> é considerado grupo familiar todas as pessoas que moram com você, que dividem ou não a mesma renda, eventualmente ampliada por outras pessoas que contribuam para o rendimento ou tenham suas despesas atendidas por aquela unidade familiar, todas moradoras em um mesmo domicílio.
@@ -662,12 +684,14 @@
                 <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
                 <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir / PDF</button>
             </div>
-            <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - Cadastro Único UFG</h1>
-            <div class="alert">
-                <h4>Instruções:</h4>
+            <h1 id="check-title" style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - Cadastro Único UFG</h1>
+            <div class="alert" id="check-alert-box">
+                <h4 id="check-instr-title">Instruções:</h4>
+                <span id="check-instr-body">
                 <strong>a)</strong> Não é necessário que as declarações estejam autenticadas, mas é preciso que o declarante assine como no RG, que deve acompanhar as declarações;</br>
                 <strong>b)</strong> No caso de extratos bancários emitidos via Internet que não contenham o nome do titular da conta, o estudante deverá identificar;</br>
                 <strong>c)</strong> Em casos extremos, em que não seja possível apresentar um determinado documento, poderá ser apresentada uma declaração de ausência, devidamente justificada e comprovada.
+                </span>
             </div>
             <div id="checklist-content" class="checklist-content"></div>
         </div>
@@ -693,17 +717,56 @@
             <div id="admin-panel" style="display:none;">
                 <div class="admin-tabs">
                     <button class="tab-btn active" onclick="switchTab('saved')">Listas Geradas</button>
+                    <button class="tab-btn" onclick="switchTab('texts')">Textos do Site</button>
                     <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
                     <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
                     <button class="tab-btn" onclick="switchTab('basics')">Docs Gerais</button>
                 </div>
                 <div id="tab-saved">
+                    <div class="bulk-actions">
+                        <label style="font-size:0.9rem; margin:0;"><input type="checkbox" id="check-all" onchange="toggleAllSaved(this)"> Tudo</label>
+                        <div style="width:1px; height:20px; background:#ccc; margin:0 5px;"></div>
+                        <button class="btn-sm btn-del" onclick="deleteSelected()">Excluir Selecionados</button>
+                        <div style="flex:1"></div>
+                        <span style="font-size:0.85rem;">Excluir anteriores a:</span>
+                        <input type="date" id="date-limit" style="width:auto; padding:5px;">
+                        <button class="btn-sm btn-del" onclick="deleteOlderThan()">Excluir</button>
+                    </div>
                     <div style="margin-bottom: 15px; display: flex; gap: 10px;">
                         <input type="text" id="search-candidate" placeholder="🔍 Buscar nome (Deixe vazio para ver recentes)..." onkeypress="if(event.key==='Enter') searchServer()" style="flex:1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                         <button class="btn-sm btn-primary2" onclick="searchServer()" style="margin:0;">Buscar</button>
                     </div>
                     <div class="item-list" id="saved-list"></div>
                     <p style="font-size:0.8rem; color:#666; text-align:center; margin-top:5px;"> Mostrando apenas os 10 primeiros resultados da busca. </p>
+                </div>
+                <div id="tab-texts" style="display:none; padding-top:10px;">
+                    <h3>Editar Textos do Site</h3>
+                    <p style="font-size:0.85rem; color:#666;">Essas alterações são aplicadas imediatamente para todos os usuários.</p>
+                    
+                    <label style="margin-top:15px;">Título da Aba/Navegador:</label>
+                    <input type="text" id="txt-page-title">
+                    
+                    <label style="margin-top:15px;">Subtítulo (Tela Inicial):</label>
+                    <input type="text" id="txt-subtitle">
+                    
+                    <label style="margin-top:15px;">Título do Checklist (Impresso):</label>
+                    <input type="text" id="txt-check-title">
+                    
+                    <div style="border-top:1px dashed #ccc; margin: 15px 0;"></div>
+                    
+                    <label>Título do Aviso (Tela Inicial):</label>
+                    <input type="text" id="txt-alert-title">
+                    <label style="margin-top:5px;">Texto do Aviso (HTML permitido):</label>
+                    <textarea id="txt-alert-body" style="height:80px;"></textarea>
+                    
+                    <div style="border-top:1px dashed #ccc; margin: 15px 0;"></div>
+
+                    <label>Título das Instruções (Tela Checklist):</label>
+                    <input type="text" id="txt-instr-title">
+                    <label style="margin-top:5px;">Texto das Instruções (HTML permitido):</label>
+                    <textarea id="txt-instr-body" style="height:100px;"></textarea>
+
+                    <button class="btn-primary" onclick="saveSiteTexts()">Salvar Textos</button>
                 </div>
                 <div id="tab-situations" style="display:none;">
                     <button class="btn-sm btn-add" onclick="editSituation(-1)">+ Nova Situação</button>
@@ -822,11 +885,23 @@
             };
         })();
         CloudManager.init();
+        
+        // --- DATA STRUCTURE UPDATE ---
         const defaultData = {
             basicDocsStudent: ['RG e CPF'],
             basicDocsFamily: ['RG e CPF'],
             situations: [],
-            questions: []
+            questions: [],
+            // Novos campos para textos dinâmicos
+            siteTexts: {
+                pageTitle: "Checklist de Documentos - Cadastro Único UFG",
+                subtitle: "Documentos para inscrição no Cadastro Único de Bolsas da UFG",
+                checkTitle: "Checklist de Documentos - Cadastro Único UFG",
+                alertTitle: "Atenção",
+                alertBody: "Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong>",
+                instrTitle: "Instruções:",
+                instrBody: "<strong>a)</strong> Não é necessário que as declarações estejam autenticadas, mas é preciso que o declarante assine como no RG, que deve acompanhar as declarações;</br><strong>b)</strong> No caso de extratos bancários emitidos via Internet que não contenham o nome do titular da conta, o estudante deverá identificar;</br><strong>c)</strong> Em casos extremos, em que não seja possível apresentar um determinado documento, poderá ser apresentada uma declaração de ausência, devidamente justificada e comprovada."
+            }
         };
         let appData = defaultData;
         let savedLists = [];
@@ -847,8 +922,7 @@
         function hideLoading() {
             document.getElementById('loading-overlay').style.display = 'none';
         }
-        // --- LÓGICA DE CONDICIONAIS CORRIGIDA ---
-        // --- LÓGICA DE CONDICIONAIS (NOME CORRIGIDO) ---
+        
         function aplicarRegras(pIdx) {
             if (!appData.questions) return;
             // Varre todas as perguntas do card dessa pessoa (pIdx)
@@ -994,49 +1068,49 @@
         }
 
         function addNewDoc(btn) {
-    const input = btn.previousElementSibling;
-    const text = input.value.trim();
-    if (!text) return;
+            const input = btn.previousElementSibling;
+            const text = input.value.trim();
+            if (!text) return;
 
-    // 1. Identifica a linha onde está o botão e o pai (bloco da pessoa)
-    const row = btn.closest('.add-doc-row');
-    const prev = row.previousElementSibling;
-    let targetUl = null;
+            // 1. Identifica a linha onde está o botão e o pai (bloco da pessoa)
+            const row = btn.closest('.add-doc-row');
+            const prev = row.previousElementSibling;
+            let targetUl = null;
 
-    // 2. Lógica inteligente para achar a lista correta:
-    
-    // Caso A: O elemento imediatamente acima é uma lista (Situação normal)
-    if (prev && prev.tagName === 'UL') {
-        targetUl = prev;
-    }
-    // Caso B: O elemento acima é um bloco (ex: Complementares ou div de pergunta), buscamos a lista DENTRO dele
-    else if (prev && prev.tagName === 'DIV') {
-        const listsInside = prev.querySelectorAll('ul');
-        if (listsInside.length > 0) {
-            // Pega a última lista dentro desse bloco
-            targetUl = listsInside[listsInside.length - 1];
+            // 2. Lógica inteligente para achar a lista correta:
+            
+            // Caso A: O elemento imediatamente acima é uma lista (Situação normal)
+            if (prev && prev.tagName === 'UL') {
+                targetUl = prev;
+            }
+            // Caso B: O elemento acima é um bloco (ex: Complementares ou div de pergunta), buscamos a lista DENTRO dele
+            else if (prev && prev.tagName === 'DIV') {
+                const listsInside = prev.querySelectorAll('ul');
+                if (listsInside.length > 0) {
+                    // Pega a última lista dentro desse bloco
+                    targetUl = listsInside[listsInside.length - 1];
+                }
+            }
+
+            // Caso C (Segurança): Se não achou nada acima, pega a última lista disponível no cartão da pessoa
+            if (!targetUl) {
+                const parent = row.parentElement;
+                const allLists = parent.querySelectorAll('ul');
+                if (allLists.length > 0) targetUl = allLists[allLists.length - 1];
+            }
+
+            // Caso D: Se não existir nenhuma lista no cartão, cria uma nova
+            if (!targetUl) {
+                targetUl = document.createElement('ul');
+                row.parentElement.insertBefore(targetUl, row);
+            }
+
+            // 3. Insere o item na lista encontrada (Agora herda o estilo correto sem marcadores)
+            targetUl.insertAdjacentHTML('beforeend', `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`);
+            
+            input.value = ''; 
+            markDirty();
         }
-    }
-
-    // Caso C (Segurança): Se não achou nada acima, pega a última lista disponível no cartão da pessoa
-    if (!targetUl) {
-        const parent = row.parentElement;
-        const allLists = parent.querySelectorAll('ul');
-        if (allLists.length > 0) targetUl = allLists[allLists.length - 1];
-    }
-
-    // Caso D: Se não existir nenhuma lista no cartão, cria uma nova
-    if (!targetUl) {
-        targetUl = document.createElement('ul');
-        row.parentElement.insertBefore(targetUl, row);
-    }
-
-    // 3. Insere o item na lista encontrada (Agora herda o estilo correto sem marcadores)
-    targetUl.insertAdjacentHTML('beforeend', `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`);
-    
-    input.value = ''; 
-    markDirty();
-}
 
         function addNewObs(btn) {
             const input = btn.previousElementSibling;
@@ -1050,20 +1124,79 @@
 
         function generateChecklist() {
             const size = parseInt(document.getElementById('family-size').value);
+            
+            // --- BLOCO DE VALIDAÇÃO ---
+            // Verifica todos os campos antes de gerar
+            for (let i = 0; i <= size; i++) {
+                const memberName = i === 0 ? 'do Estudante' : `do ${i}º Familiar`;
+
+                // 1. Valida Nome (Obrigatório)
+                const nameInput = document.getElementById(`name-${i}`);
+                if (!nameInput.value.trim()) {
+                    alert(`Por favor, preencha o nome ${memberName}.`);
+                    nameInput.focus();
+                    return; 
+                }
+
+                // 2. Valida Situação (Obrigatório - pelo menos 1 selecionado)
+                const situationsChecked = document.querySelectorAll(`#container-multi-${i} input:checked`);
+                if (situationsChecked.length === 0) {
+                    alert(`Por favor, selecione a Situação (Renda) ${memberName}.`);
+                    
+                    // Dá um destaque visual no campo com erro
+                    const container = document.getElementById(`container-multi-${i}`);
+                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const trigger = container.querySelector('.dropdown-trigger');
+                    trigger.style.borderColor = "red";
+                    trigger.style.boxShadow = "0 0 5px rgba(255,0,0,0.3)";
+                    
+                    // Remove o destaque após 3 segundos
+                    setTimeout(() => {
+                        trigger.style.borderColor = "#e0e0e0";
+                        trigger.style.boxShadow = "none";
+                    }, 3000);
+                    
+                    return;
+                }
+
+                // 3. Valida Perguntas (Apenas para o estudante - índice 0)
+                if (i === 0 && appData.questions) {
+                    for (let qi = 0; qi < appData.questions.length; qi++) {
+                        // Verifica se a pergunta existe no DOM
+                        const boxId = `q-box-${i}-${qi}`;
+                        const selectId = `extra-${i}-${qi}`;
+                        const box = document.getElementById(boxId);
+                        const select = document.getElementById(selectId);
+                        
+                        // Só valida se a pergunta estiver visível E não tiver resposta
+                        if (box && select && box.style.display !== 'none' && !select.value) {
+                            alert(`Campo obrigatório: Por favor, responda a pergunta "${appData.questions[qi].text}"`);
+                            select.focus();
+                            select.style.borderColor = "red";
+                             setTimeout(() => { select.style.borderColor = "#e0e0e0"; }, 3000);
+                            return;
+                        }
+                    }
+                }
+            }
+            // --- FIM DA VALIDAÇÃO ---
+
             const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`;
             const addBox = `<div class="add-doc-row"><input class="add-doc-input" placeholder="Adicionar documento"><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
             let html = '',
                 cName = '';
+            
             for (let i = 0; i <= size; i++) {
                 const n = document.getElementById(`name-${i}`).value.trim();
-                if (!n && i === 0) return alert('Nome do estudante obrigatório');
-                if (!n) continue;
+                
                 if (i === 0) cName = n;
                 const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
                 const basicList = (i === 0) ? (appData.basicDocsStudent || []) : (appData.basicDocsFamily || []);
                 let basicHtml = '';
                 basicList.forEach(t => basicHtml += item(t));
                 html += `<div class="person-block"><h3>${i===0?'Estudante':'Familiar'}: ${n}</h3><strong>Gerais:</strong><ul>${basicHtml}</ul>`;
+                
+                // Como agora é obrigatório, sempre haverá itens aqui
                 if (ch.length) {
                     html += '<strong>Rendimentos:</strong><ul>';
                     let d = [];
@@ -1073,38 +1206,32 @@
                     });
                     [...new Set(d)].forEach(x => html += item(x));
                     html += '</ul>';
-                } else html += '<p style="color:#666">Nenhuma situação.</p>';
-                // --- PROCESSAMENTO DAS PERGUNTAS DENTRO DO CARD DO MEMBRO ---
-                // Apenas para o estudante (i=0) ou para todos se o sistema mudou para permitir perguntas para todos
-                // No seu código original, perguntas são só para o estudante (isCand=true).
-                // --- PROCESSAMENTO DAS PERGUNTAS DENTRO DO CARD DO MEMBRO ---
-        // Apenas para o estudante (i=0)
-        if(i === 0 && appData.questions) {
-            let extraDocsHtml = ''; // Variável para acumular apenas os itens <li>
-            
-            appData.questions.forEach((q, qi) => {
-                const box = document.getElementById(`q-box-${i}-${qi}`);
-                if (box && box.style.display === 'none') return; // Pula se invisível
+                }
+                
+                // Processamento das perguntas
+                if(i === 0 && appData.questions) {
+                    let extraDocsHtml = '';
+                    appData.questions.forEach((q, qi) => {
+                        const box = document.getElementById(`q-box-${i}-${qi}`);
+                        if (box && box.style.display === 'none') return;
 
-                const v = document.getElementById(`extra-${i}-${qi}`).value;
-                if (v) {
-                    const [x, y] = v.split('-');
-                    const op = appData.questions[x].options[y];
-                    if (op.docs && op.docs.length) {
-                        // AQUI MUDOU: Acumulamos apenas os <li> (item), sem abrir novos <ul>
-                        extraDocsHtml += op.docs.map(d => item(d)).join('');
+                        const v = document.getElementById(`extra-${i}-${qi}`).value;
+                        if (v) {
+                            const [x, y] = v.split('-');
+                            const op = appData.questions[x].options[y];
+                            if (op.docs && op.docs.length) {
+                                extraDocsHtml += op.docs.map(d => item(d)).join('');
+                            }
+                        }
+                    });
+
+                    if(extraDocsHtml) {
+                        html += `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px;">
+                                   <strong>Complementares:</strong>
+                                   <ul>${extraDocsHtml}</ul>
+                                 </div>`;
                     }
                 }
-            });
-
-            // Se houver documentos, cria UMA ÚNICA lista <ul> envolvendo todos eles
-            if(extraDocsHtml) {
-                html += `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px;">
-                           <strong>Complementares:</strong>
-                           <ul>${extraDocsHtml}</ul>
-                         </div>`;
-            }
-        }
                 html += addBox + '</div>';
             }
             html += `<div class="person-block" style="border-left-color:#666; margin-top:20px;"><h3>Observações</h3><ul></ul><div class="add-doc-row"><input class="add-doc-input" placeholder="+ Obs"><button class="btn-add-item" onclick="addNewObs(this)">+</button></div></div>`;
@@ -1184,19 +1311,45 @@
             document.getElementById('checklist-screen').style.display = 'block';
         }
 
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => alert("Copiado!"));
+        async function copyLink() {
+            // 1. Primeiro salva os dados (modo silencioso = true) para garantir que tenha um ID na URL
+            const saved = await saveLogic(true);
+            
+            // 2. Se salvou com sucesso, copia o link atualizado
+            if (saved) {
+                navigator.clipboard.writeText(window.location.href).then(() => alert("Link salvo e copiado com sucesso! 🔗"));
+            }
         }
+        
         async function deleteSavedList(id) {
             if (!confirm('Excluir?')) return;
             await CloudManager.deleteChecklist(id);
             searchServer();
         }
+        
+        // --- RENDER SITE TEXTS FUNCTION ---
+        function renderSiteTexts() {
+            const t = appData.siteTexts || defaultData.siteTexts;
+            if(t.pageTitle) document.getElementById('page-title-tag').textContent = t.pageTitle;
+            if(t.subtitle) document.getElementById('gen-subtitle').textContent = t.subtitle;
+            if(t.checkTitle) document.getElementById('check-title').textContent = t.checkTitle;
+            if(t.alertTitle) document.getElementById('gen-alert-title').textContent = t.alertTitle;
+            if(t.alertBody) document.getElementById('gen-alert-body').innerHTML = t.alertBody;
+            if(t.instrTitle) document.getElementById('check-instr-title').textContent = t.instrTitle;
+            if(t.instrBody) document.getElementById('check-instr-body').innerHTML = t.instrBody;
+        }
+
         async function syncData() {
             showLoading('Iniciando...');
             try {
                 const settings = await CloudManager.fetchSettings();
                 if (settings) appData = settings;
+                
+                // Se não tiver textos definidos (primeira vez), usar default
+                if(!appData.siteTexts) appData.siteTexts = defaultData.siteTexts;
+                
+                renderSiteTexts(); // Aplicar textos
+                
                 const user = CloudManager.getUser();
                 if (user && user.email) {
                     savedLists = await CloudManager.fetchListsForAdmin();
@@ -1249,6 +1402,15 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
                 renderAdminLists();
+                // Preencher campos de textos
+                const t = appData.siteTexts || defaultData.siteTexts;
+                document.getElementById('txt-page-title').value = t.pageTitle || "";
+                document.getElementById('txt-subtitle').value = t.subtitle || "";
+                document.getElementById('txt-check-title').value = t.checkTitle || "";
+                document.getElementById('txt-alert-title').value = t.alertTitle || "";
+                document.getElementById('txt-alert-body').value = t.alertBody || "";
+                document.getElementById('txt-instr-title').value = t.instrTitle || "";
+                document.getElementById('txt-instr-body').value = t.instrBody || "";
             } else {
                 hideLoading();
             }
@@ -1265,13 +1427,30 @@
         function switchTab(t) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            ['saved', 'situations', 'questions', 'basics'].forEach(x => document.getElementById(`tab-${x}`).style.display = 'none');
+            ['saved', 'texts', 'situations', 'questions', 'basics'].forEach(x => document.getElementById(`tab-${x}`).style.display = 'none');
             document.getElementById(`tab-${t}`).style.display = 'block';
             if (t === 'basics') {
                 document.getElementById('basic-student-text').value = (appData.basicDocsStudent || []).join('\n');
                 document.getElementById('basic-family-text').value = (appData.basicDocsFamily || []).join('\n');
             }
         }
+        
+        async function saveSiteTexts() {
+             appData.siteTexts = {
+                pageTitle: document.getElementById('txt-page-title').value,
+                subtitle: document.getElementById('txt-subtitle').value,
+                checkTitle: document.getElementById('txt-check-title').value,
+                alertTitle: document.getElementById('txt-alert-title').value,
+                alertBody: document.getElementById('txt-alert-body').value,
+                instrTitle: document.getElementById('txt-instr-title').value,
+                instrBody: document.getElementById('txt-instr-body').value
+            };
+            if (await saveDataToCloud(true)) {
+                alert("Textos atualizados! A página será recarregada para aplicar.");
+                location.reload();
+            }
+        }
+
         async function saveBasicDocs() {
             appData.basicDocsStudent = document.getElementById('basic-student-text').value.split('\n').filter(x => x.trim());
             appData.basicDocsFamily = document.getElementById('basic-family-text').value.split('\n').filter(x => x.trim());
@@ -1281,10 +1460,81 @@
         function renderSavedList() {
             const el = document.getElementById('saved-list');
             el.innerHTML = savedLists.length ? savedLists.map(i => `
-        <div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div>
-        <div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button>
-        <button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>
+        <div class="list-row">
+            <div style="display:flex; align-items:center;">
+                <input type="checkbox" class="bulk-check" value="${i.id}">
+                <div style="margin-left:10px;">
+                    <strong>${i.name}</strong><br><small>${i.updated || i.created || '---'}</small>
+                </div>
+            </div>
+            <div>
+                <button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button>
+                <button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button>
+            </div>
+        </div>
     `).join('') : '<p style="padding:10px">Vazio</p>';
+        }
+        
+        function toggleAllSaved(source) {
+            document.querySelectorAll('.bulk-check').forEach(c => c.checked = source.checked);
+        }
+        
+        async function deleteSelected() {
+            const checked = Array.from(document.querySelectorAll('.bulk-check:checked')).map(c => c.value);
+            if(checked.length === 0) return alert("Selecione itens para excluir.");
+            if(!confirm(`Excluir ${checked.length} itens? Esta ação é irreversível.`)) return;
+            
+            showLoading("Excluindo em massa...");
+            for (let id of checked) {
+                try { await CloudManager.deleteChecklist(id); } catch(e) { console.error(e); }
+            }
+            await searchServer(); // Recarrega
+            hideLoading();
+        }
+        
+        async function deleteOlderThan() {
+            const dateStr = document.getElementById('date-limit').value;
+            if(!dateStr) return alert("Escolha uma data.");
+            
+            // Converte a data escolhida para timestamp (final do dia ou inicio do dia seguinte para garantir segurança)
+            // Aqui vamos assumir 00:00 do dia SEGUINTE para apagar tudo DO dia selecionado para trás, ou 00:00 do dia mesmo.
+            // O padrão ID é Date.now(). Vamos pegar a data escolhida + 1 dia 00:00 para garantir
+            const limitDate = new Date(dateStr);
+            // Ajuste de fuso horário simples para garantir comparação correta com UTC/Local
+            const limitTimestamp = limitDate.getTime() + (24 * 60 * 60 * 1000); // Fim do dia selecionado aprox
+            
+            if(!confirm(`Tem certeza que deseja EXCLUIR TODOS os checklists criados ANTES de ${dateStr}?`)) return;
+            
+            // Busca TODOS (limitado a um número grande ou precisa de paginação, mas vamos usar a lista atual carregada)
+            // Como a lista atual é paginada (10), precisamos buscar mais ou iterar no servidor.
+            // Limitation: O CloudManager atual busca só 10. Para bulk delete real por data, idealmente faríamos no backend.
+            // Workaround: Vamos varrer o que o Firebase permitir buscar.
+            
+            showLoading("Buscando e excluindo...");
+            
+            // Pega lista completa (cuidado com performance se tiver milhares)
+            const ref = firebase.database().ref('checklist_app/savedLists');
+            const snap = await ref.orderByKey().endAt(limitTimestamp.toString()).once('value');
+            
+            const toDelete = snap.val();
+            if(!toDelete) {
+                hideLoading();
+                return alert("Nada encontrado anterior a essa data.");
+            }
+            
+            const keys = Object.keys(toDelete);
+            if(!confirm(`Encontrados ${keys.length} registros antigos. Confirmar exclusão total?`)) {
+                hideLoading();
+                return;
+            }
+            
+            for(let key of keys) {
+                 await CloudManager.deleteChecklist(key);
+            }
+            
+            await searchServer();
+            hideLoading();
+            alert("Limpeza concluída.");
         }
 
         function renderAdminLists() {
