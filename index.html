@@ -792,8 +792,8 @@
                     // Se tem busca: Pesquisa pelo NOME no servidor
                     query = ref.orderByChild('name').startAt(searchTerm).endAt(searchTerm + "\uf8ff").limitToFirst(50);
                 } else {
-                    // Se não tem busca: Traz os 50 últimos (Mais recentes)
-                    query = ref.orderByKey().limitToLast(50);
+                    // Se não tem busca: Traz os 10 últimos (Mais recentes)
+                    query = ref.orderByKey().limitToLast(10);
                 }
                 const snap = await query.once('value');
                 const val = snap.val();
@@ -1192,7 +1192,7 @@
             renderSavedList();
         }
         /* ==========================================================================
-           5. FUNÇÕES DE SINCRONIZAÇÃO E SALVAMENTO (FIREBASE)
+           5. FUNÇÕES DE SINCRONIZAÇÃO E SALVAMENTO
            ========================================================================== */
         // Função chamada ao iniciar o app (Otimizada)
         async function syncData() {
@@ -1209,7 +1209,7 @@
                 } else {
                     savedLists = []; // Estudante não precisa ver a lista geral
                 }
-                document.getElementById('status-bar').textContent = "✅ Sistema Online (Firebase Otimizado)";
+                document.getElementById('status-bar').textContent = "✅ Ok!";
                 // 3. Verifica se tem ID na URL para abrir checklist específico
                 const params = new URLSearchParams(window.location.search);
                 const id = params.get('id');
@@ -1414,5 +1414,6 @@
 </body>
 
 </html>
+
 
 
