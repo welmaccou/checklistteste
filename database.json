@@ -1,203 +1,1416 @@
-{
-  "appData": {
-    "situations": [
-      {
-        "id": "assalariado",
-        "label": "Assalariado",
-        "docs": [
-          "Último contracheque;",
-          "Declaração de Imposto de Renda Pessoa Física, exercício 2025, ano base 2024, acompanhada do recibo de entrega à Receita Federal do Brasil – se a pessoa não declarou, não é necessário apresentar;",
-          "Extratos de todas as contas bancária, física e/ou digital, corrente e/ou poupança dos meses de dezembro/2025, janeiro/2026 e fevereiro/2026. Caso não tenha conta bancária, apresentar declaração emitida pelo Banco Central do Brasil (BACEN), [Clicando Aqui](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS);",
-          "Relatório de Contas e Relacionamentos em Bancos (CSS) emitido por meio do sistema Registrato do Banco Central do Brasil (BACEN), [Clicando Aqui](https://www.bcb.gov.br/meubc/registrato);"
-        ]
-      },
-      {
-        "id": "autônomo/profissional liberal/trabalhador informal",
-        "label": "Autônomo/profissional liberal/trabalhador informal",
-        "docs": [
-          "Declaração de Declaração de trabalhador autônomo, liberal ou informal ([disponível aqui](https://aestudantil.goias.ufg.br/p/edital-unificado-dois-mil-e-vinte-seis));",
-          "Declaração de Imposto de Renda Pessoa Física, exercício 2025, ano base 2024, acompanhada do recibo de entrega à Receita Federal do Brasil – se a pessoa não declarou, não é necessário apresentar;",
-          "Extratos de todas as contas bancária, física e/ou digital, corrente e/ou poupança dos meses de dezembro/2025, janeiro/2026 e fevereiro/2026. Caso não tenha conta bancária, apresentar declaração emitida pelo Banco Central do Brasil (BACEN), [Acesse Aqui](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS);",
-          "Relatório de Contas e Relacionamentos em Bancos (CSS) emitido por meio do sistema Registrato do Banco Central do Brasil (BACEN), [Acesse Aqui](https://www.bcb.gov.br/meubc/registrato);"
-        ]
-      }
-    ],
-    "questions": [
-      {
-        "id": "moradia",
-        "text": "Moradia",
-        "options": [
-          {
-            "label": "Alugada",
-            "docs": [
-              "Contrato de locação ou recibos."
-            ]
-          },
-          {
-            "label": "Cedida",
-            "docs": [
-              "Declaração de imóvel cedido."
-            ]
-          },
-          {
-            "label": "Financiada",
-            "docs": [
-              "Comprovante da prestação."
-            ]
-          },
-          {
-            "label": "Própria",
-            "docs": []
-          }
-        ]
-      },
-      {
-        "id": "orfao",
-        "text": "É solteiro(a) com pais falecidos?",
-        "options": [
-          {
-            "label": "Sim",
-            "docs": [
-              "Certidão de óbito pai/mãe."
-            ]
-          },
-          {
-            "label": "Não",
-            "docs": []
-          }
-        ]
-      },
-      {
-        "id": "aluguel",
-        "text": "Renda de aluguel?",
-        "options": [
-          {
-            "label": "Sim",
-            "docs": [
-              "Contratos e recibos de aluguel."
-            ]
-          },
-          {
-            "label": "Não",
-            "docs": []
-          }
-        ]
-      },
-      {
-        "id": "rural",
-        "text": "Proprietário rural?",
-        "options": [
-          {
-            "label": "Sim",
-            "docs": [
-              "Escritura/INCRA",
-              "DITR 2025"
-            ]
-          },
-          {
-            "label": "Não",
-            "docs": []
-          }
-        ]
-      },
-      {
-        "id": "q1771018009066",
-        "text": "Teste",
-        "options": [
-          {
-            "label": "a",
-            "docs": []
-          },
-          {
-            "label": "b",
-            "docs": []
-          },
-          {
-            "label": "c",
-            "docs": []
-          }
-        ]
-      }
-    ],
-    "basicDocsStudent": [
-      "RG e CPF",
-      "Declaração de Composição Familiar",
-      "Extratos Bancários",
-      "Registrato (BACEN)",
-      "Teste33",
-      "Teste34"
-    ],
-    "basicDocsFamily": [
-      "RG e CPF",
-      "Extratos Bancários",
-      "Registrato (BACEN)",
-      "Teste32",
-      "Teste35"
-    ]
-  },
-  "savedLists": [
-    {
-      "id": 1771102573442,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Candidato(a): Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">IRPF 2025 (<a href=\"google.com\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation()\">Modelo aqui</a>)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div>",
-      "created": "14/02/2026, 17:56:13",
-      "updated": "14/02/2026, 17:56:13"
-    },
-    {
-      "id": 1771104110064,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">IRPF 2025 (<a href=\"google.com\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation()\">Modelo aqui</a>)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div>",
-      "created": "14/02/2026, 18:21:50",
-      "updated": "14/02/2026, 18:21:50"
-    },
-    {
-      "id": 1771104322573,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div>",
-      "created": "14/02/2026, 18:25:22",
-      "updated": "14/02/2026, 18:25:22"
-    },
-    {
-      "id": 1771106178817,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div>",
-      "created": "14/02/2026, 18:56:18",
-      "updated": "14/02/2026, 19:01:57"
-    },
-    {
-      "id": 1771107322768,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">Add</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div>",
-      "created": "14/02/2026, 19:15:22",
-      "updated": "14/02/2026, 19:15:22"
-    },
-    {
-      "id": 1771107926255,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\" checked=\"checked\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\" checked=\"checked\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">IRPF 2025 (<a href=\"google.com\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation()\">Modelo aqui</a>)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div>",
-      "created": "14/02/2026, 19:25:26",
-      "updated": "14/02/2026, 19:28:03"
-    },
-    {
-      "id": 1771108934577,
-      "name": "Mariana",
-      "html": "<div class=\"person-block\"><h3>Estudante: Mariana</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">IRPF 2025 (<a href=\"google.com\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation()\">Modelo aqui</a>)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"person-block\" style=\"border-left-color: #666; margin-top: 20px;\">\n             <h3>Observações Gerais</h3>\n             <ul></ul>\n             <div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar observação...\"><button class=\"btn-add-item\" onclick=\"addNewObs(this)\">+</button></div>\n           </div>",
-      "created": "14/02/2026, 19:42:14",
-      "updated": "14/02/2026, 19:42:34"
-    },
-    {
-      "id": 1771109249783,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">IRPF 2025 (<a href=\"google.com\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation()\">Modelo aqui</a>)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">TestTest</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test1</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test2</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Test3</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">v</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Complementar</h3><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Certidão de óbito pai/mãe.</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Teste de salvar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"person-block\" style=\"border-left-color: #666; margin-top: 20px;\">\n             <h3>Observações Gerais</h3>\n             <ul><li class=\"doc-item\">\n    <div style=\"padding: 5px 30px 5px 5px;\">\n      <span class=\"doc-text\" style=\"display:block;\">Obs rteste</span>\n    </div>\n    <button class=\"btn-remove\" onclick=\"removeDoc(this)\">Excluir</button>\n  </li></ul>\n             <div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar observação...\"><button class=\"btn-add-item\" onclick=\"addNewObs(this)\">+</button></div>\n           </div>",
-      "created": "14/02/2026, 19:47:29",
-      "updated": "14/02/2026, 19:48:36"
-    },
-    {
-      "id": 1771109646982,
-      "name": "Wellington",
-      "html": "<div class=\"person-block\"><h3>Estudante: Wellington</h3><strong>Básicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">RG e CPF</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Declaração Composição Familiar</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Extratos Bancários</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">Registrato (BACEN)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><strong>Específicos:</strong><ul><li class=\"doc-item\"><label class=\"doc-label\"><input type=\"checkbox\" class=\"doc-checkbox\" onchange=\"markDirty()\"><span class=\"doc-text\">IRPF 2025 (<a href=\"google.com\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation()\">Modelo aqui</a>)</span></label><button class=\"btn-remove\" onclick=\"removeDoc(this)\">X</button></li></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"extra-docs\"><h3>Outros Documentos</h3><ul></ul><div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar documento...\"><button class=\"btn-add-item\" onclick=\"addNewDoc(this)\">+</button></div></div><div class=\"person-block\" style=\"border-left-color: #666; margin-top: 20px;\">\n             <h3>Observações</h3>\n             <ul></ul>\n             <div class=\"add-doc-row\"><input type=\"text\" class=\"add-doc-input\" placeholder=\"Adicionar observação...\"><button class=\"btn-add-item\" onclick=\"addNewObs(this)\">+</button></div>\n           </div>",
-      "created": "14/02/2026, 19:54:06",
-      "updated": "14/02/2026, 19:54:06"
-    }
-  ]
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Documentos - Cadastro Único UFG</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <style>
+        /* --- Estilos Visuais --- */
+        :root {
+            --primary: #0056b3;
+            --primary-light: #007BFF;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --surface: #ffffff;
+            --text: #333333;
+            --border: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --success: #28a745;
+            --warning: #ffc107;
+        }
+
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background-image: var(--bg-gradient);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background: var(--surface);
+            width: 100%;
+            max-width: 850px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .alert {
+            background: #eff6ff;
+            border-left: 5px solid var(--primary-light);
+            padding: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .alert h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .info-text {
+            text-align: justify;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .section-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin: 30px 0 20px 0;
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+            background: #fcfcfc;
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary2 {
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 10%;
+            margin-top: 20px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-primary2:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary2:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-tool {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-print {
+            background: #6c757d;
+        }
+
+        .btn-save {
+            background: var(--success);
+        }
+
+        .btn-link {
+            background: var(--warning);
+            color: #333;
+        }
+
+        .btn-back {
+            background: var(--primary);
+        }
+
+        #checklist-screen {
+            display: none;
+        }
+
+        .person-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-left: 5px solid #0056b3;
+            background-color: #fcfcfc;
+            page-break-inside: avoid;
+        }
+
+        .checklist-content h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        .checklist-content ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+
+        li.doc-item {
+            position: relative;
+            margin-bottom: 4px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        li.doc-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .doc-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .doc-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            min-width: 20px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+            margin-right: 12px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            background: #fff;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .doc-checkbox:checked::after {
+            content: "X";
+            font-weight: 900;
+            color: #000;
+            font-size: 16px;
+            line-height: 1;
+            font-family: Arial, sans-serif;
+        }
+
+        .doc-text {
+            flex: 1;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .doc-text a {
+            color: #0056b3;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .doc-text a:hover {
+            color: #003d80;
+        }
+
+        .btn-remove {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+        }
+
+        li.doc-item:hover .btn-remove {
+            display: block;
+        }
+
+        .extra-docs {
+            background: #fffbe6;
+            padding: 15px;
+            border: 1px solid #ffe58f;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .add-doc-row {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .add-doc-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn-add-item {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 20px;
+            font-size: 0.8rem;
+        }
+
+        .admin-link {
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        #admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .admin-content {
+            background: white;
+            margin: 30px auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .item-list {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .list-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-del {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-add {
+            background: #28a745;
+            color: white;
+        }
+
+        .dropdown-container {
+            position: relative;
+            user-select: none;
+        }
+
+        .dropdown-trigger {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 21px;
+        }
+
+        .dropdown-trigger::after {
+            content: "";
+            border: 5px solid transparent;
+            border-top-color: #666;
+            margin-left: 10px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            padding-top: 5px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f7ff;
+        }
+
+        .dropdown-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .dropdown-ok {
+            padding: 8px;
+            border-top: 1px solid #eee;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            text-align: center;
+        }
+
+        .dropdown-ok button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 6px 0;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .dropdown-ok button:hover {
+            background: #218838;
+        }
+
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0056b3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                font-size: 12pt;
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .toolbar,
+            footer,
+            #creation-screen,
+            #loading-overlay,
+            .add-doc-row {
+                display: none !important;
+            }
+
+            #checklist-screen {
+                display: block !important;
+            }
+
+            .btn-remove {
+                display: none !important;
+            }
+
+            li.doc-item:hover {
+                background-color: transparent;
+            }
+
+            .person-block {
+                border-left-width: 2px;
+            }
+
+            .doc-checkbox {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border-color: #000 !important;
+            }
+
+            .doc-checkbox:checked::after {
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loading-text" style="margin-top:15px; font-weight:bold; color:#0056b3;">Carregando dados...</p>
+    </div>
+    <div class="container">
+        <div id="creation-screen">
+            <h1>Gerador de Checklist</h1>
+            <div class="subtitle">Documentos para inscrição no Cadastro Único de Bolsas da UFG</div>
+            <div class="alert">
+                <h4>Atenção</h4> Este gerador de checklist visa facilitar a identificação dos documentos necessários para inscrição no Cadastro Único de Bolsas da UFG, considerando a realidade socioeconômica de cada estudante; entretanto, <strong>não substitui a leitura cuidadosa da Relação de Documentos do edital.</strong>
+            </div>
+            <div class="info-text">
+                <strong>Definição de Grupo Familiar:</strong> é considerado grupo familiar todas as pessoas que moram com você, que dividem ou não a mesma renda, eventualmente ampliada por outras pessoas que contribuam para o rendimento ou tenham suas despesas atendidas por aquela unidade familiar, todas moradoras em um mesmo domicílio.
+            </div>
+            <div class="info-text" style="margin-bottom:30px;">
+                <strong>Importante:</strong> o/a estudante que se define como único membro do grupo familiar e não possua rendimento próprio suficiente para a sua subsistência deverá informar o grupo familiar de origem, ainda que residente em local diverso do seu domicílio.
+            </div>
+            <div id="step-1">
+                <label for="family-size">Quantidade de pessoas no grupo familiar (além do estudante):</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="family-size" min="0" value="0">
+                    <button class="btn-primary" style="width: auto; margin-top:0;" onclick="renderForm()">Iniciar</button>
+                </div>
+            </div>
+            <div id="form-container"></div>
+        </div>
+        <div id="checklist-screen">
+            <div class="toolbar">
+                <button class="btn-tool btn-back" onclick="closeChecklist()">⬅ Voltar / Novo</button>
+                <button class="btn-tool btn-save" onclick="manualSave()">💾 Salvar</button>
+                <button class="btn-tool btn-link" onclick="copyLink()">🔗 Copiar Link</button>
+                <button class="btn-tool btn-print" onclick="printAndSaveToCloud()">🖨️ Imprimir / PDF</button>
+            </div>
+            <h1 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checklist de Documentos - Cadastro Único UFG</h1>
+            <div class="alert">
+                <h4>Instruções:</h4>
+                <strong>a)</strong> Não é necessário que as declarações estejam autenticadas, mas é preciso que o declarante assine como no RG, que deve acompanhar as declarações;</br>
+                <strong>b)</strong> No caso de extratos bancários emitidos via Internet que não contenham o nome do titular da conta, o estudante deverá identificar;</br>
+                <strong>c)</strong> Em casos extremos, em que não seja possível apresentar um determinado documento, poderá ser apresentada uma declaração de ausência, devidamente justificada e comprovada.
+            </div>
+            <div id="checklist-content" class="checklist-content"></div>
+        </div>
+    </div>
+    <footer>
+        <div id="status-bar" style="margin-bottom:10px; font-size:0.8rem; color:#666;"></div>
+        <a href="#" class="admin-link" onclick="openAdmin()">Área Administrativa</a>
+    </footer>
+    <div id="admin-modal">
+        <div class="admin-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0; color:var(--primary);">Painel Administrativo</h2>
+                <button class="btn-sm" onclick="closeAdmin()" style="background:#666; color:white;">Fechar</button>
+            </div>
+            <div id="login-screen">
+                <label>Senha de Acesso:</label>
+                <div style="display:flex; gap:10px;">
+                    <input type="password" id="admin-pass" placeholder="Sua senha de admin">
+                    <button class="btn-sm btn-primary" style="margin:0; width:auto;" onclick="checkLogin()">Entrar</button>
+                </div>
+                <p style="font-size:0.8rem; color:#666; margin-top:10px;">Acesso à área de administração</p>
+            </div>
+            <div id="admin-panel" style="display:none;">
+                <div class="admin-tabs">
+                    <button class="tab-btn active" onclick="switchTab('saved')">Listas Geradas</button>
+                    <button class="tab-btn" onclick="switchTab('situations')">Situações</button>
+                    <button class="tab-btn" onclick="switchTab('questions')">Perguntas</button>
+                    <button class="tab-btn" onclick="switchTab('basics')">Docs Gerais</button>
+                </div>
+                <div id="tab-saved">
+                    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                        <input type="text" id="search-candidate" placeholder="🔍 Buscar nome (Deixe vazio para ver recentes)..." onkeypress="if(event.key==='Enter') searchServer()" style="flex:1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <button class="btn-sm btn-primary2" onclick="searchServer()" style="margin:0;">Buscar</button>
+                    </div>
+                    <div class="item-list" id="saved-list"></div>
+                    <p style="font-size:0.8rem; color:#666; text-align:center; margin-top:5px;"> Mostrando apenas os 50 primeiros resultados da busca. </p>
+                </div>
+                <div id="tab-situations" style="display:none;">
+                    <button class="btn-sm btn-add" onclick="editSituation(-1)">+ Nova Situação</button>
+                    <div class="item-list" id="situations-list" style="margin-top:10px;"></div>
+                </div>
+                <div id="tab-questions" style="display:none;">
+                    <button class="btn-sm btn-add" onclick="editQuestion(-1)">+ Nova Pergunta</button>
+                    <div class="item-list" id="questions-list" style="margin-top:10px;"></div>
+                </div>
+                <div id="tab-basics" style="display:none; padding-top:10px;">
+                    <h3>Editar Documentos Gerais</h3>
+                    <p style="font-size:0.85rem; color:#666;">Estes documentos aparecerão automaticamente para todas as pessoas.</p>
+                    <label style="margin-top:15px;">Para o Estudante (um por linha):</label>
+                    <textarea id="basic-student-text" style="width:100%; min-height:120px; font-family:monospace; padding:10px;"></textarea>
+                    <label style="margin-top:15px;">Para Familiares (um por linha):</label>
+                    <textarea id="basic-family-text" style="width:100%; min-height:120px; font-family:monospace; padding:10px;"></textarea>
+                    <button class="btn-primary" onclick="saveBasicDocs()">Salvar Alterações</button>
+                </div>
+                <div id="edit-overlay" style="display:none; margin-top:20px; padding-top:20px; border-top:2px dashed #ccc;">
+                    <h3 id="edit-title">Editar</h3>
+                    <input type="hidden" id="edit-id"><input type="hidden" id="edit-type">
+                    <label>Título:</label><input type="text" id="edit-label">
+                    <div id="situation-fields" style="display:none;">
+                        <label>Documentos:</label>
+                        <p style="font-size:0.8em; color:#666; margin:0 0 5px 0;">Para incluir link, use: <b>[Texto do Link](http://site.com)</b></p>
+                        <textarea id="sit-docs" style="width:100%; min-height:150px;"></textarea>
+                    </div>
+                    <div id="question-fields" style="display:none;"><label>Opções:</label>
+                        <div id="options-container"></div><button class="btn-sm btn-add" onclick="addOptionRow()">+ Opção</button>
+                    </div>
+                    <div style="margin-top:15px; display:flex; gap:10px;"><button class="btn-primary" onclick="saveEdit()">Salvar na Nuvem</button><button class="btn-sm" style="background:#999; color:white;" onclick="cancelEdit()">Cancelar</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* ==========================================================================
+   1. CONFIGURAÇÃO FIREBASE (Preencha com seus dados)
+   ========================================================================== */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSJRdWEr-IbY9hxn7LBj7nuY6M5bZ8HAE",
+            authDomain: "checklist-b477f.firebaseapp.com",
+            databaseURL: "https://checklist-b477f-default-rtdb.firebaseio.com",
+            projectId: "checklist-b477f",
+            storageBucket: "checklist-b477f.firebasestorage.app",
+            messagingSenderId: "1069790989135",
+            appId: "1:1069790989135:web:fc9469e63477bc45ba133a"
+        };
+        // Inicializa o Firebase
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        /* ==========================================================================
+           2. GERENCIADOR DE DADOS E SEGURANÇA (ULTRA OTIMIZADO)
+           ========================================================================== */
+        const CloudManager = (function() {
+            const db = firebase.database();
+            const auth = firebase.auth();
+            let currentUser = null;
+
+            function init() {
+                auth.onAuthStateChanged(user => {
+                    currentUser = user;
+                    if (user) {
+                        console.log("Logado como: " + (user.email || "Aluno"));
+                        syncData();
+                    } else {
+                        auth.signInAnonymously().catch(console.error);
+                    }
+                });
+            }
+            async function loginAdmin(email, password) {
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    return true;
+                } catch (e) {
+                    alert("Erro de login: " + e.message);
+                    return false;
+                }
+            }
+            async function fetchSettings() {
+                const snap = await db.ref('checklist_app/settings').once('value');
+                return snap.val();
+            }
+            async function fetchSpecificChecklist(id) {
+                const snap = await db.ref(`checklist_app/savedLists/${id}`).once('value');
+                return snap.val();
+            }
+            // --- NOVA FUNÇÃO DE BUSCA INTELIGENTE ---
+            async function fetchListsForAdmin(searchTerm = "") {
+                if (!currentUser || !currentUser.email) return [];
+                let query;
+                const ref = db.ref('checklist_app/savedLists');
+                if (searchTerm) {
+                    // Se tem busca: Pesquisa pelo NOME no servidor
+                    query = ref.orderByChild('name').startAt(searchTerm).endAt(searchTerm + "\uf8ff").limitToFirst(50);
+                } else {
+                    // Se não tem busca: Traz os 50 últimos (Mais recentes)
+                    query = ref.orderByKey().limitToLast(50);
+                }
+                const snap = await query.once('value');
+                const val = snap.val();
+                if (!val) return [];
+                // Converte objeto em array
+                let list = Object.keys(val).map(key => val[key]);
+                // Se for lista recente (sem busca), inverte para o mais novo ficar no topo.
+                if (!searchTerm) list.reverse();
+                return list;
+            }
+            async function saveSettings(data) {
+                if (!currentUser || !currentUser.email) throw new Error("Acesso negado.");
+                await db.ref('checklist_app/settings').set(data);
+            }
+            async function saveSingleChecklist(checklistData) {
+                await db.ref(`checklist_app/savedLists/${checklistData.id}`).set(checklistData);
+            }
+            async function deleteChecklist(id) {
+                if (!currentUser || !currentUser.email) throw new Error("Acesso negado.");
+                await db.ref(`checklist_app/savedLists/${id}`).remove();
+            }
+            return {
+                init,
+                loginAdmin,
+                fetchSettings,
+                fetchSpecificChecklist,
+                fetchListsForAdmin,
+                saveSettings,
+                saveSingleChecklist,
+                deleteChecklist,
+                getUser: () => currentUser
+            };
+        })();
+        // Inicia o sistema
+        CloudManager.init();
+        /* ==========================================================================
+           3. ESTADO DA APLICAÇÃO
+           ========================================================================== */
+        // Dados padrão caso o banco esteja vazio
+        const defaultData = {
+            basicDocsStudent: ['RG e CPF', 'Declaração de Composição Familiar', 'Extratos Bancários', 'Registrato (BACEN)'],
+            basicDocsFamily: ['RG e CPF', 'Extratos Bancários', 'Registrato (BACEN)'],
+            situations: [{
+                id: 'assalariado',
+                label: 'Assalariado',
+                docs: ['Contracheques (3 últimos)', 'CTPS completa', 'IRPF (se declarou)']
+            }, {
+                id: 'autonomo',
+                label: 'Autônomo/Informal',
+                docs: ['Declaração de Autônomo', 'CTPS', 'Extratos bancários']
+            }, {
+                id: 'aposentado',
+                label: 'Aposentado/Pensionista',
+                docs: ['Extrato do benefício', 'IRPF']
+            }, {
+                id: 'mei',
+                label: 'Microempreendedor (MEI)',
+                docs: ['DASN Simei', 'Declaração de MEI', 'Extratos']
+            }, {
+                id: 'desempregado',
+                label: 'Desempregado',
+                docs: ['CTPS (Baixa)', 'Declaração de desemprego', 'Seguro-desemprego']
+            }, {
+                id: 'nunca',
+                label: 'Nunca Trabalhou',
+                docs: ['CTPS (em branco)', 'CNIS (se maior de 18)']
+            }],
+            questions: [{
+                id: 'moradia',
+                text: 'Moradia',
+                options: [{
+                    label: 'Alugada',
+                    docs: ['Contrato ou recibos']
+                }, {
+                    label: 'Cedida',
+                    docs: ['Declaração de imóvel cedido']
+                }, {
+                    label: 'Própria',
+                    docs: []
+                }]
+            }, {
+                id: 'orfao',
+                text: 'Pais falecidos?',
+                options: [{
+                    label: 'Sim',
+                    docs: ['Certidão de óbito']
+                }, {
+                    label: 'Não',
+                    docs: []
+                }]
+            }]
+        };
+        let appData = defaultData;
+        let savedLists = []; // Só será preenchido se for Admin
+        let currentChecklistId = null;
+        let isDirty = false;
+        const isCloudConfigured = true;
+        window.addEventListener('beforeunload', (e) => {
+            if (isDirty) {
+                e.preventDefault();
+                e.returnValue = 'Alterações não salvas.';
+            }
+        });
+        /* ==========================================================================
+           4. FUNÇÕES UI E LÓGICA DO APP
+           ========================================================================== */
+        function showLoading(msg) {
+            document.getElementById('loading-text').textContent = msg;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function createMultiSelect(id, items) {
+            const c = document.createElement('div');
+            c.className = 'dropdown-container';
+            c.id = `container-${id}`;
+            const t = document.createElement('div');
+            t.className = 'dropdown-trigger';
+            t.innerHTML = '<span class="trigger-text">Selecione todas as situações aplicáveis...</span>';
+            t.onclick = (e) => {
+                e.stopPropagation();
+                toggleDropdown(id);
+            };
+            const m = document.createElement('div');
+            m.className = 'dropdown-menu';
+            m.id = `menu-${id}`;
+            items.forEach(i => {
+                const r = document.createElement('label');
+                r.className = 'dropdown-item';
+                r.innerHTML = `<input type="checkbox" value="${i.id}" onchange="updateTrigger('${id}')">${i.label}`;
+                r.onclick = (e) => e.stopPropagation();
+                m.appendChild(r);
+            });
+            const okDiv = document.createElement('div');
+            okDiv.className = 'dropdown-ok';
+            okDiv.innerHTML = '<button type="button">OK - Concluir</button>';
+            okDiv.onclick = (e) => {
+                e.stopPropagation();
+                toggleDropdown(id);
+            };
+            m.appendChild(okDiv);
+            c.appendChild(t);
+            c.appendChild(m);
+            return c;
+        }
+
+        function toggleDropdown(id) {
+            document.querySelectorAll('.dropdown-menu').forEach(m => {
+                if (m.id !== `menu-${id}`) m.classList.remove('show');
+            });
+            document.getElementById(`menu-${id}`).classList.toggle('show');
+        }
+
+        function updateTrigger(id) {
+            const c = document.getElementById(`container-${id}`);
+            const ch = c.querySelectorAll('input:checked');
+            const s = c.querySelector('.trigger-text');
+            s.textContent = !ch.length ? 'Selecione...' : Array.from(ch).map(x => x.parentNode.textContent.trim()).join(', ');
+            s.style.color = !ch.length ? '#666' : '#000';
+        }
+        document.addEventListener('click', () => document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')));
+
+        function renderForm() {
+            const c = document.getElementById('form-container');
+            const s = parseInt(document.getElementById('family-size').value);
+            if (isNaN(s) || s < 0) return alert('Inválido');
+            c.innerHTML = '';
+            c.appendChild(createMemberCard('Estudante', 0, true));
+            for (let i = 1; i <= s; i++) c.appendChild(createMemberCard(`${i}º Membro do grupo familiar`, i, false));
+            const b = document.createElement('button');
+            b.className = 'btn-primary';
+            b.textContent = 'Gerar Checklist';
+            b.onclick = generateChecklist;
+            c.appendChild(b);
+        }
+
+        function createMemberCard(title, i, isCand) {
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#f8f9fa; border:1px solid #e9ecef; border-radius:12px; padding:20px; margin-top:20px;';
+            let h = `<div class="section-header" style="margin-top:0;">${title}</div><div style="margin-bottom:15px;"><label>Nome:</label><input type="text" id="name-${i}"></div><div style="margin-bottom:15px;"><label>Situação:</label><div id="sit-wrapper-${i}"></div></div>`;
+            if (isCand) {
+                h += `<div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:10px;"><h4 style="color:#666;">Informações complementares</h4>`;
+                appData.questions.forEach((q, qi) => {
+                    let o = `<option value="">Escolha...</option>`;
+                    q.options.forEach((opt, oi) => o += `<option value="${qi}-${oi}">${opt.label}</option>`);
+                    h += `<div style="margin-bottom:15px;"><label>${q.text}</label><select id="extra-${qi}">${o}</select></div>`;
+                });
+                h += '</div>';
+            }
+            card.innerHTML = h;
+            card.querySelector(`#sit-wrapper-${i}`).appendChild(createMultiSelect(`multi-${i}`, appData.situations));
+            return card;
+        }
+
+        function markDirty() {
+            isDirty = true;
+        }
+
+        function removeDoc(btn) {
+            btn.parentElement.remove();
+            markDirty();
+        }
+
+        function addNewDoc(btn) {
+            const input = btn.previousElementSibling;
+            const text = input.value.trim();
+            if (!text) return;
+            const ul = btn.closest('div').previousElementSibling;
+            const li = document.createElement('li');
+            li.className = 'doc-item';
+            li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button>`;
+            ul.appendChild(li);
+            input.value = '';
+            markDirty();
+        }
+
+        function addNewObs(btn) {
+            const input = btn.previousElementSibling;
+            const text = input.value.trim();
+            if (!text) return;
+            const ul = btn.closest('div').previousElementSibling;
+            const li = document.createElement('li');
+            li.className = 'doc-item';
+            li.innerHTML = `
+    <div style="padding: 5px 30px 5px 5px;">
+      <span class="doc-text" style="display:block;">${formatDocText(text)}</span>
+    </div>
+    <button class="btn-remove" onclick="removeDoc(this)">X</button>
+  `;
+            ul.appendChild(li);
+            input.value = '';
+            markDirty();
+        }
+
+        function formatDocText(text) {
+            let clean = text.replace(/^[\(\s\)]+/, '').trim();
+            return clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
+        }
+
+        function generateChecklist() {
+            const size = parseInt(document.getElementById('family-size').value);
+            const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`;
+            const addBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar documento..."><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
+            let html = '',
+                cName = '';
+            for (let i = 0; i <= size; i++) {
+                const n = document.getElementById(`name-${i}`).value.trim();
+                if (!n && i === 0) return alert('Nome do estudante obrigatório');
+                if (!n) continue;
+                if (i === 0) cName = n;
+                const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
+                // Define qual lista usar (Estudante ou Familiar)
+                const basicList = (i === 0) ? (appData.basicDocsStudent || defaultData.basicDocsStudent) : (appData.basicDocsFamily || defaultData.basicDocsFamily);
+                // Gera o HTML dos itens gerais
+                let basicHtml = '';
+                basicList.forEach(docText => {
+                    basicHtml += item(docText);
+                });
+                html += `<div class="person-block">
+               <h3>${i===0?'Estudante':'Familiar'}: ${n}</h3>
+               <strong>Documentos Gerais:</strong>
+               <ul>${basicHtml}</ul>`;
+                if (ch.length) {
+                    html += '<strong>Comprovantes de Rendimentos:</strong><ul>';
+                    let d = [];
+                    ch.forEach(c => {
+                        const s = appData.situations.find(x => x.id === c.value);
+                        if (s) d.push(...s.docs);
+                    });
+                    [...new Set(d)].forEach(x => html += item(x));
+                    html += '</ul>';
+                } else html += '<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
+                html += addBox + '</div>';
+            }
+            let extra = '';
+            appData.questions.forEach((q, qi) => {
+                const v = document.getElementById(`extra-${qi}`).value;
+                if (v) {
+                    const [x, y] = v.split('-');
+                    const op = appData.questions[x].options[y];
+                    if (op.docs.length) extra += op.docs.map(d => item(d)).join('');
+                }
+            });
+            html += `<div class="extra-docs"><h3>Outros Documentos</h3><ul>${extra}</ul>${addBox}</div>`;
+            const addObsBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar observação..."><button class="btn-add-item" onclick="addNewObs(this)">+</button></div>`;
+            html += `<div class="person-block" style="border-left-color: #666; margin-top: 20px;">
+             <h3>Observações</h3>
+             <ul></ul>
+             ${addObsBox}
+           </div>`;
+            const content = document.getElementById('checklist-content');
+            content.innerHTML = html;
+            content.dataset.candidate = cName;
+            currentChecklistId = null;
+            updateUrl(null);
+            isDirty = true;
+            document.getElementById('creation-screen').style.display = 'none';
+            document.getElementById('checklist-screen').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function closeChecklist() {
+            if (isDirty && !confirm("Existem alterações não salvas. Deseja realmente voltar?")) return;
+            document.getElementById('checklist-screen').style.display = 'none';
+            document.getElementById('creation-screen').style.display = 'block';
+            currentChecklistId = null;
+            isDirty = false;
+            updateUrl(null);
+        }
+
+        function updateUrl(id) {
+            const url = new URL(window.location);
+            if (id) url.searchParams.set('id', id);
+            else url.searchParams.delete('id');
+            window.history.pushState({}, '', url);
+        }
+        /* === SALVAR / CARREGAR === */
+        async function saveLogic(silent = false) {
+            const div = document.getElementById('checklist-content');
+            const name = div.dataset.candidate || 'Sem Nome';
+            div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked', 'checked') : c.removeAttribute('checked'));
+            const html = div.innerHTML;
+            let newItem = {};
+            if (currentChecklistId) {
+                newItem = {
+                    id: currentChecklistId,
+                    name,
+                    html,
+                    created: new Date().toLocaleString(),
+                    updated: new Date().toLocaleString()
+                };
+                // Atualiza lista local (visual apenas) se estivermos no Admin, senão não importa
+            } else {
+                const newId = Date.now();
+                newItem = {
+                    id: newId,
+                    name,
+                    html,
+                    created: new Date().toLocaleString(),
+                    updated: new Date().toLocaleString()
+                };
+                currentChecklistId = newId;
+                updateUrl(newId);
+            }
+            // Chama a função da nuvem (envia o objeto do checklist, não o booleano)
+            const success = await saveDataToCloud(newItem);
+            if (success) {
+                isDirty = false;
+                if (!silent) alert("Salvo com sucesso!");
+            }
+            return success;
+        }
+        async function manualSave() {
+            await saveLogic(false);
+        }
+        async function printAndSaveToCloud() {
+            await saveLogic(true);
+            setTimeout(() => window.print(), 200);
+        }
+        async function loadChecklist(id) {
+            if (isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
+            showLoading('Carregando checklist...');
+            // Otimização: Busca direto no Firebase, sem carregar tudo
+            const l = await CloudManager.fetchSpecificChecklist(id);
+            hideLoading();
+            if (!l) {
+                alert('Checklist não encontrado ou excluído.');
+                updateUrl(null);
+                return;
+            }
+            const c = document.getElementById('checklist-content');
+            c.innerHTML = l.html;
+            c.dataset.candidate = l.name;
+            currentChecklistId = l.id;
+            isDirty = false;
+            updateUrl(l.id);
+            closeAdmin();
+            document.getElementById('creation-screen').style.display = 'none';
+            document.getElementById('checklist-screen').style.display = 'block';
+        }
+
+        function copyLink() {
+            if (!currentChecklistId || isDirty) return alert("Salve primeiro.");
+            navigator.clipboard.writeText(window.location.href).then(() => alert("Link copiado!"));
+        }
+        async function deleteSavedList(id) {
+            if (!confirm('Excluir?')) return;
+            await CloudManager.deleteChecklist(id);
+            // Recarrega a lista do admin
+            showLoading('Atualizando...');
+            savedLists = await CloudManager.fetchListsForAdmin();
+            hideLoading();
+            renderSavedList();
+        }
+        /* ==========================================================================
+           5. FUNÇÕES DE SINCRONIZAÇÃO E SALVAMENTO (FIREBASE)
+           ========================================================================== */
+        // Função chamada ao iniciar o app (Otimizada)
+        async function syncData() {
+            showLoading('Carregando sistema...');
+            try {
+                // 1. Busca Configurações (Leve)
+                const settings = await CloudManager.fetchSettings();
+                if (settings) appData = settings;
+                // 2. Se for Admin Logado, busca listas (Otimizado: apenas 50 recentes)
+                const user = CloudManager.getUser();
+                if (user && user.email) {
+                    // AQUI ESTAVA O ERRO: Chamava fetchAllListsForAdmin que não existia mais
+                    savedLists = await CloudManager.fetchListsForAdmin();
+                } else {
+                    savedLists = []; // Estudante não precisa ver a lista geral
+                }
+                document.getElementById('status-bar').textContent = "✅ Sistema Online (Firebase Otimizado)";
+                // 3. Verifica se tem ID na URL para abrir checklist específico
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('id');
+                if (id) loadChecklist(parseInt(id));
+            } catch (e) {
+                console.error(e);
+                document.getElementById('status-bar').textContent = "⚠️ Erro de conexão.";
+            } finally {
+                hideLoading();
+            }
+        }
+        // Função Principal de Salvar (Otimizada)
+        async function saveDataToCloud(arg) {
+            showLoading('Salvando...');
+            try {
+                if (arg === true) {
+                    // Atualização de Config (Admin)
+                    await CloudManager.saveSettings(appData);
+                } else {
+                    // Salva um único checklist (delta update)
+                    await CloudManager.saveSingleChecklist(arg);
+                }
+                document.getElementById('status-bar').textContent = "✅ Salvo com sucesso!";
+                return true;
+            } catch (e) {
+                alert("Erro ao salvar: " + e.message);
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+        // Mantendo compatibilidade com o carregamento da janela
+        window.onload = function() {
+            showLoading('Conectando...');
+        };
+        /* ==========================================================================
+           6. FUNÇÕES DO ADMIN (UI)
+           ========================================================================== */
+        function openAdmin() {
+            document.getElementById('admin-modal').style.display = 'block';
+        }
+
+        function closeAdmin() {
+            document.getElementById('admin-modal').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('admin-pass').value = '';
+        }
+        async function checkLogin() {
+            const pass = document.getElementById('admin-pass').value;
+            // ATENÇÃO: Assegure-se de que este email está nas Regras do Firebase
+            const adminEmail = "wenea.br@gmail.com";
+            showLoading("Autenticando...");
+            const success = await CloudManager.loginAdmin(adminEmail, pass);
+            if (success) {
+                // Carrega a lista inicial (50 recentes)
+                await searchServer();
+                hideLoading();
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                renderAdminLists();
+            } else {
+                hideLoading();
+            }
+        }
+        async function searchServer() {
+            const term = document.getElementById('search-candidate').value.trim();
+            showLoading('Buscando...');
+            savedLists = await CloudManager.fetchListsForAdmin(term);
+            hideLoading();
+            renderSavedList();
+            if (savedLists.length === 0) {
+                document.getElementById('saved-list').innerHTML = '<p style="padding:15px; text-align:center">Nenhum resultado encontrado.</p>';
+            }
+        }
+
+        function switchTab(t) {
+            // Remove classe ativa de todos
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            // Adiciona ao clicado
+            const buttons = document.querySelectorAll('.tab-btn');
+            if (t === 'saved') buttons[0].classList.add('active');
+            if (t === 'situations') buttons[1].classList.add('active');
+            if (t === 'questions') buttons[2].classList.add('active');
+            if (t === 'basics') buttons[3].classList.add('active');
+            // Esconde todas as abas
+            ['saved', 'situations', 'questions', 'basics'].forEach(x => {
+                const el = document.getElementById(`tab-${x}`);
+                if (el) el.style.display = 'none';
+            });
+            // Mostra a aba selecionada
+            document.getElementById(`tab-${t}`).style.display = 'block';
+            // Se for a aba de gerais, carrega os dados atuais nos textareas
+            if (t === 'basics') {
+                const stdDocs = appData.basicDocsStudent || defaultData.basicDocsStudent;
+                const famDocs = appData.basicDocsFamily || defaultData.basicDocsFamily;
+                document.getElementById('basic-student-text').value = stdDocs.join('\n');
+                document.getElementById('basic-family-text').value = famDocs.join('\n');
+            }
+        }
+        async function saveBasicDocs() {
+            const stdText = document.getElementById('basic-student-text').value;
+            const famText = document.getElementById('basic-family-text').value;
+            appData.basicDocsStudent = stdText.split('\n').filter(line => line.trim() !== '');
+            appData.basicDocsFamily = famText.split('\n').filter(line => line.trim() !== '');
+            const ok = await saveDataToCloud(true);
+            if (ok) alert("Documentos gerais atualizados com sucesso!");
+        }
+
+        function renderSavedList() {
+            const el = document.getElementById('saved-list');
+            if (!savedLists.length) return el.innerHTML = '<p style="padding:10px">Vazio</p>';
+            el.innerHTML = savedLists.map(i => `<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>`).join('');
+        }
+
+        function renderAdminLists() {
+            document.getElementById('situations-list').innerHTML = appData.situations.map((s, i) => `<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">X</button></div></div>`).join('');
+            document.getElementById('questions-list').innerHTML = appData.questions.map((q, i) => `<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">X</button></div></div>`).join('');
+        }
+
+        function editSituation(i) {
+            setupEdit('situation', i);
+            if (i !== -1) {
+                document.getElementById('edit-label').value = appData.situations[i].label;
+                document.getElementById('sit-docs').value = appData.situations[i].docs.join('\n');
+            }
+        }
+
+        function editQuestion(i) {
+            setupEdit('question', i);
+            if (i !== -1) {
+                document.getElementById('edit-label').value = appData.questions[i].text;
+                appData.questions[i].options.forEach(o => addOptionRow(o.label, o.docs.join('\n')));
+            } else addOptionRow('', '');
+        }
+
+        function setupEdit(type, id) {
+            document.getElementById('edit-overlay').style.display = 'block';
+            document.getElementById('edit-type').value = type;
+            document.getElementById('edit-id').value = id;
+            document.getElementById('situation-fields').style.display = type === 'situation' ? 'block' : 'none';
+            document.getElementById('question-fields').style.display = type === 'question' ? 'block' : 'none';
+            document.getElementById('options-container').innerHTML = '';
+            document.getElementById('edit-label').value = '';
+            document.getElementById('sit-docs').value = '';
+        }
+
+        function addOptionRow(l = '', d = '') {
+            document.getElementById('options-container').innerHTML += `<div class="option-row" style="display:grid;grid-template-columns:1fr 2fr auto;gap:5px;margin-bottom:5px;"><input class="opt-label" value="${l}"><textarea class="doc-input">${d}</textarea><button onclick="this.parentElement.remove()">X</button></div>`;
+        }
+
+        function cancelEdit() {
+            document.getElementById('edit-overlay').style.display = 'none';
+        }
+        async function saveEdit() {
+            const type = document.getElementById('edit-type').value,
+                id = parseInt(document.getElementById('edit-id').value),
+                label = document.getElementById('edit-label').value;
+            if (type === 'situation') {
+                const d = document.getElementById('sit-docs').value.split('\n').filter(x => x.trim());
+                const o = {
+                    id: label.toLowerCase(),
+                    label,
+                    docs: d
+                };
+                id === -1 ? appData.situations.push(o) : appData.situations[id] = o;
+            } else {
+                const ops = [];
+                document.querySelectorAll('.option-row').forEach(r => {
+                    ops.push({
+                        label: r.querySelector('.opt-label').value,
+                        docs: r.querySelector('.doc-input').value.split('\n').filter(x => x.trim())
+                    })
+                });
+                const o = {
+                    id: 'q' + Date.now(),
+                    text: label,
+                    options: ops
+                };
+                id === -1 ? appData.questions.push(o) : appData.questions[id] = o;
+            }
+            // O 'true' avisa que é ADMIN
+            const ok = await saveDataToCloud(true);
+            if (ok) {
+                renderAdminLists();
+                document.getElementById('edit-overlay').style.display = 'none';
+            }
+        }
+        async function delItem(type, index) {
+            if (!confirm('Tem certeza que deseja excluir e salvar na nuvem?')) return;
+            // Atualiza o array local
+            if (type === 'situation') {
+                appData.situations.splice(index, 1);
+            } else {
+                appData.questions.splice(index, 1);
+            }
+            // O 'true' avisa que é uma alteração de ADMIN (Configuração)
+            const ok = await saveDataToCloud(true);
+            if (ok) renderAdminLists();
+        }
+    </script>
+</body>
+
+</html>
