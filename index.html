@@ -68,6 +68,17 @@
             margin-bottom: 25px;
             line-height: 1.6;
         }
+		
+		.extra-docs ul {
+        list-style: none !important; 
+        padding-left: 0 !important;  
+        margin: 5px 0 !important;    
+    }
+
+    .extra-docs li.doc-item {
+        margin-bottom: 4px;          
+        padding: 4px;
+    }
 
         .alert h4 {
             margin: 0 0 10px 0;
@@ -140,12 +151,6 @@
             transform: translateY(-2px);
         }
 
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         .btn-primary2 {
             background: var(--primary-light);
             color: white;
@@ -155,20 +160,8 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            width: 10%;
             margin-top: 20px;
             transition: background 0.3s, transform 0.2s;
-        }
-
-        .btn-primary2:hover {
-            background: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .btn-primary2:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
         }
 
         .toolbar {
@@ -291,10 +284,6 @@
             color: #0056b3;
             font-weight: bold;
             text-decoration: underline;
-        }
-
-        .doc-text a:hover {
-            color: #003d80;
         }
 
         .btn-remove {
@@ -432,6 +421,24 @@
             cursor: pointer;
             font-size: 0.85rem;
             margin-left: 5px;
+        }
+
+        .btn-move {
+            color: white;
+            background: #ebe9e9;
+            font-size: 0.8rem;
+            padding: 5px 8px;
+            min-width: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-move:disabled {
+            background: #f9f9f9;
+            color: #adb5bd;
+            cursor: not-allowed;
+			visibility: hidden;
         }
 
         .btn-edit {
@@ -696,7 +703,7 @@
                         <button class="btn-sm btn-primary2" onclick="searchServer()" style="margin:0;">Buscar</button>
                     </div>
                     <div class="item-list" id="saved-list"></div>
-                    <p style="font-size:0.8rem; color:#666; text-align:center; margin-top:5px;"> Mostrando apenas os 50 primeiros resultados da busca. </p>
+                    <p style="font-size:0.8rem; color:#666; text-align:center; margin-top:5px;"> Mostrando apenas os 10 primeiros resultados da busca. </p>
                 </div>
                 <div id="tab-situations" style="display:none;">
                     <button class="btn-sm btn-add" onclick="editSituation(-1)">+ Nova Situação</button>
@@ -727,15 +734,12 @@
                     <div id="question-fields" style="display:none;"><label>Opções:</label>
                         <div id="options-container"></div><button class="btn-sm btn-add" onclick="addOptionRow()">+ Opção</button>
                     </div>
-                    <div style="margin-top:15px; display:flex; gap:10px;"><button class="btn-primary" onclick="saveEdit()">Salvar na Nuvem</button><button class="btn-sm" style="background:#999; color:white;" onclick="cancelEdit()">Cancelar</button></div>
+                    <div style="margin-top:15px; display:flex; gap:10px;"><button class="btn-primary" onclick="saveEdit()">Salvar</button><button class="btn-sm" style="background:#999; color:white; margin-top: 20px;" onclick="cancelEdit()">Cancelar</button></div>
                 </div>
             </div>
         </div>
     </div>
     <script>
-        /* ==========================================================================
-   1. CONFIGURAÇÃO FIREBASE (Preencha com seus dados)
-   ========================================================================== */
         const firebaseConfig = {
             apiKey: "AIzaSyCSJRdWEr-IbY9hxn7LBj7nuY6M5bZ8HAE",
             authDomain: "checklist-b477f.firebaseapp.com",
@@ -745,11 +749,7 @@
             messagingSenderId: "1069790989135",
             appId: "1:1069790989135:web:fc9469e63477bc45ba133a"
         };
-        // Inicializa o Firebase
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        /* ==========================================================================
-           2. GERENCIADOR DE DADOS E SEGURANÇA (ULTRA OTIMIZADO)
-           ========================================================================== */
         const CloudManager = (function() {
             const db = firebase.database();
             const auth = firebase.auth();
@@ -759,7 +759,6 @@
                 auth.onAuthStateChanged(user => {
                     currentUser = user;
                     if (user) {
-                        console.log("Logado como: " + (user.email || "Aluno"));
                         syncData();
                     } else {
                         auth.signInAnonymously().catch(console.error);
@@ -783,24 +782,19 @@
                 const snap = await db.ref(`checklist_app/savedLists/${id}`).once('value');
                 return snap.val();
             }
-            // --- NOVA FUNÇÃO DE BUSCA INTELIGENTE ---
             async function fetchListsForAdmin(searchTerm = "") {
                 if (!currentUser || !currentUser.email) return [];
                 let query;
                 const ref = db.ref('checklist_app/savedLists');
                 if (searchTerm) {
-                    // Se tem busca: Pesquisa pelo NOME no servidor
-                    query = ref.orderByChild('name').startAt(searchTerm).endAt(searchTerm + "\uf8ff").limitToFirst(50);
+                    query = ref.orderByChild('name').startAt(searchTerm).endAt(searchTerm + "\uf8ff").limitToFirst(10);
                 } else {
-                    // Se não tem busca: Traz os 10 últimos (Mais recentes)
                     query = ref.orderByKey().limitToLast(10);
                 }
                 const snap = await query.once('value');
                 const val = snap.val();
                 if (!val) return [];
-                // Converte objeto em array
                 let list = Object.keys(val).map(key => val[key]);
-                // Se for lista recente (sem busca), inverte para o mais novo ficar no topo.
                 if (!searchTerm) list.reverse();
                 return list;
             }
@@ -827,79 +821,24 @@
                 getUser: () => currentUser
             };
         })();
-        // Inicia o sistema
         CloudManager.init();
-        /* ==========================================================================
-           3. ESTADO DA APLICAÇÃO
-           ========================================================================== */
-        // Dados padrão caso o banco esteja vazio
         const defaultData = {
-            basicDocsStudent: ['RG e CPF', 'Declaração de Composição Familiar', 'Extratos Bancários', 'Registrato (BACEN)'],
-            basicDocsFamily: ['RG e CPF', 'Extratos Bancários', 'Registrato (BACEN)'],
-            situations: [{
-                id: 'assalariado',
-                label: 'Assalariado',
-                docs: ['Contracheques (3 últimos)', 'CTPS completa', 'IRPF (se declarou)']
-            }, {
-                id: 'autonomo',
-                label: 'Autônomo/Informal',
-                docs: ['Declaração de Autônomo', 'CTPS', 'Extratos bancários']
-            }, {
-                id: 'aposentado',
-                label: 'Aposentado/Pensionista',
-                docs: ['Extrato do benefício', 'IRPF']
-            }, {
-                id: 'mei',
-                label: 'Microempreendedor (MEI)',
-                docs: ['DASN Simei', 'Declaração de MEI', 'Extratos']
-            }, {
-                id: 'desempregado',
-                label: 'Desempregado',
-                docs: ['CTPS (Baixa)', 'Declaração de desemprego', 'Seguro-desemprego']
-            }, {
-                id: 'nunca',
-                label: 'Nunca Trabalhou',
-                docs: ['CTPS (em branco)', 'CNIS (se maior de 18)']
-            }],
-            questions: [{
-                id: 'moradia',
-                text: 'Moradia',
-                options: [{
-                    label: 'Alugada',
-                    docs: ['Contrato ou recibos']
-                }, {
-                    label: 'Cedida',
-                    docs: ['Declaração de imóvel cedido']
-                }, {
-                    label: 'Própria',
-                    docs: []
-                }]
-            }, {
-                id: 'orfao',
-                text: 'Pais falecidos?',
-                options: [{
-                    label: 'Sim',
-                    docs: ['Certidão de óbito']
-                }, {
-                    label: 'Não',
-                    docs: []
-                }]
-            }]
+            basicDocsStudent: ['RG e CPF'],
+            basicDocsFamily: ['RG e CPF'],
+            situations: [],
+            questions: []
         };
         let appData = defaultData;
-        let savedLists = []; // Só será preenchido se for Admin
+        let savedLists = [];
         let currentChecklistId = null;
         let isDirty = false;
-        const isCloudConfigured = true;
         window.addEventListener('beforeunload', (e) => {
             if (isDirty) {
                 e.preventDefault();
                 e.returnValue = 'Alterações não salvas.';
             }
         });
-        /* ==========================================================================
-           4. FUNÇÕES UI E LÓGICA DO APP
-           ========================================================================== */
+
         function showLoading(msg) {
             document.getElementById('loading-text').textContent = msg;
             document.getElementById('loading-overlay').style.display = 'flex';
@@ -908,6 +847,88 @@
         function hideLoading() {
             document.getElementById('loading-overlay').style.display = 'none';
         }
+        // --- LÓGICA DE CONDICIONAIS CORRIGIDA ---
+        // --- LÓGICA DE CONDICIONAIS (NOME CORRIGIDO) ---
+        function aplicarRegras(pIdx) {
+            if (!appData.questions) return;
+            // Varre todas as perguntas do card dessa pessoa (pIdx)
+            appData.questions.forEach((q, targetIndex) => {
+                // Gera o ID único do box desta pessoa e desta pergunta
+                const boxId = `q-box-${pIdx}-${targetIndex}`;
+                const box = document.getElementById(boxId);
+                if (!box) return;
+                if (q.dependsOn) {
+                    const parts = q.dependsOn.split(':').map(s => s.trim());
+                    if (parts.length < 2) return;
+                    const parentId = parts[0];
+                    const requiredOptIndex = parts[1];
+                    const parentIndex = appData.questions.findIndex(x => x.id === parentId);
+                    if (parentIndex === -1) {
+                        console.warn(`ID não encontrado: ${parentId}`);
+                        return;
+                    }
+                    // Pega o select da pergunta PAI dentro do card da MESMA PESSOA (pIdx)
+                    const parentSelectId = `extra-${pIdx}-${parentIndex}`;
+                    const parentSelect = document.getElementById(parentSelectId);
+                    const selectTargetId = `extra-${pIdx}-${targetIndex}`;
+                    const selectTarget = document.getElementById(selectTargetId);
+                    const selectedValue = parentSelect ? parentSelect.value : '';
+                    // Verifica se a opção bate (Ex: valor "0-1" -> split dá "1")
+                    if (selectedValue && selectedValue.split('-')[1] === requiredOptIndex) {
+                        box.style.display = 'block';
+                    } else {
+                        box.style.display = 'none';
+                        if (selectTarget) selectTarget.value = "";
+                    }
+                }
+            });
+        }
+
+        function renderForm() {
+            const c = document.getElementById('form-container');
+            const s = parseInt(document.getElementById('family-size').value);
+            if (isNaN(s) || s < 0) return alert('Inválido');
+            c.innerHTML = '';
+            // Cria estudante e aplica regras
+            c.appendChild(createMemberCard('Estudante', 0, true));
+            setTimeout(() => aplicarRegras(0), 100);
+            // Cria familiares e aplica regras
+            for (let i = 1; i <= s; i++) {
+                c.appendChild(createMemberCard(`${i}º Membro do grupo familiar`, i, false));
+                setTimeout(() => aplicarRegras(i), 100);
+            }
+            const b = document.createElement('button');
+            b.className = 'btn-primary';
+            b.textContent = 'Gerar Checklist';
+            b.onclick = generateChecklist;
+            c.appendChild(b);
+        }
+
+        function createMemberCard(title, i, isCand) {
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#f8f9fa; border:1px solid #e9ecef; border-radius:12px; padding:20px; margin-top:20px;';
+            let h = `<div class="section-header" style="margin-top:0;">${title}</div>
+             <div style="margin-bottom:15px;"><label>Nome:</label><input type="text" id="name-${i}"></div>
+             <div style="margin-bottom:15px;"><label>Situação:</label><div id="sit-wrapper-${i}"></div></div>`;
+            if (isCand && appData.questions) {
+                h += `<div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:10px;"><h4 style="color:#666;">Informações complementares</h4>`;
+                appData.questions.forEach((q, qi) => {
+                    let o = `<option value="">Escolha...</option>`;
+                    q.options.forEach((opt, oi) => o += `<option value="${qi}-${oi}">${opt.label}</option>`);
+                    const boxId = `q-box-${i}-${qi}`;
+                    const selectId = `extra-${i}-${qi}`;
+                    const style = q.dependsOn ? 'display:none;' : 'display:block;';
+                    h += `<div id="${boxId}" style="margin-bottom:15px; ${style}">
+                    <label>${q.text}</label>
+                    <select id="${selectId}" onchange="aplicarRegras(${i})">${o}</select>
+                  </div>`;
+                });
+                h += '</div>';
+            }
+            card.innerHTML = h;
+            card.querySelector(`#sit-wrapper-${i}`).appendChild(createMultiSelect(`multi-${i}`, appData.situations));
+            return card;
+        }
 
         function createMultiSelect(id, items) {
             const c = document.createElement('div');
@@ -915,7 +936,7 @@
             c.id = `container-${id}`;
             const t = document.createElement('div');
             t.className = 'dropdown-trigger';
-            t.innerHTML = '<span class="trigger-text">Selecione todas as situações aplicáveis...</span>';
+            t.innerHTML = '<span class="trigger-text">Selecione...</span>';
             t.onclick = (e) => {
                 e.stopPropagation();
                 toggleDropdown(id);
@@ -930,14 +951,14 @@
                 r.onclick = (e) => e.stopPropagation();
                 m.appendChild(r);
             });
-            const okDiv = document.createElement('div');
-            okDiv.className = 'dropdown-ok';
-            okDiv.innerHTML = '<button type="button">OK - Concluir</button>';
-            okDiv.onclick = (e) => {
+            const ok = document.createElement('div');
+            ok.className = 'dropdown-ok';
+            ok.innerHTML = '<button type="button">OK</button>';
+            ok.onclick = (e) => {
                 e.stopPropagation();
                 toggleDropdown(id);
             };
-            m.appendChild(okDiv);
+            m.appendChild(ok);
             c.appendChild(t);
             c.appendChild(m);
             return c;
@@ -959,38 +980,6 @@
         }
         document.addEventListener('click', () => document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')));
 
-        function renderForm() {
-            const c = document.getElementById('form-container');
-            const s = parseInt(document.getElementById('family-size').value);
-            if (isNaN(s) || s < 0) return alert('Inválido');
-            c.innerHTML = '';
-            c.appendChild(createMemberCard('Estudante', 0, true));
-            for (let i = 1; i <= s; i++) c.appendChild(createMemberCard(`${i}º Membro do grupo familiar`, i, false));
-            const b = document.createElement('button');
-            b.className = 'btn-primary';
-            b.textContent = 'Gerar Checklist';
-            b.onclick = generateChecklist;
-            c.appendChild(b);
-        }
-
-        function createMemberCard(title, i, isCand) {
-            const card = document.createElement('div');
-            card.style.cssText = 'background:#f8f9fa; border:1px solid #e9ecef; border-radius:12px; padding:20px; margin-top:20px;';
-            let h = `<div class="section-header" style="margin-top:0;">${title}</div><div style="margin-bottom:15px;"><label>Nome:</label><input type="text" id="name-${i}"></div><div style="margin-bottom:15px;"><label>Situação:</label><div id="sit-wrapper-${i}"></div></div>`;
-            if (isCand) {
-                h += `<div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:10px;"><h4 style="color:#666;">Informações complementares</h4>`;
-                appData.questions.forEach((q, qi) => {
-                    let o = `<option value="">Escolha...</option>`;
-                    q.options.forEach((opt, oi) => o += `<option value="${qi}-${oi}">${opt.label}</option>`);
-                    h += `<div style="margin-bottom:15px;"><label>${q.text}</label><select id="extra-${qi}">${o}</select></div>`;
-                });
-                h += '</div>';
-            }
-            card.innerHTML = h;
-            card.querySelector(`#sit-wrapper-${i}`).appendChild(createMultiSelect(`multi-${i}`, appData.situations));
-            return card;
-        }
-
         function markDirty() {
             isDirty = true;
         }
@@ -1000,46 +989,69 @@
             markDirty();
         }
 
-        function addNewDoc(btn) {
-            const input = btn.previousElementSibling;
-            const text = input.value.trim();
-            if (!text) return;
-            const ul = btn.closest('div').previousElementSibling;
-            const li = document.createElement('li');
-            li.className = 'doc-item';
-            li.innerHTML = `<label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button>`;
-            ul.appendChild(li);
-            input.value = '';
-            markDirty();
+        function formatDocText(text) {
+            return text.replace(/^[\(\s\)]+/, '').trim().replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
         }
+
+        function addNewDoc(btn) {
+    const input = btn.previousElementSibling;
+    const text = input.value.trim();
+    if (!text) return;
+
+    // 1. Identifica a linha onde está o botão e o pai (bloco da pessoa)
+    const row = btn.closest('.add-doc-row');
+    const prev = row.previousElementSibling;
+    let targetUl = null;
+
+    // 2. Lógica inteligente para achar a lista correta:
+    
+    // Caso A: O elemento imediatamente acima é uma lista (Situação normal)
+    if (prev && prev.tagName === 'UL') {
+        targetUl = prev;
+    }
+    // Caso B: O elemento acima é um bloco (ex: Complementares ou div de pergunta), buscamos a lista DENTRO dele
+    else if (prev && prev.tagName === 'DIV') {
+        const listsInside = prev.querySelectorAll('ul');
+        if (listsInside.length > 0) {
+            // Pega a última lista dentro desse bloco
+            targetUl = listsInside[listsInside.length - 1];
+        }
+    }
+
+    // Caso C (Segurança): Se não achou nada acima, pega a última lista disponível no cartão da pessoa
+    if (!targetUl) {
+        const parent = row.parentElement;
+        const allLists = parent.querySelectorAll('ul');
+        if (allLists.length > 0) targetUl = allLists[allLists.length - 1];
+    }
+
+    // Caso D: Se não existir nenhuma lista no cartão, cria uma nova
+    if (!targetUl) {
+        targetUl = document.createElement('ul');
+        row.parentElement.insertBefore(targetUl, row);
+    }
+
+    // 3. Insere o item na lista encontrada (Agora herda o estilo correto sem marcadores)
+    targetUl.insertAdjacentHTML('beforeend', `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(text)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`);
+    
+    input.value = ''; 
+    markDirty();
+}
 
         function addNewObs(btn) {
             const input = btn.previousElementSibling;
             const text = input.value.trim();
             if (!text) return;
             const ul = btn.closest('div').previousElementSibling;
-            const li = document.createElement('li');
-            li.className = 'doc-item';
-            li.innerHTML = `
-    <div style="padding: 5px 30px 5px 5px;">
-      <span class="doc-text" style="display:block;">${formatDocText(text)}</span>
-    </div>
-    <button class="btn-remove" onclick="removeDoc(this)">X</button>
-  `;
-            ul.appendChild(li);
+            ul.insertAdjacentHTML('beforeend', `<li class="doc-item"><div style="padding:5px 30px 5px 5px;"><span class="doc-text" style="display:block;">${formatDocText(text)}</span></div><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`);
             input.value = '';
             markDirty();
-        }
-
-        function formatDocText(text) {
-            let clean = text.replace(/^[\(\s\)]+/, '').trim();
-            return clean.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">$1</a>');
         }
 
         function generateChecklist() {
             const size = parseInt(document.getElementById('family-size').value);
             const item = t => `<li class="doc-item"><label class="doc-label"><input type="checkbox" class="doc-checkbox" onchange="markDirty()"><span class="doc-text">${formatDocText(t)}</span></label><button class="btn-remove" onclick="removeDoc(this)">X</button></li>`;
-            const addBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar documento..."><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
+            const addBox = `<div class="add-doc-row"><input class="add-doc-input" placeholder="Adicionar documento"><button class="btn-add-item" onclick="addNewDoc(this)">+</button></div>`;
             let html = '',
                 cName = '';
             for (let i = 0; i <= size; i++) {
@@ -1048,19 +1060,12 @@
                 if (!n) continue;
                 if (i === 0) cName = n;
                 const ch = document.querySelectorAll(`#container-multi-${i} input:checked`);
-                // Define qual lista usar (Estudante ou Familiar)
-                const basicList = (i === 0) ? (appData.basicDocsStudent || defaultData.basicDocsStudent) : (appData.basicDocsFamily || defaultData.basicDocsFamily);
-                // Gera o HTML dos itens gerais
+                const basicList = (i === 0) ? (appData.basicDocsStudent || []) : (appData.basicDocsFamily || []);
                 let basicHtml = '';
-                basicList.forEach(docText => {
-                    basicHtml += item(docText);
-                });
-                html += `<div class="person-block">
-               <h3>${i===0?'Estudante':'Familiar'}: ${n}</h3>
-               <strong>Documentos Gerais:</strong>
-               <ul>${basicHtml}</ul>`;
+                basicList.forEach(t => basicHtml += item(t));
+                html += `<div class="person-block"><h3>${i===0?'Estudante':'Familiar'}: ${n}</h3><strong>Gerais:</strong><ul>${basicHtml}</ul>`;
                 if (ch.length) {
-                    html += '<strong>Comprovantes de Rendimentos:</strong><ul>';
+                    html += '<strong>Rendimentos:</strong><ul>';
                     let d = [];
                     ch.forEach(c => {
                         const s = appData.situations.find(x => x.id === c.value);
@@ -1068,25 +1073,41 @@
                     });
                     [...new Set(d)].forEach(x => html += item(x));
                     html += '</ul>';
-                } else html += '<p style="font-style:italic;color:#666">Nenhuma situação.</p>';
-                html += addBox + '</div>';
-            }
-            let extra = '';
+                } else html += '<p style="color:#666">Nenhuma situação.</p>';
+                // --- PROCESSAMENTO DAS PERGUNTAS DENTRO DO CARD DO MEMBRO ---
+                // Apenas para o estudante (i=0) ou para todos se o sistema mudou para permitir perguntas para todos
+                // No seu código original, perguntas são só para o estudante (isCand=true).
+                // --- PROCESSAMENTO DAS PERGUNTAS DENTRO DO CARD DO MEMBRO ---
+        // Apenas para o estudante (i=0)
+        if(i === 0 && appData.questions) {
+            let extraDocsHtml = ''; // Variável para acumular apenas os itens <li>
+            
             appData.questions.forEach((q, qi) => {
-                const v = document.getElementById(`extra-${qi}`).value;
+                const box = document.getElementById(`q-box-${i}-${qi}`);
+                if (box && box.style.display === 'none') return; // Pula se invisível
+
+                const v = document.getElementById(`extra-${i}-${qi}`).value;
                 if (v) {
                     const [x, y] = v.split('-');
                     const op = appData.questions[x].options[y];
-                    if (op.docs.length) extra += op.docs.map(d => item(d)).join('');
+                    if (op.docs && op.docs.length) {
+                        // AQUI MUDOU: Acumulamos apenas os <li> (item), sem abrir novos <ul>
+                        extraDocsHtml += op.docs.map(d => item(d)).join('');
+                    }
                 }
             });
-            html += `<div class="extra-docs"><h3>Outros Documentos</h3><ul>${extra}</ul>${addBox}</div>`;
-            const addObsBox = `<div class="add-doc-row"><input type="text" class="add-doc-input" placeholder="Adicionar observação..."><button class="btn-add-item" onclick="addNewObs(this)">+</button></div>`;
-            html += `<div class="person-block" style="border-left-color: #666; margin-top: 20px;">
-             <h3>Observações</h3>
-             <ul></ul>
-             ${addObsBox}
-           </div>`;
+
+            // Se houver documentos, cria UMA ÚNICA lista <ul> envolvendo todos eles
+            if(extraDocsHtml) {
+                html += `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px;">
+                           <strong>Complementares:</strong>
+                           <ul>${extraDocsHtml}</ul>
+                         </div>`;
+            }
+        }
+                html += addBox + '</div>';
+            }
+            html += `<div class="person-block" style="border-left-color:#666; margin-top:20px;"><h3>Observações</h3><ul></ul><div class="add-doc-row"><input class="add-doc-input" placeholder="+ Obs"><button class="btn-add-item" onclick="addNewObs(this)">+</button></div></div>`;
             const content = document.getElementById('checklist-content');
             content.innerHTML = html;
             content.dataset.candidate = cName;
@@ -1099,7 +1120,7 @@
         }
 
         function closeChecklist() {
-            if (isDirty && !confirm("Existem alterações não salvas. Deseja realmente voltar?")) return;
+            if (isDirty && !confirm("Deseja realmente voltar?")) return;
             document.getElementById('checklist-screen').style.display = 'none';
             document.getElementById('creation-screen').style.display = 'block';
             currentChecklistId = null;
@@ -1113,35 +1134,21 @@
             else url.searchParams.delete('id');
             window.history.pushState({}, '', url);
         }
-        /* === SALVAR / CARREGAR === */
         async function saveLogic(silent = false) {
             const div = document.getElementById('checklist-content');
             const name = div.dataset.candidate || 'Sem Nome';
             div.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked ? c.setAttribute('checked', 'checked') : c.removeAttribute('checked'));
             const html = div.innerHTML;
-            let newItem = {};
-            if (currentChecklistId) {
-                newItem = {
-                    id: currentChecklistId,
-                    name,
-                    html,
-                    created: new Date().toLocaleString(),
-                    updated: new Date().toLocaleString()
-                };
-                // Atualiza lista local (visual apenas) se estivermos no Admin, senão não importa
-            } else {
-                const newId = Date.now();
-                newItem = {
-                    id: newId,
-                    name,
-                    html,
-                    created: new Date().toLocaleString(),
-                    updated: new Date().toLocaleString()
-                };
-                currentChecklistId = newId;
-                updateUrl(newId);
+            let newItem = {
+                id: currentChecklistId || Date.now(),
+                name,
+                html,
+                created: new Date().toLocaleString()
+            };
+            if (!currentChecklistId) {
+                currentChecklistId = newItem.id;
+                updateUrl(newItem.id);
             }
-            // Chama a função da nuvem (envia o objeto do checklist, não o booleano)
             const success = await saveDataToCloud(newItem);
             if (success) {
                 isDirty = false;
@@ -1157,13 +1164,12 @@
             setTimeout(() => window.print(), 200);
         }
         async function loadChecklist(id) {
-            if (isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-            showLoading('Carregando checklist...');
-            // Otimização: Busca direto no Firebase, sem carregar tudo
+            if (isDirty && !confirm("Alterações perdidas. Continuar?")) return;
+            showLoading('Carregando...');
             const l = await CloudManager.fetchSpecificChecklist(id);
             hideLoading();
             if (!l) {
-                alert('Checklist não encontrado ou excluído.');
+                alert('Não encontrado.');
                 updateUrl(null);
                 return;
             }
@@ -1179,75 +1185,50 @@
         }
 
         function copyLink() {
-            if (!currentChecklistId || isDirty) return alert("Salve primeiro.");
-            navigator.clipboard.writeText(window.location.href).then(() => alert("Link copiado!"));
+            navigator.clipboard.writeText(window.location.href).then(() => alert("Copiado!"));
         }
         async function deleteSavedList(id) {
             if (!confirm('Excluir?')) return;
             await CloudManager.deleteChecklist(id);
-            // Recarrega a lista do admin
-            showLoading('Atualizando...');
-            savedLists = await CloudManager.fetchListsForAdmin();
-            hideLoading();
-            renderSavedList();
+            searchServer();
         }
-        /* ==========================================================================
-           5. FUNÇÕES DE SINCRONIZAÇÃO E SALVAMENTO
-           ========================================================================== */
-        // Função chamada ao iniciar o app (Otimizada)
         async function syncData() {
-            showLoading('Carregando o gerador...');
+            showLoading('Iniciando...');
             try {
-                // 1. Busca Configurações (Leve)
                 const settings = await CloudManager.fetchSettings();
                 if (settings) appData = settings;
-                // 2. Se for Admin Logado, busca listas (Otimizado: apenas 50 recentes)
                 const user = CloudManager.getUser();
                 if (user && user.email) {
-                    // AQUI ESTAVA O ERRO: Chamava fetchAllListsForAdmin que não existia mais
                     savedLists = await CloudManager.fetchListsForAdmin();
-                } else {
-                    savedLists = []; // Estudante não precisa ver a lista geral
                 }
-                document.getElementById('status-bar').textContent = "✅ Ok!";
-                // 3. Verifica se tem ID na URL para abrir checklist específico
+                document.getElementById('status-bar').textContent = "";
                 const params = new URLSearchParams(window.location.search);
                 const id = params.get('id');
                 if (id) loadChecklist(parseInt(id));
             } catch (e) {
                 console.error(e);
-                document.getElementById('status-bar').textContent = "⚠️ Erro de conexão.";
             } finally {
                 hideLoading();
             }
         }
-        // Função Principal de Salvar (Otimizada)
         async function saveDataToCloud(arg) {
             showLoading('Salvando...');
             try {
-                if (arg === true) {
-                    // Atualização de Config (Admin)
-                    await CloudManager.saveSettings(appData);
-                } else {
-                    // Salva um único checklist (delta update)
-                    await CloudManager.saveSingleChecklist(arg);
-                }
-                document.getElementById('status-bar').textContent = "✅ Salvo com sucesso!";
+                if (arg === true) await CloudManager.saveSettings(appData);
+                else await CloudManager.saveSingleChecklist(arg);
+                document.getElementById('status-bar').textContent = "✅ Salvo!";
                 return true;
             } catch (e) {
-                alert("Erro ao salvar: " + e.message);
+                alert("Erro: " + e.message);
                 return false;
             } finally {
                 hideLoading();
             }
         }
-        // Mantendo compatibilidade com o carregamento da janela
         window.onload = function() {
             showLoading('Conectando...');
         };
-        /* ==========================================================================
-           6. FUNÇÕES DO ADMIN (UI)
-           ========================================================================== */
+
         function openAdmin() {
             document.getElementById('admin-modal').style.display = 'block';
         }
@@ -1256,16 +1237,13 @@
             document.getElementById('admin-modal').style.display = 'none';
             document.getElementById('login-screen').style.display = 'block';
             document.getElementById('admin-panel').style.display = 'none';
-            document.getElementById('admin-pass').value = '';
         }
         async function checkLogin() {
             const pass = document.getElementById('admin-pass').value;
-            // ATENÇÃO: Assegure-se de que este email está nas Regras do Firebase
             const adminEmail = "wenea.br@gmail.com";
-            showLoading("Autenticando...");
+            showLoading("Verificando...");
             const success = await CloudManager.loginAdmin(adminEmail, pass);
             if (success) {
-                // Carrega a lista inicial (50 recentes)
                 await searchServer();
                 hideLoading();
                 document.getElementById('login-screen').style.display = 'none';
@@ -1281,53 +1259,68 @@
             savedLists = await CloudManager.fetchListsForAdmin(term);
             hideLoading();
             renderSavedList();
-            if (savedLists.length === 0) {
-                document.getElementById('saved-list').innerHTML = '<p style="padding:15px; text-align:center">Nenhum resultado encontrado.</p>';
-            }
+            if (savedLists.length === 0) document.getElementById('saved-list').innerHTML = '<p style="padding:10px;text-align:center">Vazio.</p>';
         }
 
         function switchTab(t) {
-            // Remove classe ativa de todos
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            // Adiciona ao clicado
-            const buttons = document.querySelectorAll('.tab-btn');
-            if (t === 'saved') buttons[0].classList.add('active');
-            if (t === 'situations') buttons[1].classList.add('active');
-            if (t === 'questions') buttons[2].classList.add('active');
-            if (t === 'basics') buttons[3].classList.add('active');
-            // Esconde todas as abas
-            ['saved', 'situations', 'questions', 'basics'].forEach(x => {
-                const el = document.getElementById(`tab-${x}`);
-                if (el) el.style.display = 'none';
-            });
-            // Mostra a aba selecionada
+            event.target.classList.add('active');
+            ['saved', 'situations', 'questions', 'basics'].forEach(x => document.getElementById(`tab-${x}`).style.display = 'none');
             document.getElementById(`tab-${t}`).style.display = 'block';
-            // Se for a aba de gerais, carrega os dados atuais nos textareas
             if (t === 'basics') {
-                const stdDocs = appData.basicDocsStudent || defaultData.basicDocsStudent;
-                const famDocs = appData.basicDocsFamily || defaultData.basicDocsFamily;
-                document.getElementById('basic-student-text').value = stdDocs.join('\n');
-                document.getElementById('basic-family-text').value = famDocs.join('\n');
+                document.getElementById('basic-student-text').value = (appData.basicDocsStudent || []).join('\n');
+                document.getElementById('basic-family-text').value = (appData.basicDocsFamily || []).join('\n');
             }
         }
         async function saveBasicDocs() {
-            const stdText = document.getElementById('basic-student-text').value;
-            const famText = document.getElementById('basic-family-text').value;
-            appData.basicDocsStudent = stdText.split('\n').filter(line => line.trim() !== '');
-            appData.basicDocsFamily = famText.split('\n').filter(line => line.trim() !== '');
-            const ok = await saveDataToCloud(true);
-            if (ok) alert("Documentos gerais atualizados com sucesso!");
+            appData.basicDocsStudent = document.getElementById('basic-student-text').value.split('\n').filter(x => x.trim());
+            appData.basicDocsFamily = document.getElementById('basic-family-text').value.split('\n').filter(x => x.trim());
+            if (await saveDataToCloud(true)) alert("Atualizado!");
         }
 
         function renderSavedList() {
             const el = document.getElementById('saved-list');
-            if (!savedLists.length) return el.innerHTML = '<p style="padding:10px">Vazio</p>';
-            el.innerHTML = savedLists.map(i => `<div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div><div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button><button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>`).join('');
+            el.innerHTML = savedLists.length ? savedLists.map(i => `
+        <div class="list-row"><div><strong>${i.name}</strong><br><small>${i.updated}</small></div>
+        <div><button class="btn-sm btn-edit" onclick="loadChecklist(${i.id})">Abrir</button>
+        <button class="btn-sm btn-del" onclick="deleteSavedList(${i.id})">X</button></div></div>
+    `).join('') : '<p style="padding:10px">Vazio</p>';
         }
 
         function renderAdminLists() {
-            document.getElementById('situations-list').innerHTML = appData.situations.map((s, i) => `<div class="list-row"><strong>${s.label}</strong><div><button class="btn-sm btn-edit" onclick="editSituation(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('situation',${i})">X</button></div></div>`).join('');
-            document.getElementById('questions-list').innerHTML = appData.questions.map((q, i) => `<div class="list-row"><strong>${q.text}</strong><div><button class="btn-sm btn-edit" onclick="editQuestion(${i})">Editar</button><button class="btn-sm btn-del" onclick="delItem('question',${i})">X</button></div></div>`).join('');
+            const moveBtns = (type, i, len) => `
+        <div style="display:inline-flex;gap:2px;margin-right:5px;">
+            <button type="button" class="btn-sm btn-move" onclick="moveItem('${type}',${i},-1)" ${i===0?'disabled':''}>⬆️</button>
+            <button type="button" class="btn-sm btn-move" onclick="moveItem('${type}',${i},1)" ${i===len-1?'disabled':''}>⬇️</button>
+        </div>`;
+            document.getElementById('situations-list').innerHTML = appData.situations.map((s, i) => `<div class="list-row"><div style="flex:1"><strong>${s.label}</strong></div>
+        <div style="display:flex;">${moveBtns('situation',i,appData.situations.length)}
+        <button type="button" class="btn-sm btn-edit" onclick="editSituation(${i})">Editar</button>
+        <button type="button" class="btn-sm btn-del" onclick="delItem('situation',${i})">X</button></div></div>`).join('');
+            document.getElementById('questions-list').innerHTML = appData.questions.map((q, i) => `<div class="list-row"><div style="flex:1"><strong>${q.text}</strong><br><small style="color:#6f42c1;font-family:monospace">ID: ${q.id}</small>${q.dependsOn?`<br><small style="color:#e67e22">↳ Dep: ${q.dependsOn}</small>`:''}</div>
+        <div style="display:flex;">${moveBtns('question',i,appData.questions.length)}
+        <button type="button" class="btn-sm btn-edit" onclick="editQuestion(${i})">Editar</button>
+        <button type="button" class="btn-sm btn-del" onclick="delItem('question',${i})">X</button></div></div>`).join('');
+        }
+
+        function setupEdit(type, id) {
+            document.getElementById('edit-overlay').style.display = 'block';
+            document.getElementById('edit-type').value = type;
+            document.getElementById('edit-id').value = id;
+            document.getElementById('situation-fields').style.display = type === 'situation' ? 'block' : 'none';
+            document.getElementById('question-fields').style.display = type === 'question' ? 'block' : 'none';
+            document.getElementById('options-container').innerHTML = '';
+            document.getElementById('edit-label').value = '';
+            document.getElementById('sit-docs').value = '';
+            if (document.getElementById('dep-field')) document.getElementById('dep-field').remove();
+            if (type === 'question') {
+                const div = document.createElement('div');
+                div.id = 'dep-field';
+                div.style.marginBottom = '10px';
+                div.innerHTML = `<label style="color:#6f42c1; margin-top:10px;";>Regra de exibição (opcional):</label><input type="text" id="edit-depends" placeholder="Ex: moradia:0 (ID da pergunta pai:índice da opção)"><small style="color:#666; display:block; margin-top:3px;">Deixe vazio para aparecer sempre. Use índice 0 para 1ª opção, 1 para 2ª...</small>`;
+                const label = document.getElementById('edit-label');
+                label.parentNode.insertBefore(div, label.nextSibling);
+            }
         }
 
         function editSituation(i) {
@@ -1342,23 +1335,13 @@
             setupEdit('question', i);
             if (i !== -1) {
                 document.getElementById('edit-label').value = appData.questions[i].text;
-                appData.questions[i].options.forEach(o => addOptionRow(o.label, o.docs.join('\n')));
+                if (appData.questions[i].dependsOn) document.getElementById('edit-depends').value = appData.questions[i].dependsOn;
+                appData.questions[i].options.forEach(o => addOptionRow(o.label, (o.docs || []).join('\n')));
             } else addOptionRow('', '');
         }
 
-        function setupEdit(type, id) {
-            document.getElementById('edit-overlay').style.display = 'block';
-            document.getElementById('edit-type').value = type;
-            document.getElementById('edit-id').value = id;
-            document.getElementById('situation-fields').style.display = type === 'situation' ? 'block' : 'none';
-            document.getElementById('question-fields').style.display = type === 'question' ? 'block' : 'none';
-            document.getElementById('options-container').innerHTML = '';
-            document.getElementById('edit-label').value = '';
-            document.getElementById('sit-docs').value = '';
-        }
-
         function addOptionRow(l = '', d = '') {
-            document.getElementById('options-container').innerHTML += `<div class="option-row" style="display:grid;grid-template-columns:1fr 2fr auto;gap:5px;margin-bottom:5px;"><input class="opt-label" value="${l}"><textarea class="doc-input">${d}</textarea><button onclick="this.parentElement.remove()">X</button></div>`;
+            document.getElementById('options-container').innerHTML += `<div class="option-row" style="display:grid;grid-template-columns:1fr 2fr auto;gap:5px;margin-bottom:5px;"><input class="opt-label" value="${l}" placeholder="Digite a opção."><textarea class="doc-input" placeholder="Um documento por linha (deixe em branco se para essa opção não houver documentos)">${d}</textarea><button type="button" onclick="this.parentElement.remove()">X</button></div>`;
         }
 
         function cancelEdit() {
@@ -1369,51 +1352,47 @@
                 id = parseInt(document.getElementById('edit-id').value),
                 label = document.getElementById('edit-label').value;
             if (type === 'situation') {
-                const d = document.getElementById('sit-docs').value.split('\n').filter(x => x.trim());
-                const o = {
-                    id: label.toLowerCase(),
+                const docs = document.getElementById('sit-docs').value.split('\n').filter(x => x.trim());
+                const obj = {
+                    id: label.toLowerCase().replace(/\s/g, ''),
                     label,
-                    docs: d
+                    docs
                 };
-                id === -1 ? appData.situations.push(o) : appData.situations[id] = o;
+                id === -1 ? appData.situations.push(obj) : appData.situations[id] = obj;
             } else {
                 const ops = [];
-                document.querySelectorAll('.option-row').forEach(r => {
-                    ops.push({
-                        label: r.querySelector('.opt-label').value,
-                        docs: r.querySelector('.doc-input').value.split('\n').filter(x => x.trim())
-                    })
-                });
-                const o = {
-                    id: 'q' + Date.now(),
+                document.querySelectorAll('.option-row').forEach(r => ops.push({
+                    label: r.querySelector('.opt-label').value,
+                    docs: r.querySelector('.doc-input').value.split('\n').filter(x => x.trim())
+                }));
+                const dep = document.getElementById('edit-depends').value.trim();
+                const oldId = (id !== -1 && appData.questions[id]) ? appData.questions[id].id : 'q' + Date.now();
+                const obj = {
+                    id: oldId,
                     text: label,
-                    options: ops
+                    options: ops,
+                    dependsOn: dep
                 };
-                id === -1 ? appData.questions.push(o) : appData.questions[id] = o;
+                id === -1 ? appData.questions.push(obj) : appData.questions[id] = obj;
             }
-            // O 'true' avisa que é ADMIN
-            const ok = await saveDataToCloud(true);
-            if (ok) {
+            if (await saveDataToCloud(true)) {
                 renderAdminLists();
-                document.getElementById('edit-overlay').style.display = 'none';
+                cancelEdit();
             }
         }
-        async function delItem(type, index) {
-            if (!confirm('Tem certeza que deseja excluir e salvar na nuvem?')) return;
-            // Atualiza o array local
-            if (type === 'situation') {
-                appData.situations.splice(index, 1);
-            } else {
-                appData.questions.splice(index, 1);
-            }
-            // O 'true' avisa que é uma alteração de ADMIN (Configuração)
-            const ok = await saveDataToCloud(true);
-            if (ok) renderAdminLists();
+        async function delItem(type, i) {
+            if (!confirm('Excluir?')) return;
+            type === 'situation' ? appData.situations.splice(i, 1) : appData.questions.splice(i, 1);
+            if (await saveDataToCloud(true)) renderAdminLists();
+        }
+        async function moveItem(type, i, dir) {
+            const list = type === 'situation' ? appData.situations : appData.questions;
+            if (i + dir < 0 || i + dir >= list.length) return;
+            [list[i], list[i + dir]] = [list[i + dir], list[i]];
+            renderAdminLists();
+            await saveDataToCloud(true);
         }
     </script>
 </body>
 
 </html>
-
-
-
