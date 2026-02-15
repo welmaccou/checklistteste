@@ -204,14 +204,12 @@
         ]
       },
       {
-        "id": "q1771116263339",
+        "id": "q1771116387858",
         "text": "Proprietário rural?",
         "options": [
           {
             "label": "Sim",
             "docs": [
-              "Carteira de Trabalho, física ou digital com todos os contratos de trabalho (se física, das páginas de identificação e do(s) contrato (s) de trabalho, mesmo que não haja registro, bem como a página subsequente ao último registro de trabalho). ",
-              "Extrato CNIS com vínculos e remunerações do Meu INSS ([emitido aqui](https://meu.inss.gov.br)).",
               "Escritura ou termo de uso emitido pelo INCRA."
             ]
           },
