@@ -1158,7 +1158,7 @@
         }
         async function loadChecklist(id) {
             if (isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-            showLoading('Carregando o gerador...');
+            showLoading('Carregando checklist...');
             // Otimização: Busca direto no Firebase, sem carregar tudo
             const l = await CloudManager.fetchSpecificChecklist(id);
             hideLoading();
@@ -1196,7 +1196,7 @@
            ========================================================================== */
         // Função chamada ao iniciar o app (Otimizada)
         async function syncData() {
-            showLoading('Carregando sistema...');
+            showLoading('Carregando o gerador...');
             try {
                 // 1. Busca Configurações (Leve)
                 const settings = await CloudManager.fetchSettings();
@@ -1414,4 +1414,5 @@
 </body>
 
 </html>
+
 
