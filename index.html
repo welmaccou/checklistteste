@@ -1158,7 +1158,7 @@
         }
         async function loadChecklist(id) {
             if (isDirty && !confirm("Alterações não salvas serão perdidas. Continuar?")) return;
-            showLoading('Carregando checklist...');
+            showLoading('Carregando o gerador...');
             // Otimização: Busca direto no Firebase, sem carregar tudo
             const l = await CloudManager.fetchSpecificChecklist(id);
             hideLoading();
@@ -1414,3 +1414,4 @@
 </body>
 
 </html>
+
