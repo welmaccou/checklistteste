@@ -5,10 +5,12 @@
         "id": "assalariado",
         "label": "Assalariado",
         "docs": [
+          "Carteira de Trabalho, física ou digital com todos os contratos de trabalho (se física, das páginas de identificação e do(s) contrato (s) de trabalho, mesmo que não haja registro, bem como a página subsequente ao último registro de trabalho.) ",
+          "Extrato CNIS contendo vínculo, contribuições e remunerações emitido pelo Meu INSS ([emitido aqui](https://meu.inss.gov.br)).",
           "Último contracheque.",
-          "Declaração de Imposto de Renda Pessoa Física 2025 (ano base 2024) com recibo de entrega (se declarou).",
-          "Extratos bancários de todas as contas (corrente/poupança/digital) de dez/2025, jan/2026 e fev/2026. Se não tiver conta, apresentar [Declaração Nada Consta do BACEN](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS).",
-          "Relatório de Contas e Relacionamentos (CSS) do Registrato/BACEN ([emitido aqui](https://www.bcb.gov.br/meubc/registrato))."
+          "Declaração de Imposto de Renda Pessoa Física, exercício 2025, ano base 2024, acompanhada do recibo de entrega à Receita Federal do Brasil – se a pessoa não declarou, não é necessário apresentar.",
+          "Extratos de todas as contas bancária, física e/ou digital, corrente e/ou poupança, dos 03 (três) últimos meses (dezembro/2025, janeiro/2026 e fevereiro/2026). Caso não tenha conta bancária, apresentar declaração emitida pelo Banco Central do Brasil - BACEN ([emitido aqui](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS)).",
+          "Relatório de Contas e Relacionamentos em Bancos (CSS) emitido por meio do sistema Registrato do Banco Central do Brasil - BACEN ([emitido aqui](https://www.bcb.gov.br/meubc/registrato))."
         ]
       },
       {
