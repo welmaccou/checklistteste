@@ -123,6 +123,23 @@
           "Extratos bancários de todas as contas (física/digital/corrente/poupança) de dezembro/2025, janeiro e fevereiro/2026. Se não tiver conta, Declaração Nada Consta do BACEN ([emitido aqui](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS)).",
           "Relatório de Contas e Relacionamentos (CSS) do Registrato/BACEN ([emitido aqui](https://www.bcb.gov.br/meubc/registrato))."
         ]
+      },
+      {
+        "id": "produtor rural/lavrador",
+        "label": "Produtor rural/lavrador",
+        "docs": [
+          "Carteira de Trabalho, física ou digital com todos os contratos de trabalho (se física, das páginas de identificação e do(s) contrato (s) de trabalho, mesmo que não haja registro, bem como a página subsequente ao último registro de trabalho). ",
+          "Extrato CNIS com vínculos e remunerações do Meu INSS ([emitido aqui](https://meu.inss.gov.br)).",
+          "Declaração de Produtor Rural ([disponível aqui](https://aestudantil.goias.ufg.br/p/edital-unificado-dois-mil-e-vinte-seis)).",
+          "Declaração de Imposto de Renda Pessoa Física 2025 (ano base 2024) com recibo de entrega (se declarou).",
+          "Declaração de Imposto de Renda Pessoa Jurídica 2025 (ano base 2024) (se declarou).",
+          "Quaisquer declarações tributárias referentes a pessoas jurídicas vinculadas ao estudante ou família.",
+          "Notas fiscais de vendas rurais de outubro, novembro e dezembro de 2025 (se emitir).",
+          "Escritura da terra ou termo de uso emitido pelo INCRA.",
+          "Declaração do Imposto sobre a Propriedade Territorial Rural (DITR) 2025 (ano base 2024) com recibo (se declarou).",
+          "Extratos bancários de todas as contas (física/digital/corrente/poupança) de dezembro/2025, janeiro e fevereiro/2026. Se não tiver conta, Declaração Nada Consta do BACEN ([emitido aqui](https://www3.bcb.gov.br/nadaconsta/emitirCertidaoCCS)).",
+          "Relatório de Contas e Relacionamentos (CSS) do Registrato/BACEN ([emitido aqui](https://www.bcb.gov.br/meubc/registrato))."
+        ]
       }
     ],
     "questions": [
